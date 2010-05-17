@@ -1,1 +1,8 @@
 /.metadata/
+/Rabbit Reminder/bin/*.apk
+/Rabbit Reminder/bin/*.dex
+/Rabbit Reminder/bin/*.ap_
+/Rabbit Reminder/bin/com/*
+/Rabbit Reminder/gen/com/*
+
+
