@@ -39,6 +39,10 @@ public class TaskList implements Parcelable {
 	public int describeContents() {
 		return 0;
 	}
+	
+	public int size(){
+		return items.size();
+	}
 
 	public void writeToParcel(Parcel out, int flag) {
 		out.writeInt(items.size());

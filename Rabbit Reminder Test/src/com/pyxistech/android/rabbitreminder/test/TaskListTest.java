@@ -28,6 +28,15 @@ public class TaskListTest extends AndroidTestCase {
 		assertEquals(list, newList);
 	}
 	
+	public void testTaskListIsParcelableAfterAnItemIsAdded() {
+		Bundle bundle = new Bundle();
+		list.addItem(new TaskItem("last item", true));
+		bundle.putParcelable("TaskList", list);
+		TaskList newList = bundle.getParcelable("TaskList");
+		
+		assertEquals(list, newList);
+	}
+	
     private TaskList buildList() {
     	TaskList newList = new TaskList();
     	
