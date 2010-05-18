@@ -1,12 +1,12 @@
 package com.pyxistech.android.rabbitreminder.test;
 
-import junit.framework.TestCase;
 import android.os.Bundle;
+import android.test.AndroidTestCase;
 
 import com.pyxistech.android.rabbitreminder.models.TaskItem;
 import com.pyxistech.android.rabbitreminder.models.TaskList;
 
-public class TaskItemTest extends TestCase {
+public class TaskListTest extends AndroidTestCase {
 	
 	public void setUp() {
 		list = buildList();
@@ -14,6 +14,7 @@ public class TaskItemTest extends TestCase {
 	
 	public void testTaskListCanBeTransformedInArray() {
 		TaskItem[] array = list.toArray();
+		
 		assertEquals(10, array.length);
 		assertEquals("item 1", array[0].toString());
 		assertEquals("item 10", array[9].toString());
@@ -23,9 +24,10 @@ public class TaskItemTest extends TestCase {
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("TaskList", list);
 		TaskList newList = bundle.getParcelable("TaskList");
+		
 		assertEquals(list, newList);
 	}
-    
+	
     private TaskList buildList() {
     	TaskList newList = new TaskList();
     	

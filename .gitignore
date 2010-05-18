@@ -4,5 +4,10 @@
 /Rabbit Reminder/bin/*.ap_
 /Rabbit Reminder/bin/com/*
 /Rabbit Reminder/gen/com/*
+/Rabbit Reminder Test/bin/*.apk
+/Rabbit Reminder Test/bin/*.dex
+/Rabbit Reminder Test/bin/*.ap_
+/Rabbit Reminder Test/bin/com/*
+/Rabbit Reminder Test/gen/com/*
 
 
