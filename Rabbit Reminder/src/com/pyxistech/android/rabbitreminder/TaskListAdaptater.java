@@ -18,13 +18,19 @@ public class TaskListAdaptater extends ArrayAdapter<TaskItem> {
 	
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View taskItem = convertView;
+		TaskViewWrapper wrapper = null;
 		
 		if (taskItem == null) {
 			LayoutInflater inflater = context.getLayoutInflater();
 			taskItem = inflater.inflate(R.layout.task_item, null);
+			wrapper = new TaskViewWrapper(taskItem);
+			taskItem.setTag(wrapper);
+		}
+		else {
+			wrapper = (TaskViewWrapper) taskItem.getTag();
 		}
 		
-		CheckedTextView checkableItem = (CheckedTextView) taskItem.findViewById(R.id.task_item);
+		CheckedTextView checkableItem = wrapper.getCheckedTextView();
 		checkableItem.setChecked(list.getItemAt(position).isDone());
 		checkableItem.setText(list.getItemAt(position).getText());
 		
