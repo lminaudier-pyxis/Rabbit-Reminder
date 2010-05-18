@@ -1,4 +1,8 @@
-package com.pyxistech.android.rabbitreminder;
+package com.pyxistech.android.rabbitreminder.adaptaters;
+
+import com.pyxistech.android.rabbitreminder.R;
+import com.pyxistech.android.rabbitreminder.models.TaskItem;
+import com.pyxistech.android.rabbitreminder.models.TaskList;
 
 import android.app.Activity;
 import android.view.LayoutInflater;

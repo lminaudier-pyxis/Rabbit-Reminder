@@ -1,4 +1,6 @@
-package com.pyxistech.android.rabbitreminder;
+package com.pyxistech.android.rabbitreminder.adaptaters;
+
+import com.pyxistech.android.rabbitreminder.R;
 
 import android.view.View;
 import android.widget.CheckedTextView;

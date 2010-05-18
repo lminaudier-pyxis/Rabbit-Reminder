@@ -1,4 +1,4 @@
-package com.pyxistech.android.rabbitreminder;
+package com.pyxistech.android.rabbitreminder.models;
 
 public class TaskItem {
 	
@@ -21,6 +21,10 @@ public class TaskItem {
 	
 	public String toString() {
 		return text;
+	}
+	
+	public boolean equals(TaskItem item) {
+		return (item.getText().equals(text)) && (item.isDone() == done);
 	}
 	
 	private String text;
