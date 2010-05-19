@@ -13,9 +13,7 @@ public class TaskList implements Parcelable {
 	public TaskList(Parcel in) {
 		int size = in.readInt();
 		for (int i = 0; i < size; i++) {
-			String text = in.readString();
-			boolean done = in.readString().equals("true") ? true : false;
-			TaskItem item = new TaskItem(text, done);
+			TaskItem item = in.readParcelable(getClass().getClassLoader());
 			items.add(item);
 		}
 	}
@@ -51,9 +49,12 @@ public class TaskList implements Parcelable {
 	public void writeToParcel(Parcel out, int flag) {
 		out.writeInt(items.size());
 		for (TaskItem item : items) {
-			out.writeString(item.getText());
-			out.writeString(item.isDone() ? "true" : "false");
+			out.writeParcelable(item, 0);
 		}
+	}
+
+	public void updateItem(int index, String newText) {
+		items.elementAt(index).setText(newText);
 	}
 	
 	public void clear() {

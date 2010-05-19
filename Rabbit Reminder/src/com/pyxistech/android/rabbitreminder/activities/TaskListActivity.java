@@ -71,12 +71,22 @@ public class TaskListActivity extends ListActivity {
     public boolean onContextItemSelected(MenuItem item) {
     	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
     	switch (item.getItemId()) {
+    	case EDIT_ITEM:
+    		editItem(info.id);
+    		return true;
     	case DELETE_ITEM:
     		deleteItem(info.id);
     		return true;
     	default:
     		return super.onContextItemSelected(item);
     	}
+    }
+    
+    private void editItem(final long index) {
+		Intent intent = new Intent(this, AddTaskActivity.class);
+		intent.putExtra("index", (int) index);
+		intent.putExtra("item", getTaskListAdapter().getItem((int) index)); 
+		startActivityForResult(intent, 0);
     }
     
     private void deleteItem(final long index) {
@@ -95,14 +105,17 @@ public class TaskListActivity extends ListActivity {
     
     private void addItem() {
 		Intent intent = new Intent(this, AddTaskActivity.class);
-		
 		startActivityForResult(intent, 0);
 	}
     
     @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     	String data = intent.getExtras().get("newTaskText").toString();
-		getTaskListAdapter().addItem(new TaskItem(data, false));
+    	int index = intent.getExtras().getInt("index");
+    	if (index == -1)
+    		getTaskListAdapter().addItem(new TaskItem(data, false));
+    	else
+    		getTaskListAdapter().updateItem(index, data);
     }
 
 	@Override

@@ -9,15 +9,38 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.pyxistech.android.rabbitreminder.R;
+import com.pyxistech.android.rabbitreminder.models.TaskItem;
 
 public class AddTaskActivity extends Activity {
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_task);
 		
 		Button addTaskButton = (Button) findViewById(R.id.add_task_button);
+		EditText editText = (EditText) findViewById(R.id.new_task_text);
+		
+		if (savedInstanceState == null) {
+			Bundle bundle = getIntent().getExtras();
+			if (bundle != null) {
+				TaskItem item = bundle.getParcelable("item");
+				editText.setText(item.getText());
+				index = bundle.getInt("index");
+			}
+		}
+		else {
+			index = savedInstanceState.getInt("index");
+		}
+		
 		addTaskButton.setOnClickListener(listener);
 	}
+	
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+    	super.onSaveInstanceState(outState);
+    	
+		outState.putInt("index", index);
+    }
 	
 	private OnClickListener listener = new OnClickListener() {
 		public void onClick(View v) {
@@ -26,9 +49,12 @@ public class AddTaskActivity extends Activity {
 			EditText editText = (EditText) findViewById(R.id.new_task_text);
 			String text = editText.getText().toString();
 			data.putExtra("newTaskText", text);
+			data.putExtra("index", index);
 			
 			AddTaskActivity.this.setResult(Activity.RESULT_OK, data);
 			AddTaskActivity.this.finish();
 		}
 	};
+	
+	private int index = -1;
 }

@@ -48,6 +48,11 @@ public class TaskListTest extends AndroidTestCase {
 		assertEquals(9, list.size());
 	}
 	
+	public void testListItemCanBeEdited() {
+		list.updateItem(0, "New Name");
+		assertEquals("New Name", list.getItemAt(0).getText());
+	}
+	
     private TaskList buildList() {
     	TaskList newList = new TaskList();
     	

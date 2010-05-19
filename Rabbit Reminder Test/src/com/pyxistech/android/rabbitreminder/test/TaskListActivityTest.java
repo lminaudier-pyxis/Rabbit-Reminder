@@ -118,6 +118,37 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 		
 		assertEquals(initialListSize, getListSize());
 	}
+	
+	public void testItemCanBeEdited() {
+		solo.clickLongOnText("item 0");
+		solo.sleep(1000);
+		solo.clickOnText("Edit");
+		solo.sleep(1000);
+		solo.enterText(0, " edited");
+		solo.sleep(1000);
+		solo.clickOnText("OK");
+		solo.sleep(1000);
+		
+		assertEquals(initialListSize, getListSize());
+		assertEquals("item 0 edited", getListItemView(0).getText());
+	}
+	
+	public void testRotationDoesNotAffectEdition() {
+		solo.clickLongOnText("item 0");
+		solo.sleep(1000);
+		solo.clickOnText("Edit");
+		solo.sleep(1000);
+		solo.enterText(0, " edited");
+		solo.sleep(1000);
+		solo.setActivityOrientation(Solo.PORTRAIT);
+		solo.setActivityOrientation(Solo.LANDSCAPE);
+		solo.sleep(1000);
+		solo.clickOnText("OK");
+		solo.sleep(1000);
+		
+		assertEquals(initialListSize, getListSize());
+		assertEquals("item 0 edited", getListItemView(0).getText());
+	}
 
 	private void buildList() {
 		getListAdapter().clearList();

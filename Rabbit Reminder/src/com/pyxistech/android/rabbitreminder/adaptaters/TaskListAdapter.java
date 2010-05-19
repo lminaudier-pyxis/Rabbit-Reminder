@@ -29,6 +29,11 @@ public class TaskListAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 	
+	public void updateItem(int index, String data) {
+		list.updateItem(index, data);
+		notifyDataSetChanged();
+	}
+	
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TaskViewWrapper wrapper = null;
 		if (convertView == null){
