@@ -28,6 +28,10 @@ public class TaskList implements Parcelable {
 		items.add(item);
 	}
 	
+	public void deleteItem(int index) {
+		items.remove(index);
+	}
+	
 	public TaskItem getItemAt(int index) {
 		return items.elementAt(index);
 	}

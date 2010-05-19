@@ -23,6 +23,11 @@ public class TaskListAdapter extends BaseAdapter {
 		list.addItem(item);
 		notifyDataSetChanged();
 	}
+
+	public void deleteItem(int index){
+		list.deleteItem(index);
+		notifyDataSetChanged();
+	}
 	
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TaskViewWrapper wrapper = null;
@@ -67,5 +72,4 @@ public class TaskListAdapter extends BaseAdapter {
 	
 	private LayoutInflater inflater;
 	private TaskList list;
-	
 }

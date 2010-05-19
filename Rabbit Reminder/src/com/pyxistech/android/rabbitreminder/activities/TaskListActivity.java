@@ -1,15 +1,18 @@
 package com.pyxistech.android.rabbitreminder.activities;
 
-import java.util.Random;
-
 import android.app.ListActivity;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.pyxistech.android.rabbitreminder.R;
 import com.pyxistech.android.rabbitreminder.adaptaters.TaskListAdapter;
@@ -29,19 +32,20 @@ public class TaskListActivity extends ListActivity {
     		adapter.setList( (TaskList) savedInstanceState.getParcelable("TaskList") );
 
     	setListAdapter(adapter);
+    	registerForContextMenu(getListView());
     }
     
     @Override
     public void onSaveInstanceState(Bundle outState) {
     	super.onSaveInstanceState(outState);
     	
-    	TaskList list = ((TaskListAdapter)getListAdapter()).getList();
+    	TaskList list = getTaskListAdapter().getList();
 		outState.putParcelable("TaskList", list);
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	menu.add(Menu.NONE, ADD_ITEM, Menu.NONE, "Add Item");
+    	menu.add(Menu.NONE, ADD_ITEM, Menu.NONE, R.string.add_item_menu_text);
     	return super.onCreateOptionsMenu(menu);
     }
     
@@ -56,6 +60,39 @@ public class TaskListActivity extends ListActivity {
     	return super.onOptionsItemSelected(item);
     }
     
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    	super.onCreateContextMenu(menu, v, menuInfo);
+    	menu.add(Menu.NONE, EDIT_ITEM, Menu.NONE,  R.string.edit_item_menu_text);
+    	menu.add(Menu.NONE, DELETE_ITEM, Menu.NONE, R.string.delete_item_menu_text);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+    	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+    	switch (item.getItemId()) {
+    	case DELETE_ITEM:
+    		deleteItem(info.id);
+    		return true;
+    	default:
+    		return super.onContextItemSelected(item);
+    	}
+    }
+    
+    private void deleteItem(final long index) {
+    	Builder builder = new Builder(this);
+    	builder.setIcon(android.R.drawable.ic_dialog_alert);
+    	builder.setTitle(R.string.delete_item_confirmation_dialog_title);
+    	builder.setMessage(R.string.delete_item_confirmation_dialog_text);
+    	builder.setPositiveButton(R.string.validation_button_text, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				getTaskListAdapter().deleteItem((int) index);				
+			}
+		});
+    	builder.setNegativeButton(R.string.cancel_button_text, null);
+    	builder.show();
+    }
+    
     private void addItem() {
 		Intent intent = new Intent(this, AddTaskActivity.class);
 		
@@ -65,8 +102,7 @@ public class TaskListActivity extends ListActivity {
     @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     	String data = intent.getExtras().get("newTaskText").toString();
-		((TaskListAdapter) getListAdapter()).addItem(new TaskItem(data, false));
-		
+		getTaskListAdapter().addItem(new TaskItem(data, false));
     }
 
 	@Override
@@ -77,8 +113,12 @@ public class TaskListActivity extends ListActivity {
     }
     
     private TaskItem getModel(int position) {
-    	return ((TaskListAdapter)getListAdapter()).getItem(position);
+    	return getTaskListAdapter().getItem(position);
     }
+
+	private TaskListAdapter getTaskListAdapter() {
+		return ((TaskListAdapter) getListAdapter());
+	}
      
     private TaskList buildList(TaskListAdapter adapter) {
     	adapter.addItem(new TaskItem("item 1", false));
@@ -100,6 +140,6 @@ public class TaskListActivity extends ListActivity {
     }
     
     public static final int ADD_ITEM = Menu.FIRST + 1;
-
-	private int currentRequestCode;
+    public static final int EDIT_ITEM = Menu.FIRST + 2;
+    public static final int DELETE_ITEM = Menu.FIRST + 3;
 }

@@ -29,15 +29,10 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 		} catch (Throwable e) {
 			throw new Exception(e);
 		}
+		
+		initialListSize = getListSize();
 	}
 
-	private void buildList() {
-		getListAdapter().clearList();
-		for (int i = 0; i < 50; i++) {
-			getListAdapter().addItem(new TaskItem("item " + i, false));
-		}
-	}
-	
 	@Override
 	public void tearDown() throws Exception {
 		try {
@@ -57,32 +52,29 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 	public void testAddingElementsThroughtAdapter() {
 		int numberOfNewItems = 10;
 		
-		int initialCount = getListCount();
 		for (int i = 0; i < numberOfNewItems; i++) {
 			getListAdapter().addItem(new TaskItem("test item " + i, false));
 		}
-		int afterCount = getListCount();
+		int afterCount = getListSize();
 		
-		assertEquals(numberOfNewItems, afterCount - initialCount);
+		assertEquals(numberOfNewItems, afterCount - initialListSize);
 	}
-	
+
 	public void testAddingElementsThroughtAddTaskActivity() {
 		int numberOfNewItems = 5;
 		
-		int initialCount = getListCount();
 		for (int i = 0; i < numberOfNewItems; i++) {
 			solo.clickOnMenuItem("Add Item");
-			solo.enterText(0, "item " + String.valueOf(initialCount + i + 1).toUpperCase() );
+			solo.enterText(0, "item " + String.valueOf(initialListSize + i + 1).toUpperCase() );
 			solo.clickOnButton("OK");
 		}
 		
 		solo.sleep(500);
 		
-		int afterCount = getListCount();
+		int afterCount = getListSize();
 		
-		assertEquals(numberOfNewItems, afterCount - initialCount);
+		assertEquals(numberOfNewItems, afterCount - initialListSize);
 	}
-	
 	
 	public void testCheckStateAreSavedOnScrolling() {
 		solo.clickOnText("item 0");
@@ -92,20 +84,53 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 		solo.scrollUp();
 		solo.scrollUp();
 		
-		assertTrue(((CheckedTextView) solo.getCurrentListViews().get(0).getChildAt(0)).isChecked());
+		assertTrue(getListItemView(0).isChecked());
 	}
 	
 	public void testCheckStateAreSavedOnRotation() {
 		solo.clickOnText("item 0");
 		solo.sleep(1000);
 		solo.setActivityOrientation(Solo.LANDSCAPE);
-		assertTrue(((CheckedTextView) solo.getCurrentListViews().get(0).getChildAt(0)).isChecked());
+		assertTrue(getListItemView(0).isChecked());
 		solo.sleep(1000);
 		solo.setActivityOrientation(Solo.PORTRAIT);
-		assertTrue(((CheckedTextView) solo.getCurrentListViews().get(0).getChildAt(0)).isChecked());
+		assertTrue(getListItemView(0).isChecked());
+	}
+	
+	public void testItemCanBeDeleted() {
+		solo.clickLongOnText("item 1");
+		solo.sleep(1000);
+		solo.clickOnText("Delete");
+		solo.sleep(1000);
+		solo.clickOnText("OK");
+		solo.sleep(1000);
+		
+		assertEquals(initialListSize - 1, getListSize());
+	}
+	
+	public void testItemDeletionCanBeCancelled() {
+		solo.clickLongOnText("item 1");
+		solo.sleep(1000);
+		solo.clickOnText("Delete");
+		solo.sleep(1000);
+		solo.clickOnText("Cancel");
+		solo.sleep(1000);
+		
+		assertEquals(initialListSize, getListSize());
 	}
 
-	private int getListCount() {
+	private void buildList() {
+		getListAdapter().clearList();
+		for (int i = 0; i < 50; i++) {
+			getListAdapter().addItem(new TaskItem("item " + i, false));
+		}
+	}
+
+	private CheckedTextView getListItemView(int index) {
+		return ((CheckedTextView) solo.getCurrentListViews().get(0).getChildAt(index));
+	}
+
+	private int getListSize() {
 		return getListAdapter().getCount();
 	}
 
@@ -114,4 +139,5 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 	}
 	
 	private Solo solo;
+	private int initialListSize;
 }
