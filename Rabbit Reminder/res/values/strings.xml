@@ -2,5 +2,6 @@
 <resources>
     <string name="hello">Hello World, TaskListActivity!</string>
     <string name="app_name">Rabbit Reminder</string>
+    <string name="add_item_menu_text">Add Item</string>
     <string name="validation_button_text">OK</string>
 </resources>

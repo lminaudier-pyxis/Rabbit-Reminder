@@ -37,6 +37,11 @@ public class TaskListTest extends AndroidTestCase {
 		assertEquals(list, newList);
 	}
 	
+	public void testListCanBeCleared() {
+		list.clear();
+		assertEquals(0, list.size());
+	}
+	
     private TaskList buildList() {
     	TaskList newList = new TaskList();
     	

@@ -61,6 +61,10 @@ public class TaskListAdapter extends BaseAdapter {
 		return position;
 	}
 	
+	public void clearList() {
+		list.clear();
+	}
+	
 	private LayoutInflater inflater;
 	private TaskList list;
 	

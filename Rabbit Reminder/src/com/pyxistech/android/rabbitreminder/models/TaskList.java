@@ -52,5 +52,9 @@ public class TaskList implements Parcelable {
 		}
 	}
 	
+	public void clear() {
+		items.clear();
+	}
+	
 	private Vector<TaskItem> items = new Vector<TaskItem>();
 }

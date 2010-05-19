@@ -59,10 +59,7 @@ public class TaskListActivity extends ListActivity {
     private void addItem() {
 		Intent intent = new Intent(this, AddTaskActivity.class);
 		
-		Random rand = new Random();
-		currentRequestCode = rand.nextInt();
-		
-		startActivityForResult(intent, currentRequestCode);
+		startActivityForResult(intent, 0);
 	}
     
     @Override
