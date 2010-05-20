@@ -149,6 +149,13 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 		assertEquals(initialListSize, getListSize());
 		assertEquals("item 0 edited", getListItemView(0).getText());
 	}
+	
+	public void testCancelingTheCurrentTaskEditionWorks() {
+		solo.clickOnMenuItem("Add Item");
+		solo.sleep(1000);
+		solo.goBack();
+		solo.sleep(1000);
+	}
 
 	private void buildList() {
 		getListAdapter().clearList();

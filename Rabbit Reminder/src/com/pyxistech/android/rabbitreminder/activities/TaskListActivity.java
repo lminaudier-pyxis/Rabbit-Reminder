@@ -110,12 +110,14 @@ public class TaskListActivity extends ListActivity {
     
     @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    	String data = intent.getExtras().get("newTaskText").toString();
-    	int index = intent.getExtras().getInt("index");
-    	if (index == -1)
-    		getTaskListAdapter().addItem(new TaskItem(data, false));
-    	else
-    		getTaskListAdapter().updateItem(index, data);
+    	if( intent != null ){
+	    	String data = intent.getExtras().get("newTaskText").toString();
+	    	int index = intent.getExtras().getInt("index");
+	    	if (index == -1)
+	    		getTaskListAdapter().addItem(new TaskItem(data, false));
+	    	else
+	    		getTaskListAdapter().updateItem(index, data);
+    	}
     }
 
 	@Override
