@@ -5,6 +5,12 @@ import android.os.Parcelable;
 
 public class TaskItem implements Parcelable {
 	
+	public TaskItem(int index, String text, boolean done) {
+		this.index = index;
+		this.text = text;
+		this.done = done;
+	}
+	
 	public TaskItem(String text, boolean done) {
 		this.text = text;
 		this.done = done;
@@ -58,7 +64,12 @@ public class TaskItem implements Parcelable {
 		out.writeString(text);
 		out.writeString(done ? "true" : "false");
 	}
+
+	public int getIndex() {
+		return index;
+	}
 	
 	private String text;
 	private boolean done;
+	private int index = -1;
 }
