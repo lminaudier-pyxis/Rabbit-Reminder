@@ -56,8 +56,6 @@ public class TaskListProvider extends ContentProvider {
                     + TaskList.Items.CREATED_DATE + " INTEGER,"
                     + TaskList.Items.MODIFIED_DATE + " INTEGER"
                     + ");");
-    		
-    		db.execSQL("INSERT INTO " + TASKITEM_TABLE_NAME + "(" + TaskList.Items.NAME + ", " + TaskList.Items.DONE + ") VALUES (\"test\", 1);");
     	}
 
     	@Override
