@@ -171,7 +171,7 @@ public class TaskListActivity extends ListActivity {
 		return ((TaskListAdapter) getListAdapter());
 	}
      
-    private TaskList refreshList(TaskListAdapter adapter) {
+    public TaskList refreshList(TaskListAdapter adapter) {
         Cursor cursor = managedQuery(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
         		PROJECTION, null, null, 
         		com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DEFAULT_SORT_ORDER);
