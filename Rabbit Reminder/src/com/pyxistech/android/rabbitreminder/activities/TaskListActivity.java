@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -20,6 +21,12 @@ import com.pyxistech.android.rabbitreminder.models.TaskItem;
 import com.pyxistech.android.rabbitreminder.models.TaskList;
 
 public class TaskListActivity extends ListActivity {
+    private static final String[] PROJECTION = new String[] {
+        com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID, // 0
+        com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, // 1
+        com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, // 1
+    };
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
@@ -136,20 +143,30 @@ public class TaskListActivity extends ListActivity {
 	}
      
     private TaskList buildList(TaskListAdapter adapter) {
-    	adapter.addItem(new TaskItem("item 1", false));
-    	adapter.addItem(new TaskItem("item 2", true));
-    	adapter.addItem(new TaskItem("item 3", true));
-    	adapter.addItem(new TaskItem("item 4", false));
-    	adapter.addItem(new TaskItem("item 5", false));
-    	adapter.addItem(new TaskItem("item 6", false));
-    	adapter.addItem(new TaskItem("item 7", true));
-    	adapter.addItem(new TaskItem("item 8", true));
-    	adapter.addItem(new TaskItem("item 9", true));
-    	adapter.addItem(new TaskItem("item 10", false));
-    	adapter.addItem(new TaskItem("item 11", false));
-    	adapter.addItem(new TaskItem("item 12", false));
-    	adapter.addItem(new TaskItem("item 13", false));
-    	adapter.addItem(new TaskItem("item 14", false));
+        Cursor cursor = managedQuery(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
+        		PROJECTION, null, null, 
+        		com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DEFAULT_SORT_ORDER);
+        
+        int count = cursor.getCount();
+		for (int i = 0; i < count; i++) {
+			cursor.moveToPosition(i);
+        	adapter.addItem(new TaskItem(cursor.getString(1), cursor.getInt(2) == 1));
+        }
+        
+//    	adapter.addItem(new TaskItem("item 1", false));
+//    	adapter.addItem(new TaskItem("item 2", true));
+//    	adapter.addItem(new TaskItem("item 3", true));
+//    	adapter.addItem(new TaskItem("item 4", false));
+//    	adapter.addItem(new TaskItem("item 5", false));
+//    	adapter.addItem(new TaskItem("item 6", false));
+//    	adapter.addItem(new TaskItem("item 7", true));
+//    	adapter.addItem(new TaskItem("item 8", true));
+//    	adapter.addItem(new TaskItem("item 9", true));
+//    	adapter.addItem(new TaskItem("item 10", false));
+//    	adapter.addItem(new TaskItem("item 11", false));
+//    	adapter.addItem(new TaskItem("item 12", false));
+//    	adapter.addItem(new TaskItem("item 13", false));
+//    	adapter.addItem(new TaskItem("item 14", false));
     	
     	return adapter.getList();
     }
