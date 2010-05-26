@@ -3,10 +3,13 @@ package com.pyxistech.android.rabbitreminder.providers;
 import java.util.HashMap;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -88,13 +91,70 @@ public class TaskListProvider extends ContentProvider {
 	}
 
 	@Override
-	public Uri insert(Uri uri, ContentValues values) {
-		return null;
+	public Uri insert(Uri uri, ContentValues initialValues) {
+        // Validate the requested uri
+        if (sUriMatcher.match(uri) != TASKS) {
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        ContentValues values;
+        if (initialValues != null) {
+            values = new ContentValues(initialValues);
+        } else {
+            values = new ContentValues();
+        }
+
+        Long now = Long.valueOf(System.currentTimeMillis());
+
+        // Make sure that the fields are all set
+        if (values.containsKey(TaskList.Items.CREATED_DATE) == false) {
+            values.put(TaskList.Items.CREATED_DATE, now);
+        }
+
+        if (values.containsKey(TaskList.Items.MODIFIED_DATE) == false) {
+            values.put(TaskList.Items.MODIFIED_DATE, now);
+        }
+
+        if (values.containsKey(TaskList.Items.NAME) == false) {
+            values.put(TaskList.Items.NAME, "unamed item");
+        }
+
+        if (values.containsKey(TaskList.Items.DONE) == false) {
+            values.put(TaskList.Items.DONE, 0);
+        }
+
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        long rowId = db.insert(TASKITEM_TABLE_NAME, "item", values);
+        if (rowId > 0) {
+            Uri noteUri = ContentUris.withAppendedId(TaskList.Items.CONTENT_URI, rowId);
+            getContext().getContentResolver().notifyChange(noteUri, null);
+            return noteUri;
+        }
+
+        throw new SQLException("Failed to insert row into " + uri);
 	}
 
 	@Override
 	public int delete(Uri uri, String where, String[] whereArgs) {
-		return 0;
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int count;
+        switch (sUriMatcher.match(uri)) {
+        case TASKS:
+            count = db.delete(TASKITEM_TABLE_NAME, where, whereArgs);
+            break;
+
+        case TASK_ID:
+            String noteId = uri.getPathSegments().get(1);
+            count = db.delete(TASKITEM_TABLE_NAME, TaskList.Items._ID + "=" + noteId
+                    + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
+            break;
+
+        default:
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
 	}
 
 	@Override
