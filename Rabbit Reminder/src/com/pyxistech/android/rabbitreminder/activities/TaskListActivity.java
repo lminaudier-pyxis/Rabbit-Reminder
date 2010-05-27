@@ -102,10 +102,7 @@ public class TaskListActivity extends ListActivity {
     	builder.setMessage(R.string.delete_item_confirmation_dialog_text);
     	builder.setPositiveButton(R.string.validation_button_text, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				getContentResolver().delete(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
-						com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID + "=" + getTaskListAdapter().getItem((int)index).getIndex(), 
-						null);
-				getTaskListAdapter().deleteItem((int) index);	
+				deleteItemFromListAndDatabase(index);	
 			}
 		});
     	builder.setNegativeButton(R.string.cancel_button_text, null);
@@ -116,6 +113,13 @@ public class TaskListActivity extends ListActivity {
 		Intent intent = new Intent(this, AddTaskActivity.class);
 		startActivityForResult(intent, 0);
 	}
+
+	private void deleteItemFromListAndDatabase(final long index) {
+		getContentResolver().delete(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
+				com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID + "=" + getTaskListAdapter().getItem((int)index).getIndex(), 
+				null);
+		getTaskListAdapter().deleteItem((int) index);
+	}
     
     @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -124,31 +128,41 @@ public class TaskListActivity extends ListActivity {
 	    	int index = intent.getExtras().getInt("index");
 	    	if (index == -1)
 	    	{
-	    		getTaskListAdapter().addItem(new TaskItem(data, false));
-
-		    	ContentValues values = new ContentValues();
-		    	values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, data);
-		    	values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, 0);
-		    	getContentResolver().insert(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, values);
-		    	
-		    	refreshList((TaskListAdapter)getListAdapter());
+	    		addItemInListAndDatabase(data);
+		    	refreshListFromDatabase();
 	    	}
 	    	else
 	    	{
-	    		getTaskListAdapter().updateItem(index, data);
-
-		    	ContentValues values = new ContentValues();
-		    	values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, data);
-		    	values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, getTaskListAdapter().getItem(index).isDone() ? 1 : 0);
-		    	getContentResolver().update(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
-		    			values,
-		    			com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID + "=" + getTaskListAdapter().getItem(index).getIndex(), 
-		    			null);
-		    	
-		    	refreshList((TaskListAdapter)getListAdapter());
+	    		editItemInListAndDatabase(data, index);
+		    	refreshListFromDatabase();
 	    	}
     	}
     }
+
+	private void editItemInListAndDatabase(String data, int index) {
+		getTaskListAdapter().updateItem(index, data);
+
+		ContentValues values = new ContentValues();
+		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, data);
+		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, getTaskListAdapter().getItem(index).isDone() ? 1 : 0);
+		getContentResolver().update(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
+				values,
+				com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID + "=" + getTaskListAdapter().getItem(index).getIndex(), 
+				null);
+	}
+
+	private void refreshListFromDatabase() {
+		refreshList((TaskListAdapter)getListAdapter());
+	}
+
+	private void addItemInListAndDatabase(String data) {
+		getTaskListAdapter().addItem(new TaskItem(data, false));
+
+		ContentValues values = new ContentValues();
+		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, data);
+		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, 0);
+		getContentResolver().insert(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, values);
+	}
 
 	@Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
