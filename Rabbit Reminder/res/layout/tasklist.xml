@@ -27,7 +27,7 @@
 				android:layout_height="40dip" />
 			
 			<TextView
-				android:text="current tasks list"
+				android:text="Current Tasks List"
 				android:textSize="15dip"
 				android:layout_width="wrap_content"
 				android:layout_height="40dip"

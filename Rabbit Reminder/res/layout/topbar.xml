@@ -18,17 +18,27 @@
 		android:textColor="#ffdddd"
 		android:textSize="18dip"
 		android:gravity="center_vertical" />
-<!--	-->
-<!--	<Button -->
-<!--		android:text="S" -->
-<!--		android:id="@+id/search_btn" -->
-<!--		android:layout_width="50dip"-->
-<!--		android:layout_height="50dip" />-->
-<!--		-->
-<!--	<Button -->
-<!--		android:text="R"-->
-<!--		android:id="@+id/recent_list_btn" -->
-<!--		android:layout_width="50dip" -->
-<!--		android:layout_height="50dip" />-->
+	
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="40dip"
+		android:padding="0dip"
+		android:gravity="right|center_vertical" >
+	
+		<ImageButton
+			android:src="@drawable/searchbutton_icon"
+			android:id="@+id/search_btn" 
+			android:layout_width="40dip"
+			android:layout_height="40dip"
+			android:background="@drawable/topbarbuttonback" />
+			
+		<ImageButton
+			android:src="@drawable/currentlistbutton_icon"
+			android:id="@+id/current_list_btn" 
+			android:layout_width="40dip"
+			android:layout_height="40dip"
+			android:background="@drawable/topbarbuttonback" />	
+		
+	</LinearLayout>
 	
 </LinearLayout>
