@@ -5,6 +5,7 @@ import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -32,6 +33,10 @@ public class TaskListActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+    	
+    	Resources res = getResources();
+    	getListView().setCacheColorHint(0);
+    	getListView().setDivider(res.getDrawable(android.R.drawable.divider_horizontal_bright));
 
     	TaskListAdapter adapter = new TaskListAdapter(this, new TaskList());
 
