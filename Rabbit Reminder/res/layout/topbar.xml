@@ -5,23 +5,30 @@
 	android:layout_height="wrap_content"
 	style="@style/Theme.Topbar" >
 	
+	<ImageView
+		android:src="@drawable/pyxis_logo_black"
+		android:layout_width="wrap_content" 
+		android:layout_height="40dip"
+		android:gravity="center_vertical" />
+	
 	<TextView
 		android:text="Rabbit Reminder" 
 		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"
+		android:layout_height="40dip"
 		android:textColor="#ffdddd"
-		android:textSize="18dip" />
-	
-	<Button 
-		android:text="S" 
-		android:id="@+id/search_btn" 
-		android:layout_width="50dip"
-		android:layout_height="wrap_content" />
-		
-	<Button 
-		android:text="R"
-		android:id="@+id/recent_list_btn" 
-		android:layout_width="50dip" 
-		android:layout_height="wrap_content" />
+		android:textSize="18dip"
+		android:gravity="center_vertical" />
+<!--	-->
+<!--	<Button -->
+<!--		android:text="S" -->
+<!--		android:id="@+id/search_btn" -->
+<!--		android:layout_width="50dip"-->
+<!--		android:layout_height="50dip" />-->
+<!--		-->
+<!--	<Button -->
+<!--		android:text="R"-->
+<!--		android:id="@+id/recent_list_btn" -->
+<!--		android:layout_width="50dip" -->
+<!--		android:layout_height="50dip" />-->
 	
 </LinearLayout>
