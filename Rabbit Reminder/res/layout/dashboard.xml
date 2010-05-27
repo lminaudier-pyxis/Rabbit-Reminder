@@ -25,17 +25,21 @@
 		
 			<Button
 				android:drawableTop="@drawable/listsdashboard_button"
-				android:text="Lists"
+				android:text="LISTS"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:background="@drawable/dashboardbuttonback" />
+				android:background="@drawable/dashboardbuttonback"
+				android:padding="10dip"
+				android:textColor="#290000" />
 				
 			<Button
 				android:drawableTop="@drawable/listsdashboard_button"
-				android:text="Tasks"
+				android:text="TASKS"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:background="@drawable/dashboardbuttonback" />
+				android:background="@drawable/dashboardbuttonback"
+				android:padding="10dip"
+				android:textColor="#290000" />
 				
 		</LinearLayout>
 		
@@ -48,17 +52,21 @@
 		
 			<Button
 				android:drawableTop="@drawable/listsdashboard_button"
-				android:text="Locations"
+				android:text="LOCATIONS"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:background="@drawable/dashboardbuttonback" />
+				android:background="@drawable/dashboardbuttonback"
+				android:padding="10dip"
+				android:textColor="#290000" />
 				
 			<Button
 				android:drawableTop="@drawable/listsdashboard_button"
-				android:text="Notifications"
+				android:text="NOTIFICATIONS"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:background="@drawable/dashboardbuttonback" />
+				android:background="@drawable/dashboardbuttonback"
+				android:padding="10dip"
+				android:textColor="#290000" />
 				
 		</LinearLayout>
 		
