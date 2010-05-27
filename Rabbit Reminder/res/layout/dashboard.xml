@@ -24,6 +24,7 @@
 			android:padding="10dip" >
 		
 			<Button
+				android:id="@+id/dashboard_lists_button"
 				android:drawableTop="@drawable/listsdashboard_button"
 				android:text="LISTS"
 				android:layout_width="wrap_content"
