@@ -40,6 +40,15 @@
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			/>
+			
+		<TextView
+			android:id="@id/android:empty"
+			android:text="@string/no_task_hit_menu_text"
+			android:textSize="20dip"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:textColor="#888888"
+			android:gravity="center_vertical|center" />
 		
 	</LinearLayout>
 	

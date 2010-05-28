@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:orientation="vertical">
-  
-  <EditText
-  	android:id="@+id/new_task_text"
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
-  	android:layout_height="wrap_content"
-  	android:singleLine="true" 
-  	/>
-  	
-  <Button
-  	android:id="@+id/add_task_button"
-  	android:layout_width="fill_parent"
-  	android:layout_height="wrap_content" 
-  	android:text="@string/validation_button_text"
-  />
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+	
+	<include 
+		layout="@layout/topbar"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+  
+	<EditText
+		android:id="@+id/new_task_text"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:singleLine="true" />
+	  	
+	<Button
+		android:id="@+id/add_task_button"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:text="@string/validation_button_text" />
   	
 </LinearLayout>
