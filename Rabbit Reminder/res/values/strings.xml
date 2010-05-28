@@ -9,6 +9,7 @@
     <string name="validation_button_text">OK</string>
     <string name="cancel_button_text">Cancel</string>
     <string name="no_task_hit_menu_text">No tasks!\nUse Menu key to add a task...</string>
+    <string name="no_list_hit_menu_text">No lists!\nUse Menu key to add a list...</string>
     
     <string name="delete_item_confirmation_dialog_title">Delete</string>
     <string name="delete_item_confirmation_dialog_text">This item will be deleted.</string>

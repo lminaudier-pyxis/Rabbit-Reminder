@@ -17,11 +17,20 @@ public class DashboardActivity extends Activity {
     	
     	Button tasksButton = (Button) findViewById(R.id.dashboard_tasks_button);
     	tasksButton.setOnClickListener(tasksClickListener);
+    	Button listsButton = (Button) findViewById(R.id.dashboard_lists_button);
+    	listsButton.setOnClickListener(listsClickListener);
     }
     
     private OnClickListener tasksClickListener = new OnClickListener() {
 		public void onClick(View v) {
 			Intent i = new Intent(DashboardActivity.this, TaskListActivity.class);
+			startActivity(i);
+		}
+	};
+    
+    private OnClickListener listsClickListener = new OnClickListener() {
+		public void onClick(View v) {
+			Intent i = new Intent(DashboardActivity.this, ListsListActivity.class);
 			startActivity(i);
 		}
 	};
