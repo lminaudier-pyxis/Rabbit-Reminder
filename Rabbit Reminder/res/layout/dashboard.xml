@@ -53,7 +53,7 @@
 			android:padding="10dip" >
 		
 			<Button
-				android:drawableTop="@drawable/listsdashboard_button"
+				android:drawableTop="@drawable/locationsdashboard_button"
 				android:text="LOCATIONS"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
