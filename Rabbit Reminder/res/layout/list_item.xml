@@ -19,7 +19,8 @@
 			android:paddingRight="6dip" />
 			
 		<TextView
-			android:text="4 tasks (3 remainings)"
+			android:id="@+id/list_item_number_of_tasks_remaining"
+			android:text="@string/list_item_number_of_tasks"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:checkMark="?android:attr/listChoiceIndicatorMultiple"

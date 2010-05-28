@@ -24,8 +24,16 @@ public class ListViewWrapper {
 		}
 		return imageItem;
 	}
+	
+	public TextView getTasksRemainingText() {
+		if (tasksRemainingText == null) {
+			tasksRemainingText = (TextView) base.findViewById(R.id.list_item_number_of_tasks_remaining);
+		}
+		return tasksRemainingText;
+	}
 
 	private ImageView imageItem;
 	private TextView textItem;
+	private TextView tasksRemainingText;
 	private View base;
 }

@@ -2,6 +2,8 @@ package com.pyxistech.android.rabbitreminder.test;
 
 import junit.framework.TestCase;
 
+import android.os.Bundle;
+
 import com.pyxistech.android.rabbitreminder.models.ListItem;
 import com.pyxistech.android.rabbitreminder.models.ListsList;
 
@@ -35,6 +37,15 @@ public class ListsListTest extends TestCase {
 		assertTrue(list.equals(list1));
 		assertFalse(list.equals(list2));
 		assertFalse(list.equals(list3));
+	}
+	
+	public void testListsListIsParcelable() {
+		Bundle bundle = new Bundle();
+		bundle.putParcelable("listsList", list);
+	
+		ListsList newList = bundle.getParcelable("listsList");
+	
+		assertTrue(list.equals(newList));
 	}
 	
 	private ListsList list;
