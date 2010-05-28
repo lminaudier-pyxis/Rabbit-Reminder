@@ -46,6 +46,7 @@ public class ListsListAdapter extends BaseAdapter {
 		}
 		
 		wrapper.getTextItemView().setText(items.elementAt(position));
+
 		if (position % 3 == 0)
 			wrapper.getImageItemView().setVisibility(View.INVISIBLE);
 		else
