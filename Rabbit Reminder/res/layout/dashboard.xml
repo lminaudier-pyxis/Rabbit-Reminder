@@ -34,7 +34,8 @@
 				android:textColor="#290000" />
 				
 			<Button
-				android:drawableTop="@drawable/listsdashboard_button"
+				android:id="@+id/dashboard_tasks_button"
+				android:drawableTop="@drawable/tasksdashboard_button"
 				android:text="TASKS"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

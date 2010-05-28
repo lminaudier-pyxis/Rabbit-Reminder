@@ -15,11 +15,11 @@ public class DashboardActivity extends Activity {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.dashboard);
     	
-    	Button listsButton = (Button) findViewById(R.id.dashboard_lists_button);
-    	listsButton.setOnClickListener(listsClickListener);
+    	Button tasksButton = (Button) findViewById(R.id.dashboard_tasks_button);
+    	tasksButton.setOnClickListener(tasksClickListener);
     }
     
-    private OnClickListener listsClickListener = new OnClickListener() {
+    private OnClickListener tasksClickListener = new OnClickListener() {
 		public void onClick(View v) {
 			Intent i = new Intent(DashboardActivity.this, TaskListActivity.class);
 			startActivity(i);
