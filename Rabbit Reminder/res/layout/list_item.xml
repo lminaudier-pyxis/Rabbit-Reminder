@@ -4,21 +4,36 @@
 	android:layout_width="fill_parent"
 	android:layout_height="?android:attr/listPreferredItemHeight" >
 
-	<TextView
-		android:id="@+id/list_item"
+	<LinearLayout
 		android:layout_width="wrap_content"
 		android:layout_height="?android:attr/listPreferredItemHeight"
-		android:textAppearance="?android:attr/textAppearanceLarge"
 		android:gravity="center_vertical"
-		android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-		android:paddingLeft="6dip"
-		android:paddingRight="6dip" 
-		/>
+		android:orientation="vertical" >
+		
+		<TextView
+			android:id="@+id/list_item"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingLeft="6dip"
+			android:paddingRight="6dip" />
+			
+		<TextView
+			android:text="4 tasks (3 remainings)"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+			android:paddingLeft="6dip"
+			android:paddingRight="6dip" />
+			
+	</LinearLayout>
 		
 	<ImageView
-		android:layout_width="wrap_content"
+		android:id="@+id/list_item_image"
+		android:layout_width="fill_parent"
 		android:layout_height="?android:attr/listPreferredItemHeight"
 		android:scaleType="fitEnd"
-		android:src="@drawable/locationsdashboard_button" />
+		android:src="@drawable/locationsdashboard_button"
+		android:gravity="right" />
 		
 </LinearLayout>

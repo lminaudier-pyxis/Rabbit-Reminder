@@ -19,7 +19,7 @@ public class ListsListAdapter extends BaseAdapter {
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
 		for (int i = 0; i < 50; i++)
-			items.add("item " + i);
+			items.add("List " + i);
 	}
 
 	public int getCount() {
@@ -35,9 +35,22 @@ public class ListsListAdapter extends BaseAdapter {
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
+		ListViewWrapper wrapper = null;
 		if (convertView == null){
 			convertView = inflater.inflate(R.layout.list_item, null);
+			wrapper = new ListViewWrapper(convertView);
+			convertView.setTag(wrapper);
 		}
+		else {
+			wrapper = (ListViewWrapper) convertView.getTag();
+		}
+		
+		wrapper.getTextItemView().setText(items.elementAt(position));
+		if (position % 3 == 0)
+			wrapper.getImageItemView().setVisibility(View.INVISIBLE);
+		else
+			wrapper.getImageItemView().setVisibility(View.VISIBLE);
+		
 		return convertView;
 	}
 
