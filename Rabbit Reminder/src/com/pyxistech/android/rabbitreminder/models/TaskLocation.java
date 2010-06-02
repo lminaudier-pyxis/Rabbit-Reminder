@@ -28,6 +28,6 @@ public class TaskLocation {
 	}
 	
 	public boolean equals(TaskLocation location) {
-		return false;
+		return name.equals(location.getName()) && location.equals(location.getLocation());
 	}
 }

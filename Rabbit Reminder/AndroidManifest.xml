@@ -31,6 +31,7 @@
         </activity>
         
         <provider android:name=".providers.TaskListProvider" android:authorities="com.pyxistech.rabbitreminder.providers.TaskList" />
+        <provider android:name=".providers.ListsListProvider" android:authorities="com.pyxistech.rabbitreminder.models.ListsList" />
 
     </application>
     <uses-sdk android:minSdkVersion="3" />
