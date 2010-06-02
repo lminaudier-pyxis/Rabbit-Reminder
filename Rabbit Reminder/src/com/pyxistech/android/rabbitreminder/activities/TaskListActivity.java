@@ -2,8 +2,11 @@ package com.pyxistech.android.rabbitreminder.activities;
 
 import android.app.ListActivity;
 import android.app.AlertDialog.Builder;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -20,16 +23,25 @@ import com.pyxistech.android.rabbitreminder.models.TaskItem;
 import com.pyxistech.android.rabbitreminder.models.TaskList;
 
 public class TaskListActivity extends ListActivity {
+	
+    private static final String[] PROJECTION = new String[] {
+        com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID, // 0
+        com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, // 1
+        com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, // 1
+    };
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+    	setContentView(R.layout.tasklist);
+    	
+    	Resources res = getResources();
+    	getListView().setCacheColorHint(0);
+    	getListView().setDivider(res.getDrawable(android.R.drawable.divider_horizontal_bright));
 
     	TaskListAdapter adapter = new TaskListAdapter(this, new TaskList());
 
-    	if (savedInstanceState == null)
-    		buildList(adapter);
-    	else
-    		adapter.setList( (TaskList) savedInstanceState.getParcelable("TaskList") );
+		refreshList(adapter);
 
     	setListAdapter(adapter);
     	registerForContextMenu(getListView());
@@ -96,7 +108,7 @@ public class TaskListActivity extends ListActivity {
     	builder.setMessage(R.string.delete_item_confirmation_dialog_text);
     	builder.setPositiveButton(R.string.validation_button_text, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				getTaskListAdapter().deleteItem((int) index);				
+				deleteItemFromListAndDatabase(index);	
 			}
 		});
     	builder.setNegativeButton(R.string.cancel_button_text, null);
@@ -107,6 +119,13 @@ public class TaskListActivity extends ListActivity {
 		Intent intent = new Intent(this, AddTaskActivity.class);
 		startActivityForResult(intent, 0);
 	}
+
+	private void deleteItemFromListAndDatabase(final long index) {
+		getContentResolver().delete(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
+				com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID + "=" + getTaskListAdapter().getItem((int)index).getIndex(), 
+				null);
+		getTaskListAdapter().deleteItem((int) index);
+	}
     
     @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -114,17 +133,54 @@ public class TaskListActivity extends ListActivity {
 	    	String data = intent.getExtras().get("newTaskText").toString();
 	    	int index = intent.getExtras().getInt("index");
 	    	if (index == -1)
-	    		getTaskListAdapter().addItem(new TaskItem(data, false));
+	    	{
+	    		addItemInListAndDatabase(data);
+		    	refreshListFromDatabase();
+	    	}
 	    	else
-	    		getTaskListAdapter().updateItem(index, data);
+	    	{
+	    		editItemInListAndDatabase(data, index);
+		    	refreshListFromDatabase();
+	    	}
     	}
     }
+
+	private void editItemInListAndDatabase(String data, int index) {
+		getTaskListAdapter().updateItem(index, data);
+
+		ContentValues values = new ContentValues();
+		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, data);
+		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, getTaskListAdapter().getItem(index).isDone() ? 1 : 0);
+		getContentResolver().update(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
+				values,
+				com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID + "=" + getTaskListAdapter().getItem(index).getIndex(), 
+				null);
+	}
+
+	private void refreshListFromDatabase() {
+		refreshList((TaskListAdapter)getListAdapter());
+	}
+
+	private void addItemInListAndDatabase(String data) {
+		getTaskListAdapter().addItem(new TaskItem(data, false));
+
+		ContentValues values = new ContentValues();
+		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, data);
+		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, 0);
+		getContentResolver().insert(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, values);
+	}
 
 	@Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
     	CheckedTextView checkableItem = (CheckedTextView) v.findViewById(R.id.task_item);
     	checkableItem.toggle();
     	getModel(position).setDone(checkableItem.isChecked());
+    	
+    	ContentValues values = new ContentValues();
+    	values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, checkableItem.isChecked() ? 1 : 0);
+    	getContentResolver().update(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
+    			values, com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID + "=" + getTaskListAdapter().getItem((int)position).getIndex(), 
+				null);
     }
     
     private TaskItem getModel(int position) {
@@ -135,21 +191,18 @@ public class TaskListActivity extends ListActivity {
 		return ((TaskListAdapter) getListAdapter());
 	}
      
-    private TaskList buildList(TaskListAdapter adapter) {
-    	adapter.addItem(new TaskItem("item 1", false));
-    	adapter.addItem(new TaskItem("item 2", true));
-    	adapter.addItem(new TaskItem("item 3", true));
-    	adapter.addItem(new TaskItem("item 4", false));
-    	adapter.addItem(new TaskItem("item 5", false));
-    	adapter.addItem(new TaskItem("item 6", false));
-    	adapter.addItem(new TaskItem("item 7", true));
-    	adapter.addItem(new TaskItem("item 8", true));
-    	adapter.addItem(new TaskItem("item 9", true));
-    	adapter.addItem(new TaskItem("item 10", false));
-    	adapter.addItem(new TaskItem("item 11", false));
-    	adapter.addItem(new TaskItem("item 12", false));
-    	adapter.addItem(new TaskItem("item 13", false));
-    	adapter.addItem(new TaskItem("item 14", false));
+    public TaskList refreshList(TaskListAdapter adapter) {
+        Cursor cursor = managedQuery(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
+        		PROJECTION, null, null, 
+        		com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DEFAULT_SORT_ORDER);
+        
+        adapter.clearList();
+        
+        int count = cursor.getCount();
+		for (int i = 0; i < count; i++) {
+			cursor.moveToPosition(i);
+        	adapter.addItem(new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1));
+        }
     	
     	return adapter.getList();
     }

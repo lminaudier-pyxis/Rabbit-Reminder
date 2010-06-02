@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical" >
+	
+	<include 
+		layout="@layout/topbar"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+	
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:gravity="center" >
+		
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:gravity="center"
+			android:padding="10dip" >
+		
+			<Button
+				android:id="@+id/dashboard_lists_button"
+				android:drawableTop="@drawable/listsdashboard_button"
+				android:text="LISTS"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:background="@drawable/dashboardbuttonback"
+				android:padding="10dip"
+				android:textColor="#290000" />
+				
+			<Button
+				android:id="@+id/dashboard_tasks_button"
+				android:drawableTop="@drawable/tasksdashboard_button"
+				android:text="TASKS"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:background="@drawable/dashboardbuttonback"
+				android:padding="10dip"
+				android:textColor="#290000" />
+		
+			<Button
+				android:drawableTop="@drawable/locationsdashboard_button"
+				android:text="LOCATIONS"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:background="@drawable/dashboardbuttonback"
+				android:padding="10dip"
+				android:textColor="#290000" />
+				
+			<Button
+				android:drawableTop="@drawable/settingsdashboard_button"
+				android:text="SETTINGS"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:background="@drawable/dashboardbuttonback"
+				android:padding="10dip"
+				android:textColor="#290000" />
+				
+		</LinearLayout>
+		
+		<ImageView
+			android:src="@drawable/grownbypyxis_logo"
+			android:layout_width="250dip"
+			android:layout_height="wrap_content" />
+		
+	</LinearLayout>
+	
+</LinearLayout>

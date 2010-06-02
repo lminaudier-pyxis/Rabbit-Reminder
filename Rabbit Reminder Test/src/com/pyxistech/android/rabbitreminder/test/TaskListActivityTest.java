@@ -1,5 +1,6 @@
 package com.pyxistech.android.rabbitreminder.test;
 
+import android.content.ContentValues;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 import android.widget.CheckedTextView;
@@ -77,7 +78,7 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 	}
 	
 	public void testCheckStateAreSavedOnScrolling() {
-		solo.clickOnText("item 0");
+		solo.clickOnText("item 49");
 		solo.sleep(1000);
 		solo.scrollDown();
 		solo.sleep(1000);
@@ -88,7 +89,7 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 	}
 	
 	public void testCheckStateAreSavedOnRotation() {
-		solo.clickOnText("item 0");
+		solo.clickOnText("item 49");
 		solo.sleep(1000);
 		solo.setActivityOrientation(Solo.LANDSCAPE);
 		assertTrue(getListItemView(0).isChecked());
@@ -120,7 +121,7 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 	}
 	
 	public void testItemCanBeEdited() {
-		solo.clickLongOnText("item 0");
+		solo.clickLongOnText("item 49");
 		solo.sleep(1000);
 		solo.clickOnText("Edit");
 		solo.sleep(1000);
@@ -130,11 +131,11 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 		solo.sleep(1000);
 		
 		assertEquals(initialListSize, getListSize());
-		assertEquals("item 0 edited", getListItemView(0).getText());
+		assertEquals("item 49 edited", getListItemView(0).getText());
 	}
 	
 	public void testRotationDoesNotAffectEdition() {
-		solo.clickLongOnText("item 0");
+		solo.clickLongOnText("item 49");
 		solo.sleep(1000);
 		solo.clickOnText("Edit");
 		solo.sleep(1000);
@@ -147,7 +148,7 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 		solo.sleep(1000);
 		
 		assertEquals(initialListSize, getListSize());
-		assertEquals("item 0 edited", getListItemView(0).getText());
+		assertEquals("item 49 edited", getListItemView(0).getText());
 	}
 	
 	public void testCancelingTheCurrentTaskEditionWorks() {
@@ -159,9 +160,16 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 
 	private void buildList() {
 		getListAdapter().clearList();
+		getActivity().getContentResolver().delete(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, "", null);
 		for (int i = 0; i < 50; i++) {
 			getListAdapter().addItem(new TaskItem("item " + i, false));
+
+	    	ContentValues values = new ContentValues();
+	    	values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, "item " + i);
+	    	values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, 0);
+	    	getActivity().getContentResolver().insert(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, values);
 		}
+		getActivity().refreshList((TaskListAdapter)getActivity().getListAdapter());
 	}
 
 	private CheckedTextView getListItemView(int index) {
