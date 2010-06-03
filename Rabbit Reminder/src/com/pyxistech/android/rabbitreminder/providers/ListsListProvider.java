@@ -3,10 +3,12 @@ package com.pyxistech.android.rabbitreminder.providers;
 import java.util.HashMap;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -87,9 +89,27 @@ public class ListsListProvider extends ContentProvider {
 	}
 	
 	@Override
-	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int delete(Uri uri, String where, String[] whereArgs) {
+		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int count;
+        
+        switch (sUriMatcher.match(uri)) {
+        case LISTS:
+            count = db.delete(LISTSLIST_TABLE_NAME, where, whereArgs);
+            break;
+
+        case LIST_ID:
+            String noteId = uri.getPathSegments().get(1);
+            count = db.delete(LISTSLIST_TABLE_NAME, TaskList.Items._ID + "=" + noteId
+                    + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
+            break;
+
+        default:
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
 	}
 
 	@Override
@@ -99,9 +119,52 @@ public class ListsListProvider extends ContentProvider {
 	}
 
 	@Override
-	public Uri insert(Uri uri, ContentValues values) {
-		// TODO Auto-generated method stub
-		return null;
+	public Uri insert(Uri uri, ContentValues initialValues) {
+        // Validate the requested uri
+        if (sUriMatcher.match(uri) != LISTS) {
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        ContentValues values;
+        if (initialValues != null) {
+            values = new ContentValues(initialValues);
+        } else {
+            values = new ContentValues();
+        }
+
+        Long now = Long.valueOf(System.currentTimeMillis());
+
+        // Make sure that the fields are all set
+        if (values.containsKey(ListsList.Items.CREATED_DATE) == false) {
+            values.put(ListsList.Items.CREATED_DATE, now);
+        }
+
+        if (values.containsKey(ListsList.Items.MODIFIED_DATE) == false) {
+            values.put(ListsList.Items.MODIFIED_DATE, now);
+        }
+
+        if (values.containsKey(ListsList.Items.NAME) == false) {
+            values.put(ListsList.Items.NAME, "unamed list");
+        }
+
+        if (values.containsKey(ListsList.Items.REMAINING_TASK_COUNT) == false) {
+            values.put(ListsList.Items.REMAINING_TASK_COUNT, 0);
+        }
+        
+        if (values.containsKey(ListsList.Items.LOCATION_ID) == false) {
+            values.put(ListsList.Items.LOCATION_ID, -1);
+        }
+
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        long rowId = db.insert(LISTSLIST_TABLE_NAME, "NULL", values);
+        
+        if (rowId > 0) {
+            Uri noteUri = ContentUris.withAppendedId(ListsList.Items.CONTENT_URI, rowId);
+            getContext().getContentResolver().notifyChange(noteUri, null);
+            return noteUri;
+        }
+
+        throw new SQLException("Failed to insert row into " + uri);
 	}
 
 	private ListsListDatabaseHelper mOpenHelper;

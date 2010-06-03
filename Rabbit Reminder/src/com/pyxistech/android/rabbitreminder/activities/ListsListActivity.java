@@ -1,8 +1,10 @@
 package com.pyxistech.android.rabbitreminder.activities;
 
 import android.app.ListActivity;
+import android.content.ContentValues;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.pyxistech.android.rabbitreminder.R;
@@ -25,7 +27,15 @@ public class ListsListActivity extends ListActivity {
          		ListsList.Items.DEFAULT_SORT_ORDER);
     	
     	ListsListAdapter adapter = new ListsListAdapter(this, cursor);
-    	setListAdapter(adapter);   	
+    	setListAdapter(adapter);
+    	
+    	ContentValues values = new ContentValues();
+		values.put(ListsList.Items.NAME, "never show");
+		values.put(ListsList.Items.REMAINING_TASK_COUNT, 1337);
+		values.put(ListsList.Items.LOCATION_ID, 0);
+    	Uri newElementUri = getContentResolver().insert(ListsList.Items.CONTENT_URI, values);
+    	
+    	getContentResolver().delete(newElementUri, "" , null);
     }
     
     private static final String[] PROJECTION = new String[] {
