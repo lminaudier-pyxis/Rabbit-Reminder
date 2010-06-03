@@ -30,12 +30,17 @@ public class ListsListActivity extends ListActivity {
     	setListAdapter(adapter);
     	
     	ContentValues values = new ContentValues();
-		values.put(ListsList.Items.NAME, "never show");
-		values.put(ListsList.Items.REMAINING_TASK_COUNT, 1337);
-		values.put(ListsList.Items.LOCATION_ID, 0);
+		values.put(ListsList.Items.NAME, "list");
+		values.put(ListsList.Items.REMAINING_TASK_COUNT, 42);
+		values.put(ListsList.Items.LOCATION_ID, -1);
     	Uri newElementUri = getContentResolver().insert(ListsList.Items.CONTENT_URI, values);
     	
-    	getContentResolver().delete(newElementUri, "" , null);
+    	
+    	ContentValues updatedValues = new ContentValues();
+    	updatedValues.put(ListsList.Items.NAME, "update list name");
+    	updatedValues.put(ListsList.Items.REMAINING_TASK_COUNT, 1337);
+    	updatedValues.put(ListsList.Items.LOCATION_ID, 0);
+    	getContentResolver().update(newElementUri, updatedValues, "" , null);
     }
     
     private static final String[] PROJECTION = new String[] {

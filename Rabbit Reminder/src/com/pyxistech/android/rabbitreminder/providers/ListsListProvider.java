@@ -114,8 +114,16 @@ public class ListsListProvider extends ContentProvider {
 
 	@Override
 	public String getType(Uri uri) {
-		// TODO Auto-generated method stub
-		return null;
+		switch (sUriMatcher.match(uri)) {
+		case LISTS:
+			return ListsList.Items.CONTENT_TYPE;
+
+		case LIST_ID:
+			return ListsList.Items.CONTENT_ITEM_TYPE;
+
+		default:
+			throw new IllegalArgumentException("Unknown URI " + uri);
+		}
 	}
 
 	@Override
@@ -211,10 +219,26 @@ public class ListsListProvider extends ContentProvider {
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+		int count;
+		switch (sUriMatcher.match(uri)) {
+		case LISTS:
+			count = db.update(LISTSLIST_TABLE_NAME, values, selection, selectionArgs);
+			break;
+
+		case LIST_ID:
+			String noteId = uri.getPathSegments().get(1);
+			count = db.update(LISTSLIST_TABLE_NAME, values, TaskList.Items._ID + "=" + noteId
+					+ (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+			break;
+
+		default:
+			throw new IllegalArgumentException("Unknown URI " + uri);
+		}
+
+		getContext().getContentResolver().notifyChange(uri, null);
+		return count;
 	}
 
 }
