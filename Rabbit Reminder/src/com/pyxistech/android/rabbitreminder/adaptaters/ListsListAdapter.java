@@ -24,11 +24,12 @@ public class ListsListAdapter extends BaseAdapter {
 		remainingTasksString = resources.getString(R.string.list_item_number_of_tasks);
 
 		while( cursor.moveToNext() ){
+			int id = cursor.getInt(0);
 			String listName = cursor.getString(1);
 			int remaningsTasks = cursor.getInt(2);
 			int locationId = cursor.getInt(3); 
 			
-			items.addItem(new ListItem(listName, 1337, remaningsTasks, locationId));
+			items.addItem(new ListItem(id, listName, 1337, remaningsTasks, locationId));
 		}
 	}
 
@@ -36,7 +37,7 @@ public class ListsListAdapter extends BaseAdapter {
 		return items.size();
 	}
 
-	public Object getItem(int position) {
+	public ListItem getItem(int position) {
 		return items.getItem(position);
 	}
 
@@ -62,6 +63,16 @@ public class ListsListAdapter extends BaseAdapter {
 		setItemLocationIcon(wrapper, item);
 		
 		return convertView;
+	}
+	
+	public void addList(ListItem list) {
+		items.addItem(list);
+		notifyDataSetChanged();
+	}
+	
+	public void deleteItem(int index) {
+		items.deleteItem(index);
+		notifyDataSetChanged();
 	}
 
 	private void setItemLocationIcon(ListViewWrapper wrapper, ListItem item) {

@@ -7,18 +7,18 @@ import com.pyxistech.android.rabbitreminder.models.ListItem;
 
 public class ListItemTest extends TestCase {
 	public void setUp() {
-		item = new ListItem(42, "item", 5, 2, -1);
+		item = new ListItem(42, "item", 1337, 2, -1);
 	}
 	public void tearDown() {
 	}
 	
 	public void testEqualsMethodWorksProperly() {
-		ListItem item1 = new ListItem(42, "item", 5, 2, -1);
-		ListItem item2 = new ListItem(40, "item", 5, 2, -1);
-		ListItem item3 = new ListItem(42, "item other", 5, 2, -1);
-		ListItem item4 = new ListItem(42, "item", 6, 2, -1);
-		ListItem item5 = new ListItem(42, "item", 5, 1, -1);
-		ListItem item6 = new ListItem(42, "item", 5, 2, 17);
+		ListItem item1 = new ListItem(42, "item", 1337, 2, -1);
+		ListItem item2 = new ListItem(40, "item", 1337, 2, -1);
+		ListItem item3 = new ListItem(42, "item other", 1337, 2, -1);
+		ListItem item4 = new ListItem(42, "item", 0, 2, -1);
+		ListItem item5 = new ListItem(42, "item", 1337, 1, -1);
+		ListItem item6 = new ListItem(42, "item", 1337, 2, 17);
 		
 		assertTrue(item.equals(item1));
 		assertFalse(item.equals(item2));

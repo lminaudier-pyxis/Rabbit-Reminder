@@ -37,6 +37,7 @@ public class TaskListProvider extends ContentProvider {
         ProjectionMap.put(TaskList.Items._ID, TaskList.Items._ID);
         ProjectionMap.put(TaskList.Items.NAME, TaskList.Items.NAME);
         ProjectionMap.put(TaskList.Items.DONE, TaskList.Items.DONE);
+        ProjectionMap.put(TaskList.Items.LIST_ID, TaskList.Items.LIST_ID);
         ProjectionMap.put(TaskList.Items.CREATED_DATE, TaskList.Items.CREATED_DATE);
         ProjectionMap.put(TaskList.Items.MODIFIED_DATE, TaskList.Items.MODIFIED_DATE);
     }
@@ -53,6 +54,7 @@ public class TaskListProvider extends ContentProvider {
                     + TaskList.Items._ID + " INTEGER PRIMARY KEY,"
                     + TaskList.Items.NAME + " TEXT,"
                     + TaskList.Items.DONE + " INTEGER,"
+                    + TaskList.Items.LIST_ID + " INTEGER,"
                     + TaskList.Items.CREATED_DATE + " INTEGER,"
                     + TaskList.Items.MODIFIED_DATE + " INTEGER"
                     + ");");
@@ -118,6 +120,10 @@ public class TaskListProvider extends ContentProvider {
 
         if (values.containsKey(TaskList.Items.DONE) == false) {
             values.put(TaskList.Items.DONE, 0);
+        }
+        
+        if (values.containsKey(TaskList.Items.LIST_ID) == false) {
+            values.put(TaskList.Items.LIST_ID, -1);
         }
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();

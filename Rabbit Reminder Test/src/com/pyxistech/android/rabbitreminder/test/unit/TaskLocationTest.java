@@ -1,10 +1,6 @@
 package com.pyxistech.android.rabbitreminder.test.unit;
 
-import android.content.Context;
-import android.location.Location;
 import android.test.AndroidTestCase;
-
-import com.pyxistech.android.rabbitreminder.models.TaskLocation;
 
 public class TaskLocationTest extends AndroidTestCase {
 	public void setUp() {
