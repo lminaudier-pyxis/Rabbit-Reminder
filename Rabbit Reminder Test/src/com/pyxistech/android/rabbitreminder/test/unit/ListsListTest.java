@@ -39,6 +39,32 @@ public class ListsListTest extends TestCase {
 		assertFalse(list.equals(list3));
 	}
 	
+	public void testAdditionOfItemsWorks() {
+		ListsList list = new ListsList();
+		list.addItem(new ListItem("item 1", 0, 0, 0));
+		list.addItem(new ListItem("item 2", 0, 0, 0));
+		
+		assertEquals(2, list.size());
+	}
+	
+	public void testDeletionOfItemWorks() {
+		ListsList list = new ListsList();
+		list.addItem(new ListItem("item 1", 0, 0, 0));
+		list.addItem(new ListItem("item 2", 0, 0, 0));
+		list.deleteItem(0);
+		
+		assertEquals(1, list.size());
+	}
+	
+	public void testUpdateOfAnItemWorks() {
+		ListsList list = new ListsList();
+		ListItem updatedItem = new ListItem("item", 0, 0, 0);
+		list.addItem(new ListItem("item 1", 0, 0, 0));
+		list.updateItem(0, updatedItem);
+		
+		assertEquals(updatedItem, list.getItem(0));
+	}
+	
 	public void testListsListIsParcelable() {
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("listsList", list);
