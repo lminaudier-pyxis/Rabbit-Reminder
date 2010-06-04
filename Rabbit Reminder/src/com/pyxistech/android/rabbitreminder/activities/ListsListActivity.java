@@ -4,19 +4,22 @@ import android.app.ListActivity;
 import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.pyxistech.android.rabbitreminder.R;
 import com.pyxistech.android.rabbitreminder.adaptaters.ListsListAdapter;
+import com.pyxistech.android.rabbitreminder.models.ListItem;
 import com.pyxistech.android.rabbitreminder.models.ListsList;
 
 public class ListsListActivity extends ListActivity {
@@ -36,19 +39,6 @@ public class ListsListActivity extends ListActivity {
     	
     	ListsListAdapter adapter = new ListsListAdapter(this, cursor);
     	setListAdapter(adapter);
-    	
-//    	ContentValues values = new ContentValues();
-//		values.put(ListsList.Items.NAME, "list");
-//		values.put(ListsList.Items.REMAINING_TASK_COUNT, 42);
-//		values.put(ListsList.Items.LOCATION_ID, -1);
-//    	Uri newElementUri = getContentResolver().insert(ListsList.Items.CONTENT_URI, values);
-//    	
-//    	
-//    	ContentValues updatedValues = new ContentValues();
-//    	updatedValues.put(ListsList.Items.NAME, "update list name");
-//    	updatedValues.put(ListsList.Items.REMAINING_TASK_COUNT, 1337);
-//    	updatedValues.put(ListsList.Items.LOCATION_ID, 0);
-//    	getContentResolver().update(newElementUri, updatedValues, "" , null);
     	
     	registerForContextMenu(getListView());
     }
@@ -96,6 +86,54 @@ public class ListsListActivity extends ListActivity {
     private ListsListAdapter getListsListAdapter() {
 		return ((ListsListAdapter) getListAdapter());
 	}
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	menu.add(Menu.NONE, ADD_ITEM, Menu.NONE, R.string.add_item_menu_text);
+    	return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch(item.getItemId()) {
+    	case ADD_ITEM:
+    		addList();
+    		return true;
+    	}
+    	
+    	return super.onOptionsItemSelected(item);
+    }
+    
+    private void addList() {
+		Intent intent = new Intent(this, AddListActivity.class);
+		startActivityForResult(intent, 0);
+	}
+    
+    @Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    	if( intent != null ){
+	    	String data = intent.getExtras().get("newListNameText").toString();
+	    	
+			ContentValues values = new ContentValues();
+			values.put(ListsList.Items.NAME, data);
+			values.put(ListsList.Items.REMAINING_TASK_COUNT, 0);
+			values.put(ListsList.Items.LOCATION_ID, -1);
+			getContentResolver().insert(ListsList.Items.CONTENT_URI, values);
+			
+			getListsListAdapter().addList(new ListItem(data, 0, 0, -1));
+    	}
+    }
+    
+    @Override
+    public void onListItemClick(ListView parent, View v, int position, long id) {
+    	Intent listIntent = new Intent(this, TaskListActivity.class);
+    	
+    	ListItem selectedList = getListsListAdapter().getItem(position);
+    	listIntent.putExtra("listId", selectedList.getId());
+    	listIntent.putExtra("listName", selectedList.getName());
+    	
+    	startActivity(listIntent);
+    }
     
     public static final int ADD_ITEM = Menu.FIRST + 1;
     public static final int EDIT_ITEM = Menu.FIRST + 2;

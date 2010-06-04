@@ -65,6 +65,11 @@ public class ListsListAdapter extends BaseAdapter {
 		return convertView;
 	}
 	
+	public void addList(ListItem list) {
+		items.addItem(list);
+		notifyDataSetChanged();
+	}
+	
 	public void deleteItem(int index) {
 		items.deleteItem(index);
 		notifyDataSetChanged();

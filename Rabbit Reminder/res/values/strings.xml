@@ -14,4 +14,6 @@
     
     <string name="delete_item_confirmation_dialog_title">Delete</string>
     <string name="delete_item_confirmation_dialog_text">This item will be deleted.</string>
+    
+    <string name="new_list_name_label">New List Name</string>
 </resources>

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.pyxistech.android.rabbitreminder.R;
@@ -27,13 +28,24 @@ public class TaskListActivity extends ListActivity {
     private static final String[] PROJECTION = new String[] {
         com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID, // 0
         com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, // 1
-        com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, // 1
+        com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, // 2
+        com.pyxistech.android.rabbitreminder.providers.TaskList.Items.LIST_ID // 3
     };
+    
+    private int listId = -1;
+    private String listName = "All Your Tasks";
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.tasklist);
+    	
+    	if(getIntent() != null) {
+    		if( getIntent().getExtras() != null) {
+    			this.listId = getIntent().getExtras().getInt("listId", -1);
+    			this.listName = getIntent().getExtras().getString("listName");
+    		}
+    	}
     	
     	Resources res = getResources();
     	getListView().setCacheColorHint(0);
@@ -45,6 +57,9 @@ public class TaskListActivity extends ListActivity {
 
     	setListAdapter(adapter);
     	registerForContextMenu(getListView());
+    	
+   		TextView listTitle = (TextView) findViewById(R.id.list_title);
+    	listTitle.setText(listName);
     }
     
     @Override
@@ -53,6 +68,7 @@ public class TaskListActivity extends ListActivity {
     	
     	TaskList list = getTaskListAdapter().getList();
 		outState.putParcelable("TaskList", list);
+		outState.putInt("listId", listId);
     }
     
     @Override
@@ -97,7 +113,8 @@ public class TaskListActivity extends ListActivity {
     private void editItem(final long index) {
 		Intent intent = new Intent(this, AddTaskActivity.class);
 		intent.putExtra("index", (int) index);
-		intent.putExtra("item", getTaskListAdapter().getItem((int) index)); 
+		intent.putExtra("item", getTaskListAdapter().getItem((int) index));
+		
 		startActivityForResult(intent, 0);
     }
     
@@ -117,6 +134,7 @@ public class TaskListActivity extends ListActivity {
     
     private void addItem() {
 		Intent intent = new Intent(this, AddTaskActivity.class);
+		intent.putExtra("listId", listId);
 		startActivityForResult(intent, 0);
 	}
 
@@ -132,6 +150,7 @@ public class TaskListActivity extends ListActivity {
     	if( intent != null ){
 	    	String data = intent.getExtras().get("newTaskText").toString();
 	    	int index = intent.getExtras().getInt("index");
+	    	listId = intent.getExtras().getInt("listId");
 	    	if (index == -1)
 	    	{
 	    		addItemInListAndDatabase(data);
@@ -162,11 +181,12 @@ public class TaskListActivity extends ListActivity {
 	}
 
 	private void addItemInListAndDatabase(String data) {
-		getTaskListAdapter().addItem(new TaskItem(data, false));
+		getTaskListAdapter().addItem(new TaskItem(data, false, listId));
 
 		ContentValues values = new ContentValues();
 		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, data);
 		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, 0);
+		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.LIST_ID, listId);
 		getContentResolver().insert(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, values);
 	}
 
@@ -201,7 +221,12 @@ public class TaskListActivity extends ListActivity {
         int count = cursor.getCount();
 		for (int i = 0; i < count; i++) {
 			cursor.moveToPosition(i);
-        	adapter.addItem(new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1));
+			if (this.listId > 0) {
+				if (cursor.getInt(3) == this.listId) 
+					adapter.addItem(new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, listId));
+			}
+			else
+				adapter.addItem(new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getInt(3)));
         }
     	
     	return adapter.getList();

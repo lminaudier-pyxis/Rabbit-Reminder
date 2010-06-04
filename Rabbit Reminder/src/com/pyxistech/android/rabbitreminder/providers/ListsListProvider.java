@@ -58,26 +58,6 @@ public class ListsListProvider extends ContentProvider {
                     + ListsList.Items.CREATED_DATE + " INTEGER,"
                     + ListsList.Items.MODIFIED_DATE + " INTEGER"
                     + ");");
-			db.execSQL("INSERT INTO " + LISTSLIST_TABLE_NAME + " ("
-                    + ListsList.Items.NAME + ", "
-                    + ListsList.Items.REMAINING_TASK_COUNT + ", "
-                    + ListsList.Items.LOCATION_ID
-					+ ") "
-					+ "VALUES ("
-                    + "\"List 1\", "
-                    + "42, "
-                    + "0"
-					+ ");");
-			db.execSQL("INSERT INTO " + LISTSLIST_TABLE_NAME + " ("
-                    + ListsList.Items.NAME + ", "
-                    + ListsList.Items.REMAINING_TASK_COUNT + ", "
-                    + ListsList.Items.LOCATION_ID
-					+ ") "
-					+ "VALUES ("
-                    + "\"List 2\", "
-                    + "42, "
-                    + "0"
-					+ ");");
 		}
 
 		@Override
@@ -180,7 +160,7 @@ public class ListsListProvider extends ContentProvider {
 	@Override
 	public boolean onCreate() {
 		mOpenHelper = new ListsListDatabaseHelper(getContext());
-		return false;
+		return true;
 	}
 
 	@Override
