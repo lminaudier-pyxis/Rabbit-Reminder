@@ -1,4 +1,4 @@
-package com.pyxistech.android.rabbitreminder.test;
+package com.pyxistech.android.rabbitreminder.test.ui;
 
 import android.content.ContentValues;
 import android.test.ActivityInstrumentationTestCase2;

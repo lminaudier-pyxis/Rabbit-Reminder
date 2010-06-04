@@ -24,7 +24,7 @@ public class TaskListProvider extends ContentProvider {
     private static final int TASKS = 1;
     private static final int TASK_ID = 2;
 
-    private static HashMap<String, String> sNotesProjectionMap;
+    private static HashMap<String, String> ProjectionMap;
     
     private static final UriMatcher sUriMatcher;
 
@@ -33,12 +33,12 @@ public class TaskListProvider extends ContentProvider {
         sUriMatcher.addURI(TaskList.AUTHORITY, "items", TASKS);
         sUriMatcher.addURI(TaskList.AUTHORITY, "items/#", TASK_ID);
 
-        sNotesProjectionMap = new HashMap<String, String>();
-        sNotesProjectionMap.put(TaskList.Items._ID, TaskList.Items._ID);
-        sNotesProjectionMap.put(TaskList.Items.NAME, TaskList.Items.NAME);
-        sNotesProjectionMap.put(TaskList.Items.DONE, TaskList.Items.DONE);
-        sNotesProjectionMap.put(TaskList.Items.CREATED_DATE, TaskList.Items.CREATED_DATE);
-        sNotesProjectionMap.put(TaskList.Items.MODIFIED_DATE, TaskList.Items.MODIFIED_DATE);
+        ProjectionMap = new HashMap<String, String>();
+        ProjectionMap.put(TaskList.Items._ID, TaskList.Items._ID);
+        ProjectionMap.put(TaskList.Items.NAME, TaskList.Items.NAME);
+        ProjectionMap.put(TaskList.Items.DONE, TaskList.Items.DONE);
+        ProjectionMap.put(TaskList.Items.CREATED_DATE, TaskList.Items.CREATED_DATE);
+        ProjectionMap.put(TaskList.Items.MODIFIED_DATE, TaskList.Items.MODIFIED_DATE);
     }
     
     public class TaskListDatabaseHelper extends SQLiteOpenHelper {
@@ -60,7 +60,7 @@ public class TaskListProvider extends ContentProvider {
 
     	@Override
     	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    		db.execSQL("DROP TABLE IF EXISTS tasks");
+    		db.execSQL("DROP TABLE IF EXISTS " + TASKITEM_TABLE_NAME);
             onCreate(db);
     	}
     }
@@ -181,15 +181,14 @@ public class TaskListProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
+		qb.setTables(TASKITEM_TABLE_NAME);
+        qb.setProjectionMap(ProjectionMap);
+		
         switch (sUriMatcher.match(uri)) {
         case TASKS:
-            qb.setTables(TASKITEM_TABLE_NAME);
-            qb.setProjectionMap(sNotesProjectionMap);
             break;
 
         case TASK_ID:
-            qb.setTables(TASKITEM_TABLE_NAME);
-            qb.setProjectionMap(sNotesProjectionMap);
             qb.appendWhere(TaskList.Items._ID + "=" + uri.getPathSegments().get(1));
             break;
 

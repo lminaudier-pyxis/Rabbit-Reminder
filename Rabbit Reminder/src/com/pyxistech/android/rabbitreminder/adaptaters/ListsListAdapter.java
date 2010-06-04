@@ -3,6 +3,7 @@ package com.pyxistech.android.rabbitreminder.adaptaters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,19 @@ public class ListsListAdapter extends BaseAdapter {
 	
 	private ListsList items = new ListsList();
 	
-	public ListsListAdapter(Activity context) {
+	public ListsListAdapter(Activity context, Cursor cursor) {
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
 		Resources resources = context.getResources();
 		remainingTasksString = resources.getString(R.string.list_item_number_of_tasks);
-		
-		for (int i = 0; i < 50; i++)
-			items.addItem(new ListItem("List " + i, i + 1, i, i-10));
+
+		while( cursor.moveToNext() ){
+			String listName = cursor.getString(1);
+			int remaningsTasks = cursor.getInt(2);
+			int locationId = cursor.getInt(3); 
+			
+			items.addItem(new ListItem(listName, 1337, remaningsTasks, locationId));
+		}
 	}
 
 	public int getCount() {

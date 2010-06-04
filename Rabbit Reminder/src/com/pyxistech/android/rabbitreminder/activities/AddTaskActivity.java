@@ -15,6 +15,7 @@ public class AddTaskActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.add_task);
 		
 		Button addTaskButton = (Button) findViewById(R.id.add_task_button);
