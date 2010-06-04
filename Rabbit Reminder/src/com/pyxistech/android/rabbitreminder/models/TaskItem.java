@@ -17,6 +17,11 @@ public class TaskItem implements Parcelable {
 		this.done = done;
 		this.setListId(listId);
 	}
+
+	public TaskItem(String text, boolean done) {
+		this.text = text;
+		this.done = done;
+	}
 	
 	public TaskItem(Parcel in) {
 		this.text = in.readString();
