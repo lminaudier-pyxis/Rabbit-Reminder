@@ -10,7 +10,6 @@
 /Rabbit Reminder Test/bin/*.ap_
 /Rabbit Reminder Test/bin/com/*
 /Rabbit Reminder Test/gen/com/*
-
-
-
 /Rabbit Reminder/local.properties
+/Rabbit Reminder Test/bin/
+/Rabbit Reminder Test/local.properties
