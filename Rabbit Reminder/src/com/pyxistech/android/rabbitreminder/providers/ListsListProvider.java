@@ -80,7 +80,7 @@ public class ListsListProvider extends ContentProvider {
 
         case LIST_ID:
             String noteId = uri.getPathSegments().get(1);
-            count = db.delete(LISTSLIST_TABLE_NAME, TaskList.Items._ID + "=" + noteId
+            count = db.delete(LISTSLIST_TABLE_NAME, ListsList.Items._ID + "=" + noteId
                     + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
             break;
 
@@ -164,41 +164,6 @@ public class ListsListProvider extends ContentProvider {
 	}
 
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-
-		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-
-		qb.setTables(LISTSLIST_TABLE_NAME);
-        qb.setProjectionMap(projectionMap);
-		
-        int uriMatcherResult = sUriMatcher.match(uri);
-		switch (uriMatcherResult) {
-        case LISTS:
-            break;
-
-        case LIST_ID:
-            qb.appendWhere(TaskList.Items._ID + "=" + uri.getPathSegments().get(1));
-            break;
-
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
-        }
-        
-        String orderBy;
-        if (TextUtils.isEmpty(sortOrder)) {
-            orderBy = ListsList.Items.DEFAULT_SORT_ORDER;
-        } else {
-            orderBy = sortOrder;
-        }
-        
-        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
-        
-        c.setNotificationUri(getContext().getContentResolver(), uri);
-		return c;
-	}
-
-	@Override
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		int count;
@@ -209,7 +174,7 @@ public class ListsListProvider extends ContentProvider {
 
 		case LIST_ID:
 			String noteId = uri.getPathSegments().get(1);
-			count = db.update(LISTSLIST_TABLE_NAME, values, TaskList.Items._ID + "=" + noteId
+			count = db.update(LISTSLIST_TABLE_NAME, values, ListsList.Items._ID + "=" + noteId
 					+ (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
 			break;
 
@@ -221,4 +186,36 @@ public class ListsListProvider extends ContentProvider {
 		return count;
 	}
 
+	@Override
+	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+	
+		qb.setTables(LISTSLIST_TABLE_NAME);
+	    qb.setProjectionMap(projectionMap);
+		
+		switch (sUriMatcher.match(uri)) {
+	    case LISTS:
+	        break;
+	
+	    case LIST_ID:
+	        qb.appendWhere(ListsList.Items._ID + "=" + uri.getPathSegments().get(1));
+	        break;
+	
+	    default:
+	        throw new IllegalArgumentException("Unknown URI " + uri);
+	    }
+	    
+	    String orderBy;
+	    if (TextUtils.isEmpty(sortOrder)) {
+	        orderBy = ListsList.Items.DEFAULT_SORT_ORDER;
+	    } else {
+	        orderBy = sortOrder;
+	    }
+	    
+	    SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+	    Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
+	    
+	    c.setNotificationUri(getContext().getContentResolver(), uri);
+		return c;
+	}
 }

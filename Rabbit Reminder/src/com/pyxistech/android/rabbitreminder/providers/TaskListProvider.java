@@ -15,10 +15,12 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.pyxistech.android.rabbitreminder.models.TaskList;
+
 public class TaskListProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "task_list.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String TASKITEM_TABLE_NAME = "tasks";
 
     private static final int TASKS = 1;
