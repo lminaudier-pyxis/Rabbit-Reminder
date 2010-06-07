@@ -5,40 +5,36 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.test.ProviderTestCase2;
 
+import com.pyxistech.android.rabbitreminder.models.ListsList;
+import com.pyxistech.android.rabbitreminder.providers.ListsListProvider;
 import com.pyxistech.android.rabbitreminder.providers.TaskList;
-import com.pyxistech.android.rabbitreminder.providers.TaskListProvider;
 
-public class TaskListProviderTest extends ProviderTestCase2<TaskListProvider> {
-
-	public TaskListProviderTest(){
-		this(TaskListProvider.class, TaskList.AUTHORITY);
+public class ListsListProviderTest extends ProviderTestCase2<ListsListProvider> {
+	public ListsListProviderTest() {
+		super(ListsListProvider.class, ListsList.AUTHORITY);
 	}
 	
-	public TaskListProviderTest(Class<TaskListProvider> providerClass, String providerAuthority) {
+	public ListsListProviderTest(Class<ListsListProvider> providerClass, String providerAuthority) {
 		super(providerClass, providerAuthority);
 	}
-	
+
 	public void setUp() throws Exception {
 		super.setUp();
-		
 		provider = getProvider();
 		
-		uri = com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI;
+		uri = ListsList.Items.CONTENT_URI;
 		
-		projection = new String[2];
-		projection[0] = TaskList.Items.NAME;
-		projection[1] = TaskList.Items.DONE;
+		projection = new String[1];
+		projection[0] = ListsList.Items.NAME;
 	}
 	
-	public void testItemAreSavedInDatabaseOnInsertion() {
-		provider.insert(uri, null);
-		provider.insert(uri, null);
+	public void testItemAdditionSavesItemInDatabase() {
 		provider.insert(uri, null);
 		provider.insert(uri, null);
 		
-		Cursor result = provider.query(uri, projection, null, null, TaskList.Items.DEFAULT_SORT_ORDER);
+		Cursor result = provider.query(uri, projection, null, null, ListsList.Items.DEFAULT_SORT_ORDER);
 		
-		assertEquals(4, result.getCount());
+		assertEquals(2, result.getCount());
 	}
 	
 	public void testDatabaseCanBeCleared() {
@@ -49,7 +45,7 @@ public class TaskListProviderTest extends ProviderTestCase2<TaskListProvider> {
 		
 		provider.delete(uri, "", null);
 		
-		Cursor result = provider.query(uri, projection, null, null, TaskList.Items.DEFAULT_SORT_ORDER);
+		Cursor result = provider.query(uri, projection, null, null, ListsList.Items.DEFAULT_SORT_ORDER);
 		
 		assertEquals(0, result.getCount());
 	}
@@ -61,7 +57,7 @@ public class TaskListProviderTest extends ProviderTestCase2<TaskListProvider> {
 		Uri itemUri = provider.insert(uri, null);
 		provider.delete(itemUri, "", null);
 		
-		Cursor result = provider.query(uri, projection, null, null, TaskList.Items.DEFAULT_SORT_ORDER);
+		Cursor result = provider.query(uri, projection, null, null, ListsList.Items.DEFAULT_SORT_ORDER);
 		
 		assertEquals(3, result.getCount());
 	}
@@ -83,7 +79,7 @@ public class TaskListProviderTest extends ProviderTestCase2<TaskListProvider> {
 		assertEquals("foo", result.getString(0));
 	}
 	
-	private TaskListProvider provider;
+	private ListsListProvider provider;
 	private Uri uri;
 	private String[] projection;
 }
