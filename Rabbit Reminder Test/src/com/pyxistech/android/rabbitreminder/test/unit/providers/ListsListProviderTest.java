@@ -1,4 +1,4 @@
-package com.pyxistech.android.rabbitreminder.test.unit;
+package com.pyxistech.android.rabbitreminder.test.unit.providers;
 
 import android.content.ContentValues;
 import android.database.Cursor;
