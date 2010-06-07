@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.test.ProviderTestCase2;
 
 import com.pyxistech.android.rabbitreminder.models.ListsList;
+import com.pyxistech.android.rabbitreminder.providers.AbstractListProvider;
 import com.pyxistech.android.rabbitreminder.providers.ListsListProvider;
 
 public class ListsListProviderTest extends ProviderTestCase2<ListsListProvider> {
@@ -78,7 +79,7 @@ public class ListsListProviderTest extends ProviderTestCase2<ListsListProvider> 
 		assertEquals("foo", result.getString(0));
 	}
 	
-	private ListsListProvider provider;
+	private AbstractListProvider provider;
 	private Uri uri;
 	private String[] projection;
 }

@@ -2,32 +2,29 @@ package com.pyxistech.android.rabbitreminder.providers;
 
 import java.util.HashMap;
 
-import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
-import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
 import com.pyxistech.android.rabbitreminder.models.ListsList;
 
-public class ListsListProvider extends ContentProvider {
+public class ListsListProvider extends AbstractListProvider {
     private static final String DATABASE_NAME = "lists_list.db";
     private static final int DATABASE_VERSION = 1;
-    private static final String LISTSLIST_TABLE_NAME = "lists";
+    static final String TABLE_NAME = "lists";
 
-    private static final int LISTS = 1;
-    private static final int LIST_ID = 2;
+    static final int LISTS = 1;
+    static final int LIST_ID = 2;
 
-    private static HashMap<String, String> projectionMap;
+    static HashMap<String, String> projectionMap;
     
-    private static final UriMatcher sUriMatcher;
+    static final UriMatcher sUriMatcher;
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -50,7 +47,7 @@ public class ListsListProvider extends ContentProvider {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			db.execSQL("CREATE TABLE " + LISTSLIST_TABLE_NAME + " ("
+			db.execSQL("CREATE TABLE " + TABLE_NAME + " ("
                     + ListsList.Items._ID + " INTEGER PRIMARY KEY,"
                     + ListsList.Items.NAME + " TEXT,"
                     + ListsList.Items.REMAINING_TASK_COUNT + " INTEGER,"
@@ -62,7 +59,7 @@ public class ListsListProvider extends ContentProvider {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			db.execSQL("DROP TABLE IF EXISTS" + LISTSLIST_TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS" + TABLE_NAME);
             onCreate(db);
 		}
 		
@@ -75,12 +72,12 @@ public class ListsListProvider extends ContentProvider {
         
         switch (sUriMatcher.match(uri)) {
         case LISTS:
-            count = db.delete(LISTSLIST_TABLE_NAME, where, whereArgs);
+            count = db.delete(TABLE_NAME, where, whereArgs);
             break;
 
         case LIST_ID:
             String noteId = uri.getPathSegments().get(1);
-            count = db.delete(LISTSLIST_TABLE_NAME, ListsList.Items._ID + "=" + noteId
+            count = db.delete(TABLE_NAME, ListsList.Items._ID + "=" + noteId
                     + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
             break;
 
@@ -144,7 +141,7 @@ public class ListsListProvider extends ContentProvider {
         }
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        long rowId = db.insert(LISTSLIST_TABLE_NAME, "NULL", values);
+        long rowId = db.insert(TABLE_NAME, "NULL", values);
         
         if (rowId > 0) {
             Uri noteUri = ContentUris.withAppendedId(ListsList.Items.CONTENT_URI, rowId);
@@ -155,7 +152,7 @@ public class ListsListProvider extends ContentProvider {
         throw new SQLException("Failed to insert row into " + uri);
 	}
 
-	private ListsListDatabaseHelper mOpenHelper;
+	ListsListDatabaseHelper mOpenHelper;
 	
 	@Override
 	public boolean onCreate() {
@@ -169,12 +166,12 @@ public class ListsListProvider extends ContentProvider {
 		int count;
 		switch (sUriMatcher.match(uri)) {
 		case LISTS:
-			count = db.update(LISTSLIST_TABLE_NAME, values, selection, selectionArgs);
+			count = db.update(TABLE_NAME, values, selection, selectionArgs);
 			break;
 
 		case LIST_ID:
 			String noteId = uri.getPathSegments().get(1);
-			count = db.update(LISTSLIST_TABLE_NAME, values, ListsList.Items._ID + "=" + noteId
+			count = db.update(TABLE_NAME, values, ListsList.Items._ID + "=" + noteId
 					+ (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
 			break;
 
@@ -187,35 +184,22 @@ public class ListsListProvider extends ContentProvider {
 	}
 
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-	
-		qb.setTables(LISTSLIST_TABLE_NAME);
-	    qb.setProjectionMap(projectionMap);
-		
-		switch (sUriMatcher.match(uri)) {
-	    case LISTS:
-	        break;
-	
-	    case LIST_ID:
-	        qb.appendWhere(ListsList.Items._ID + "=" + uri.getPathSegments().get(1));
-	        break;
-	
-	    default:
-	        throw new IllegalArgumentException("Unknown URI " + uri);
-	    }
-	    
-	    String orderBy;
-	    if (TextUtils.isEmpty(sortOrder)) {
-	        orderBy = ListsList.Items.DEFAULT_SORT_ORDER;
-	    } else {
-	        orderBy = sortOrder;
-	    }
-	    
-	    SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-	    Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
-	    
-	    c.setNotificationUri(getContext().getContentResolver(), uri);
-		return c;
+	public SQLiteOpenHelper getOpenHelper() {
+		return mOpenHelper;
+	}
+
+	@Override
+	public HashMap<String, String> getProjectionMap() {
+		return projectionMap;
+	}
+
+	@Override
+	public String getTableName() {
+		return TABLE_NAME;
+	}
+
+	@Override
+	public UriMatcher getUriMatcher() {
+		return sUriMatcher;
 	}
 }

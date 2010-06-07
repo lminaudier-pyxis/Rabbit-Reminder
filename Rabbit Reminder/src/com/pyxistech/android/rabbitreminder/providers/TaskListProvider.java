@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import com.pyxistech.android.rabbitreminder.models.TaskList;
@@ -21,7 +22,7 @@ public class TaskListProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "task_list.db";
     private static final int DATABASE_VERSION = 2;
-    private static final String TASKITEM_TABLE_NAME = "tasks";
+    private static final String TABLE_NAME = "tasks";
 
     private static final int TASKS = 1;
     private static final int TASK_ID = 2;
@@ -52,7 +53,7 @@ public class TaskListProvider extends ContentProvider {
 
     	@Override
     	public void onCreate(SQLiteDatabase db) {
-    		db.execSQL("CREATE TABLE " + TASKITEM_TABLE_NAME + " ("
+    		db.execSQL("CREATE TABLE " + TABLE_NAME + " ("
                     + TaskList.Items._ID + " INTEGER PRIMARY KEY,"
                     + TaskList.Items.NAME + " TEXT,"
                     + TaskList.Items.DONE + " INTEGER,"
@@ -64,7 +65,7 @@ public class TaskListProvider extends ContentProvider {
 
     	@Override
     	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    		db.execSQL("DROP TABLE IF EXISTS " + TASKITEM_TABLE_NAME);
+    		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
             onCreate(db);
     	}
     }
@@ -129,7 +130,7 @@ public class TaskListProvider extends ContentProvider {
         }
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        long rowId = db.insert(TASKITEM_TABLE_NAME, "item", values);
+        long rowId = db.insert(TABLE_NAME, "item", values);
         if (rowId > 0) {
             Uri noteUri = ContentUris.withAppendedId(TaskList.Items.CONTENT_URI, rowId);
             getContext().getContentResolver().notifyChange(noteUri, null);
@@ -145,12 +146,12 @@ public class TaskListProvider extends ContentProvider {
         int count;
         switch (sUriMatcher.match(uri)) {
         case TASKS:
-            count = db.delete(TASKITEM_TABLE_NAME, where, whereArgs);
+            count = db.delete(TABLE_NAME, where, whereArgs);
             break;
 
         case TASK_ID:
             String noteId = uri.getPathSegments().get(1);
-            count = db.delete(TASKITEM_TABLE_NAME, TaskList.Items._ID + "=" + noteId
+            count = db.delete(TABLE_NAME, TaskList.Items._ID + "=" + noteId
                     + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
             break;
 
@@ -168,12 +169,12 @@ public class TaskListProvider extends ContentProvider {
         int count;
         switch (sUriMatcher.match(uri)) {
         case TASKS:
-            count = db.update(TASKITEM_TABLE_NAME, values, selection, selectionArgs);
+            count = db.update(TABLE_NAME, values, selection, selectionArgs);
             break;
 
         case TASK_ID:
             String noteId = uri.getPathSegments().get(1);
-            count = db.update(TASKITEM_TABLE_NAME, values, TaskList.Items._ID + "=" + noteId
+            count = db.update(TABLE_NAME, values, TaskList.Items._ID + "=" + noteId
                     + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
             break;
 
@@ -189,7 +190,7 @@ public class TaskListProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
-		qb.setTables(TASKITEM_TABLE_NAME);
+		qb.setTables(TABLE_NAME);
         qb.setProjectionMap(projectionMap);
 		
         switch (sUriMatcher.match(uri)) {
@@ -197,7 +198,7 @@ public class TaskListProvider extends ContentProvider {
             break;
 
         case TASK_ID:
-            qb.appendWhere(TaskList.Items._ID + "=" + uri.getPathSegments().get(1));
+            qb.appendWhere(BaseColumns._ID + "=" + uri.getPathSegments().get(1));
             break;
 
         default:
@@ -217,5 +218,4 @@ public class TaskListProvider extends ContentProvider {
         c.setNotificationUri(getContext().getContentResolver(), uri);
 		return c;
 	}
-
 }
