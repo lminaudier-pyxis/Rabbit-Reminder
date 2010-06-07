@@ -65,6 +65,23 @@ public class TaskListProviderTest extends ProviderTestCase2<TaskListProvider> {
 		assertEquals(3, result.getCount());
 	}
 	
+	public void testItemCanBeUpdatedInDatabase() {
+		provider.insert(uri, null);
+		provider.insert(uri, null);
+		provider.insert(uri, null);
+		Uri itemUri = provider.insert(uri, null);
+		
+		ContentValues newValues = new ContentValues();
+		newValues.put(TaskList.Items.NAME, "foo");
+		
+		provider.update(itemUri, newValues, null, null);
+		
+		Cursor result = provider.query(itemUri, projection, null, null, TaskList.Items.DEFAULT_SORT_ORDER);
+		
+		assertTrue(result.moveToFirst());
+		assertEquals("foo", result.getString(0));
+	}
+	
 	private TaskListProvider provider;
 	private Uri uri;
 	private String[] projection;
