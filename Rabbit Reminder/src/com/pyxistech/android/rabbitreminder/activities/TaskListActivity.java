@@ -26,10 +26,10 @@ import com.pyxistech.android.rabbitreminder.models.TaskList;
 public class TaskListActivity extends ListActivity {
 	
     private static final String[] PROJECTION = new String[] {
-        com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID, // 0
-        com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, // 1
-        com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, // 2
-        com.pyxistech.android.rabbitreminder.providers.TaskList.Items.LIST_ID // 3
+        TaskList.Items._ID, // 0
+        TaskList.Items.NAME, // 1
+        TaskList.Items.DONE, // 2
+        TaskList.Items.LIST_ID // 3
     };
     
     private int listId = -1;
@@ -139,8 +139,8 @@ public class TaskListActivity extends ListActivity {
 	}
 
 	private void deleteItemFromListAndDatabase(final long index) {
-		getContentResolver().delete(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
-				com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID + "=" + getTaskListAdapter().getItem((int)index).getIndex(), 
+		getContentResolver().delete(TaskList.Items.CONTENT_URI, 
+				TaskList.Items._ID + "=" + getTaskListAdapter().getItem((int)index).getIndex(), 
 				null);
 		getTaskListAdapter().deleteItem((int) index);
 	}
@@ -168,11 +168,11 @@ public class TaskListActivity extends ListActivity {
 		getTaskListAdapter().updateItem(index, data);
 
 		ContentValues values = new ContentValues();
-		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, data);
-		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, getTaskListAdapter().getItem(index).isDone() ? 1 : 0);
-		getContentResolver().update(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
+		values.put(TaskList.Items.NAME, data);
+		values.put(TaskList.Items.DONE, getTaskListAdapter().getItem(index).isDone() ? 1 : 0);
+		getContentResolver().update(TaskList.Items.CONTENT_URI, 
 				values,
-				com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID + "=" + getTaskListAdapter().getItem(index).getIndex(), 
+				TaskList.Items._ID + "=" + getTaskListAdapter().getItem(index).getIndex(), 
 				null);
 	}
 
@@ -184,10 +184,10 @@ public class TaskListActivity extends ListActivity {
 		getTaskListAdapter().addItem(new TaskItem(data, false, listId));
 
 		ContentValues values = new ContentValues();
-		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, data);
-		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, 0);
-		values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.LIST_ID, listId);
-		getContentResolver().insert(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, values);
+		values.put(TaskList.Items.NAME, data);
+		values.put(TaskList.Items.DONE, 0);
+		values.put(TaskList.Items.LIST_ID, listId);
+		getContentResolver().insert(TaskList.Items.CONTENT_URI, values);
 	}
 
 	@Override
@@ -197,9 +197,9 @@ public class TaskListActivity extends ListActivity {
     	getModel(position).setDone(checkableItem.isChecked());
     	
     	ContentValues values = new ContentValues();
-    	values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, checkableItem.isChecked() ? 1 : 0);
-    	getContentResolver().update(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
-    			values, com.pyxistech.android.rabbitreminder.providers.TaskList.Items._ID + "=" + getTaskListAdapter().getItem((int)position).getIndex(), 
+    	values.put(TaskList.Items.DONE, checkableItem.isChecked() ? 1 : 0);
+    	getContentResolver().update(TaskList.Items.CONTENT_URI, 
+    			values, TaskList.Items._ID + "=" + getTaskListAdapter().getItem((int)position).getIndex(), 
 				null);
     }
     
@@ -212,9 +212,9 @@ public class TaskListActivity extends ListActivity {
 	}
      
     public TaskList refreshList(TaskListAdapter adapter) {
-        Cursor cursor = managedQuery(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, 
+        Cursor cursor = managedQuery(TaskList.Items.CONTENT_URI, 
         		PROJECTION, null, null, 
-        		com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DEFAULT_SORT_ORDER);
+        		TaskList.Items.DEFAULT_SORT_ORDER);
         
         adapter.clearList();
         

@@ -1,4 +1,4 @@
-package com.pyxistech.android.rabbitreminder.test.unit;
+package com.pyxistech.android.rabbitreminder.test.unit.models;
 
 import android.test.AndroidTestCase;
 

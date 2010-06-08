@@ -1,4 +1,4 @@
-package com.pyxistech.android.rabbitreminder.test.unit;
+package com.pyxistech.android.rabbitreminder.test.unit.providers;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -6,8 +6,8 @@ import android.net.Uri;
 import android.test.ProviderTestCase2;
 
 import com.pyxistech.android.rabbitreminder.models.ListsList;
+import com.pyxistech.android.rabbitreminder.providers.AbstractListProvider;
 import com.pyxistech.android.rabbitreminder.providers.ListsListProvider;
-import com.pyxistech.android.rabbitreminder.providers.TaskList;
 
 public class ListsListProviderTest extends ProviderTestCase2<ListsListProvider> {
 	public ListsListProviderTest() {
@@ -69,17 +69,17 @@ public class ListsListProviderTest extends ProviderTestCase2<ListsListProvider> 
 		Uri itemUri = provider.insert(uri, null);
 		
 		ContentValues newValues = new ContentValues();
-		newValues.put(TaskList.Items.NAME, "foo");
+		newValues.put(ListsList.Items.NAME, "foo");
 		
 		provider.update(itemUri, newValues, null, null);
 		
-		Cursor result = provider.query(itemUri, projection, null, null, TaskList.Items.DEFAULT_SORT_ORDER);
+		Cursor result = provider.query(itemUri, projection, null, null, ListsList.Items.DEFAULT_SORT_ORDER);
 		
 		assertTrue(result.moveToFirst());
 		assertEquals("foo", result.getString(0));
 	}
 	
-	private ListsListProvider provider;
+	private AbstractListProvider provider;
 	private Uri uri;
 	private String[] projection;
 }

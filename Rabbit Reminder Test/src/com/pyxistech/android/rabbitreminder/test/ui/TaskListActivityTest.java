@@ -9,6 +9,7 @@ import com.jayway.android.robotium.solo.Solo;
 import com.pyxistech.android.rabbitreminder.activities.TaskListActivity;
 import com.pyxistech.android.rabbitreminder.adaptaters.TaskListAdapter;
 import com.pyxistech.android.rabbitreminder.models.TaskItem;
+import com.pyxistech.android.rabbitreminder.models.TaskList;
 
 public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskListActivity> {
 	
@@ -160,14 +161,14 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 
 	private void buildList() {
 		getListAdapter().clearList();
-		getActivity().getContentResolver().delete(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, "", null);
+		getActivity().getContentResolver().delete(TaskList.Items.CONTENT_URI, "", null);
 		for (int i = 0; i < 50; i++) {
 			getListAdapter().addItem(new TaskItem("item " + i, false));
 
 	    	ContentValues values = new ContentValues();
-	    	values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.NAME, "item " + i);
-	    	values.put(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.DONE, 0);
-	    	getActivity().getContentResolver().insert(com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI, values);
+	    	values.put(TaskList.Items.NAME, "item " + i);
+	    	values.put(TaskList.Items.DONE, 0);
+	    	getActivity().getContentResolver().insert(TaskList.Items.CONTENT_URI, values);
 		}
 		getActivity().refreshList((TaskListAdapter)getActivity().getListAdapter());
 	}

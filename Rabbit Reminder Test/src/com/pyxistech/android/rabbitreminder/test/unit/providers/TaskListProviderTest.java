@@ -1,11 +1,11 @@
-package com.pyxistech.android.rabbitreminder.test.unit;
+package com.pyxistech.android.rabbitreminder.test.unit.providers;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.test.ProviderTestCase2;
 
-import com.pyxistech.android.rabbitreminder.providers.TaskList;
+import com.pyxistech.android.rabbitreminder.models.TaskList;
 import com.pyxistech.android.rabbitreminder.providers.TaskListProvider;
 
 public class TaskListProviderTest extends ProviderTestCase2<TaskListProvider> {
@@ -23,7 +23,7 @@ public class TaskListProviderTest extends ProviderTestCase2<TaskListProvider> {
 		
 		provider = getProvider();
 		
-		uri = com.pyxistech.android.rabbitreminder.providers.TaskList.Items.CONTENT_URI;
+		uri = TaskList.Items.CONTENT_URI;
 		
 		projection = new String[2];
 		projection[0] = TaskList.Items.NAME;
