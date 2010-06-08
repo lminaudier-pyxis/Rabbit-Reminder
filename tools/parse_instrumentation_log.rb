@@ -74,7 +74,7 @@ class XmlGenerator
 		@xml_doc = Document.new
 		@xml_doc << XMLDecl.new
 		
-		testrun_node = @xml_doc.add_element("testrun", {"name" => "Rabbit Reminder", "tests" => test_results.size.to_s, "started" => test_results.size.to_s, "failures" => "0", "errors" => "0", "ignored" => "0" })
+		testrun_node = @xml_doc.add_element("testsuites", {"name" => "Rabbit Reminder", "tests" => test_results.size.to_s, "started" => test_results.size.to_s, "failures" => "0", "errors" => "0", "ignored" => "0" })
 		
 		
 		last_test_suite=""
