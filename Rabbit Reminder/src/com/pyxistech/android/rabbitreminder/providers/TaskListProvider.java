@@ -24,7 +24,7 @@ public class TaskListProvider extends ContentProvider {
     private static final int TASKS = 1;
     private static final int TASK_ID = 2;
 
-    private static HashMap<String, String> ProjectionMap;
+    private static HashMap<String, String> projectionMap;
     
     private static final UriMatcher sUriMatcher;
 
@@ -33,13 +33,13 @@ public class TaskListProvider extends ContentProvider {
         sUriMatcher.addURI(TaskList.AUTHORITY, "items", TASKS);
         sUriMatcher.addURI(TaskList.AUTHORITY, "items/#", TASK_ID);
 
-        ProjectionMap = new HashMap<String, String>();
-        ProjectionMap.put(TaskList.Items._ID, TaskList.Items._ID);
-        ProjectionMap.put(TaskList.Items.NAME, TaskList.Items.NAME);
-        ProjectionMap.put(TaskList.Items.DONE, TaskList.Items.DONE);
-        ProjectionMap.put(TaskList.Items.LIST_ID, TaskList.Items.LIST_ID);
-        ProjectionMap.put(TaskList.Items.CREATED_DATE, TaskList.Items.CREATED_DATE);
-        ProjectionMap.put(TaskList.Items.MODIFIED_DATE, TaskList.Items.MODIFIED_DATE);
+        projectionMap = new HashMap<String, String>();
+        projectionMap.put(TaskList.Items._ID, TaskList.Items._ID);
+        projectionMap.put(TaskList.Items.NAME, TaskList.Items.NAME);
+        projectionMap.put(TaskList.Items.DONE, TaskList.Items.DONE);
+        projectionMap.put(TaskList.Items.LIST_ID, TaskList.Items.LIST_ID);
+        projectionMap.put(TaskList.Items.CREATED_DATE, TaskList.Items.CREATED_DATE);
+        projectionMap.put(TaskList.Items.MODIFIED_DATE, TaskList.Items.MODIFIED_DATE);
     }
     
     public class TaskListDatabaseHelper extends SQLiteOpenHelper {
@@ -188,7 +188,7 @@ public class TaskListProvider extends ContentProvider {
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
 		qb.setTables(TASKITEM_TABLE_NAME);
-        qb.setProjectionMap(ProjectionMap);
+        qb.setProjectionMap(projectionMap);
 		
         switch (sUriMatcher.match(uri)) {
         case TASKS:
