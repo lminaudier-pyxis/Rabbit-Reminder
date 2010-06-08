@@ -2,30 +2,20 @@ package com.pyxistech.android.rabbitreminder.providers;
 
 import java.util.HashMap;
 
-import android.content.ContentProvider;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
-import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.provider.BaseColumns;
-import android.text.TextUtils;
 
 import com.pyxistech.android.rabbitreminder.models.TaskList;
 
-public class TaskListProvider extends ContentProvider {
+public class TaskListProvider extends AbstractListProvider {
 
     private static final String DATABASE_NAME = "task_list.db";
     private static final int DATABASE_VERSION = 2;
     private static final String TABLE_NAME = "tasks";
-
-    private static final int TASKS = 1;
-    private static final int TASK_ID = 2;
 
     private static HashMap<String, String> projectionMap;
     
@@ -33,8 +23,8 @@ public class TaskListProvider extends ContentProvider {
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(TaskList.AUTHORITY, "items", TASKS);
-        sUriMatcher.addURI(TaskList.AUTHORITY, "items/#", TASK_ID);
+        sUriMatcher.addURI(TaskList.AUTHORITY, "items", ITEMS);
+        sUriMatcher.addURI(TaskList.AUTHORITY, "items/#", ITEM_ID);
 
         projectionMap = new HashMap<String, String>();
         projectionMap.put(TaskList.Items._ID, TaskList.Items._ID);
@@ -79,34 +69,48 @@ public class TaskListProvider extends ContentProvider {
 	}
 
 	@Override
-	public String getType(Uri uri) {
-        switch (sUriMatcher.match(uri)) {
-        case TASKS:
-            return TaskList.Items.CONTENT_TYPE;
-
-        case TASK_ID:
-            return TaskList.Items.CONTENT_ITEM_TYPE;
-
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
-        }
+	public String getContentType() {
+		return TaskList.Items.CONTENT_TYPE;
 	}
 
 	@Override
-	public Uri insert(Uri uri, ContentValues initialValues) {
-        // Validate the requested uri
-        if (sUriMatcher.match(uri) != TASKS) {
-            throw new IllegalArgumentException("Unknown URI " + uri);
-        }
+	public Uri getContentUti() {
+		return TaskList.Items.CONTENT_URI;
+	}
 
-        ContentValues values;
-        if (initialValues != null) {
-            values = new ContentValues(initialValues);
-        } else {
-            values = new ContentValues();
-        }
+	@Override
+	public String getDefaultSortOrder() {
+		return TaskList.Items.DEFAULT_SORT_ORDER;
+	}
 
-        Long now = Long.valueOf(System.currentTimeMillis());
+	@Override
+	public String getItemContentType() {
+		return TaskList.Items.CONTENT_ITEM_TYPE;
+	}
+
+	@Override
+	public SQLiteOpenHelper getOpenHelper() {
+		return mOpenHelper;
+	}
+
+	@Override
+	public HashMap<String, String> getProjectionMap() {
+		return projectionMap;
+	}
+
+	@Override
+	public String getTableName() {
+		return TABLE_NAME;
+	}
+
+	@Override
+	public UriMatcher getUriMatcher() {
+		return sUriMatcher;
+	}
+
+	@Override
+	public void validate(ContentValues values) {
+		Long now = Long.valueOf(System.currentTimeMillis());
 
         // Make sure that the fields are all set
         if (values.containsKey(TaskList.Items.CREATED_DATE) == false) {
@@ -127,95 +131,6 @@ public class TaskListProvider extends ContentProvider {
         
         if (values.containsKey(TaskList.Items.LIST_ID) == false) {
             values.put(TaskList.Items.LIST_ID, -1);
-        }
-
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        long rowId = db.insert(TABLE_NAME, "item", values);
-        if (rowId > 0) {
-            Uri noteUri = ContentUris.withAppendedId(TaskList.Items.CONTENT_URI, rowId);
-            getContext().getContentResolver().notifyChange(noteUri, null);
-            return noteUri;
-        }
-
-        throw new SQLException("Failed to insert row into " + uri);
-	}
-
-	@Override
-	public int delete(Uri uri, String where, String[] whereArgs) {
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        int count;
-        switch (sUriMatcher.match(uri)) {
-        case TASKS:
-            count = db.delete(TABLE_NAME, where, whereArgs);
-            break;
-
-        case TASK_ID:
-            String noteId = uri.getPathSegments().get(1);
-            count = db.delete(TABLE_NAME, TaskList.Items._ID + "=" + noteId
-                    + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
-            break;
-
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
-        }
-
-        getContext().getContentResolver().notifyChange(uri, null);
-        return count;
-	}
-
-	@Override
-	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        int count;
-        switch (sUriMatcher.match(uri)) {
-        case TASKS:
-            count = db.update(TABLE_NAME, values, selection, selectionArgs);
-            break;
-
-        case TASK_ID:
-            String noteId = uri.getPathSegments().get(1);
-            count = db.update(TABLE_NAME, values, TaskList.Items._ID + "=" + noteId
-                    + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
-            break;
-
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
-        }
-
-        getContext().getContentResolver().notifyChange(uri, null);
-        return count;
-	}
-
-	@Override
-	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-
-		qb.setTables(TABLE_NAME);
-        qb.setProjectionMap(projectionMap);
-		
-        switch (sUriMatcher.match(uri)) {
-        case TASKS:
-            break;
-
-        case TASK_ID:
-            qb.appendWhere(BaseColumns._ID + "=" + uri.getPathSegments().get(1));
-            break;
-
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
-        }
-        
-        String orderBy;
-        if (TextUtils.isEmpty(sortOrder)) {
-            orderBy = TaskList.Items.DEFAULT_SORT_ORDER;
-        } else {
-            orderBy = sortOrder;
-        }
-        
-        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
-        
-        c.setNotificationUri(getContext().getContentResolver(), uri);
-		return c;
+        }	
 	}
 }
