@@ -114,7 +114,7 @@ class XmlGenerator
 	end
 end
 
-f = open('log2.txt', 'r')
+f = open('log.txt', 'r')
 raw_log = f.read()
 
 p = Parser.new(raw_log)
