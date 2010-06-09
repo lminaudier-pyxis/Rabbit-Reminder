@@ -3,7 +3,8 @@
     <string name="hello">Hello World, TaskListActivity!</string>
     <string name="app_name">Rabbit Reminder</string>
     
-    <string name="add_item_menu_text">Add Item</string>
+    <string name="add_item_menu_text">Add Task</string>
+    <string name="add_list_menu_text">Add List</string>
     <string name="delete_item_menu_text">Delete</string>
     <string name="edit_item_menu_text">Edit</string>
     <string name="validation_button_text">OK</string>

@@ -73,7 +73,7 @@ public class TaskListActivity extends ListActivity {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	menu.add(Menu.NONE, ADD_ITEM, Menu.NONE, R.string.add_item_menu_text);
+    	menu.add(Menu.NONE, ADD_ITEM, Menu.NONE, R.string.add_item_menu_text).setIcon(android.R.drawable.ic_menu_add);
     	return super.onCreateOptionsMenu(menu);
     }
     
