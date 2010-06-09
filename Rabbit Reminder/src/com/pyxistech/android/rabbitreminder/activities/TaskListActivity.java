@@ -210,25 +210,32 @@ public class TaskListActivity extends ListActivity {
 	}
      
     public TaskList refreshList(TaskListAdapter adapter) {
-        Cursor cursor = managedQuery(TaskList.Items.CONTENT_URI, 
-        		PROJECTION, null, null, 
-        		TaskList.Items.DEFAULT_SORT_ORDER);
+    	Cursor cursor = getRefreshedCursor();
         
         adapter.clearList();
         
         int count = cursor.getCount();
 		for (int i = 0; i < count; i++) {
 			cursor.moveToPosition(i);
-			if (this.listId > 0) {
-				if (cursor.getInt(3) == this.listId) 
-					adapter.addItem(new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, listId));
-			}
-			else
-				adapter.addItem(new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getInt(3)));
+			adapter.addItem(new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getInt(3)));
         }
     	
     	return adapter.getList();
     }
+
+	private Cursor getRefreshedCursor() {
+		Cursor cursor;
+    	if ( this.listId > 0 ) {
+    		cursor = managedQuery(TaskList.Items.CONTENT_URI, 
+    				PROJECTION, TaskList.Items.LIST_ID + "=" + listId, null, 
+    				TaskList.Items.DEFAULT_SORT_ORDER);
+    	} else {
+    		cursor = managedQuery(TaskList.Items.CONTENT_URI, 
+    				PROJECTION, null, null, 
+    				TaskList.Items.DEFAULT_SORT_ORDER);
+    	}
+		return cursor;
+	}
     
     public static final int ADD_ITEM = Menu.FIRST + 1;
     public static final int CLEAR_DONE_ITEMS = Menu.FIRST + 2;
