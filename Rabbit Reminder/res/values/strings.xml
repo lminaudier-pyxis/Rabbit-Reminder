@@ -5,6 +5,7 @@
     
     <string name="add_item_menu_text">Add Task</string>
     <string name="add_list_menu_text">Add List</string>
+    <string name="delete_done_tasks_menu_text">Delete Done Tasks</string>
     <string name="delete_item_menu_text">Delete</string>
     <string name="edit_item_menu_text">Edit</string>
     <string name="validation_button_text">OK</string>

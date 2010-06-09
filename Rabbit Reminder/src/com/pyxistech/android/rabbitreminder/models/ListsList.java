@@ -75,6 +75,10 @@ public class ListsList implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 	}
 	
+	public void clear() {
+		items.clear();
+	}
+	
 	private Vector<ListItem> items = new Vector<ListItem>();
 	
 	public static final String AUTHORITY = "com.pyxistech.rabbitreminder.models.ListsList";

@@ -74,6 +74,7 @@ public class TaskListActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	menu.add(Menu.NONE, ADD_ITEM, Menu.NONE, R.string.add_item_menu_text).setIcon(android.R.drawable.ic_menu_add);
+    	menu.add(Menu.NONE, CLEAR_DONE_ITEMS, Menu.NONE, R.string.delete_done_tasks_menu_text).setIcon(android.R.drawable.ic_menu_delete);
     	return super.onCreateOptionsMenu(menu);
     }
     
@@ -151,16 +152,13 @@ public class TaskListActivity extends ListActivity {
 	    	String data = intent.getExtras().get("newTaskText").toString();
 	    	int index = intent.getExtras().getInt("index");
 	    	listId = intent.getExtras().getInt("listId");
-	    	if (index == -1)
-	    	{
+	    	if (index == -1) {
 	    		addItemInListAndDatabase(data);
-		    	refreshListFromDatabase();
 	    	}
-	    	else
-	    	{
+	    	else {
 	    		editItemInListAndDatabase(data, index);
-		    	refreshListFromDatabase();
 	    	}
+	    	refreshListFromDatabase();
     	}
     }
 
@@ -233,6 +231,7 @@ public class TaskListActivity extends ListActivity {
     }
     
     public static final int ADD_ITEM = Menu.FIRST + 1;
-    public static final int EDIT_ITEM = Menu.FIRST + 2;
-    public static final int DELETE_ITEM = Menu.FIRST + 3;
+    public static final int CLEAR_DONE_ITEMS = Menu.FIRST + 2;
+    public static final int EDIT_ITEM = Menu.FIRST + 3;
+    public static final int DELETE_ITEM = Menu.FIRST + 4;
 }

@@ -33,6 +33,10 @@ public class ListsListAdapter extends BaseAdapter {
 		}
 	}
 
+	public ListsList getList() {
+		return items;
+	}
+	
 	public int getCount() {
 		return items.size();
 	}
@@ -75,6 +79,10 @@ public class ListsListAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
+	public void clearList() {
+		items.clear();
+	}
+	
 	private void setItemLocationIcon(ListViewWrapper wrapper, ListItem item) {
 		if (item.getLocation() < 0)
 			wrapper.getImageItemView().setVisibility(View.INVISIBLE);

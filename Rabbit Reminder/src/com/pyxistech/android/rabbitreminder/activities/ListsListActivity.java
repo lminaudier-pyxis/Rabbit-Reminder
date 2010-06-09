@@ -36,8 +36,11 @@ public class ListsListActivity extends ListActivity {
          		PROJECTION, null, null, 
          		ListsList.Items.DEFAULT_SORT_ORDER);
     	
+    	
     	ListsListAdapter adapter = new ListsListAdapter(this, cursor);
     	setListAdapter(adapter);
+
+    	refreshList(adapter);
     	
     	registerForContextMenu(getListView());
     }
@@ -121,6 +124,7 @@ public class ListsListActivity extends ListActivity {
 			getContentResolver().insert(ListsList.Items.CONTENT_URI, values);
 			
 			getListsListAdapter().addList(new ListItem(data, 0, 0, -1));
+			refreshListFromDatabase();
     	}
     }
     
@@ -134,6 +138,30 @@ public class ListsListActivity extends ListActivity {
     	
     	startActivity(listIntent);
     }
+    
+    public ListsList refreshList(ListsListAdapter adapter) {
+        Cursor cursor = managedQuery(ListsList.Items.CONTENT_URI, 
+        		PROJECTION, null, null, 
+        		ListsList.Items.DEFAULT_SORT_ORDER);
+        
+        adapter.clearList();
+        
+        int count = cursor.getCount();
+		for (int i = 0; i < count; i++) {
+			cursor.moveToPosition(i);
+			adapter.addList(new ListItem(Integer.valueOf(cursor.getString(0)), 
+										 cursor.getString(1),
+										 1337,
+										 cursor.getInt(2), 
+										 cursor.getInt(3)));
+        }
+    	
+    	return adapter.getList();
+    }
+
+    private void refreshListFromDatabase() {
+		refreshList((ListsListAdapter)getListAdapter());
+	}
     
     public static final int ADD_ITEM = Menu.FIRST + 1;
     public static final int EDIT_ITEM = Menu.FIRST + 2;
