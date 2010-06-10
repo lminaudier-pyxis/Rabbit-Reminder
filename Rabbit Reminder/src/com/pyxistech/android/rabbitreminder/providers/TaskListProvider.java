@@ -13,8 +13,8 @@ import com.pyxistech.android.rabbitreminder.models.TaskList;
 
 public class TaskListProvider extends AbstractListProvider {
 
-    private static final String DATABASE_NAME = "task_list.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final String DATABASE_NAME = "tasks_list.db";
+    private static final int DATABASE_VERSION = 4;
     private static final String TABLE_NAME = "tasks";
 
     private static HashMap<String, String> projectionMap;
@@ -30,7 +30,6 @@ public class TaskListProvider extends AbstractListProvider {
         projectionMap.put(TaskList.Items._ID, TaskList.Items._ID);
         projectionMap.put(TaskList.Items.NAME, TaskList.Items.NAME);
         projectionMap.put(TaskList.Items.DONE, TaskList.Items.DONE);
-        projectionMap.put(TaskList.Items.LIST_ID, TaskList.Items.LIST_ID);
         projectionMap.put(TaskList.Items.CREATED_DATE, TaskList.Items.CREATED_DATE);
         projectionMap.put(TaskList.Items.MODIFIED_DATE, TaskList.Items.MODIFIED_DATE);
     }
@@ -47,7 +46,6 @@ public class TaskListProvider extends AbstractListProvider {
                     + TaskList.Items._ID + " INTEGER PRIMARY KEY,"
                     + TaskList.Items.NAME + " TEXT,"
                     + TaskList.Items.DONE + " INTEGER,"
-                    + TaskList.Items.LIST_ID + " INTEGER,"
                     + TaskList.Items.CREATED_DATE + " INTEGER,"
                     + TaskList.Items.MODIFIED_DATE + " INTEGER"
                     + ");");
@@ -128,9 +126,5 @@ public class TaskListProvider extends AbstractListProvider {
         if (values.containsKey(TaskList.Items.DONE) == false) {
             values.put(TaskList.Items.DONE, 0);
         }
-        
-        if (values.containsKey(TaskList.Items.LIST_ID) == false) {
-            values.put(TaskList.Items.LIST_ID, -1);
-        }	
 	}
 }

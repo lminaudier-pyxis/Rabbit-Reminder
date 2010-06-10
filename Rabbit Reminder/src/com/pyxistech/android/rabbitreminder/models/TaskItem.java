@@ -5,19 +5,12 @@ import android.os.Parcelable;
 
 public class TaskItem implements Parcelable {
 	
-	public TaskItem(int index, String text, boolean done, int listId) {
+	public TaskItem(int index, String text, boolean done) {
 		this.index = index;
 		this.text = text;
 		this.done = done;
-		this.setListId(listId);
 	}
 	
-	public TaskItem(String text, boolean done, int listId) {
-		this.text = text;
-		this.done = done;
-		this.setListId(listId);
-	}
-
 	public TaskItem(String text, boolean done) {
 		this.text = text;
 		this.done = done;
@@ -75,17 +68,8 @@ public class TaskItem implements Parcelable {
 	public int getIndex() {
 		return index;
 	}
-	
-	public void setListId(int listId) {
-		this.listId = listId;
-	}
-
-	public int getListId() {
-		return listId;
-	}
 
 	private String text;
 	private boolean done;
 	private int index = -1;
-	private int listId = -1;
 }

@@ -28,7 +28,6 @@ public class TaskListActivity extends ListActivity {
         TaskList.Items._ID, // 0
         TaskList.Items.NAME, // 1
         TaskList.Items.DONE, // 2
-        TaskList.Items.LIST_ID // 3
     };
     
     @Override
@@ -162,12 +161,11 @@ public class TaskListActivity extends ListActivity {
 	}
 
 	private void addItemInListAndDatabase(String data) {
-		getTaskListAdapter().addItem(new TaskItem(data, false, -1));
+		getTaskListAdapter().addItem(new TaskItem(data, false));
 
 		ContentValues values = new ContentValues();
 		values.put(TaskList.Items.NAME, data);
 		values.put(TaskList.Items.DONE, 0);
-		values.put(TaskList.Items.LIST_ID, -1);
 		getContentResolver().insert(TaskList.Items.CONTENT_URI, values);
 	}
 
@@ -197,7 +195,7 @@ public class TaskListActivity extends ListActivity {
     	Cursor cursor = getRefreshedCursor();
         if( cursor.moveToFirst() ) {
 			do {
-				adapter.addItem(new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getInt(3)));
+				adapter.addItem( new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1) );
 	        } while(cursor.moveToNext());
         }
     	
