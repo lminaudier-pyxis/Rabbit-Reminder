@@ -56,6 +56,14 @@ public class TaskItem implements Parcelable {
 		return text;
 	}
 	
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+	
 	public boolean equals(TaskItem item) {
 		return (item.getText().equals(text)) 
 				&& (item.isDone() == done)
@@ -83,5 +91,6 @@ public class TaskItem implements Parcelable {
 	private boolean done;
 	private Double latitude;
 	private Double longitude;
+
 	private int index = -1;
 }

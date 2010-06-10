@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.pyxistech.android.rabbitreminder.R;
 import com.pyxistech.android.rabbitreminder.models.TaskItem;
@@ -31,6 +32,10 @@ public class AddTaskActivity extends Activity implements LocationListener {
 				TaskItem item = bundle.getParcelable("item");
 				if( item != null ) {
 					editText.setText(item.getText());
+					
+					latitude = item.getLatitude();
+					longitude = item.getLongitude();
+					
 					index = bundle.getInt("index");
 				}
 			}
@@ -41,10 +46,28 @@ public class AddTaskActivity extends Activity implements LocationListener {
 			longitude = savedInstanceState.getDouble("longitude");
 		}
 		
+		TextView locationView = (TextView) AddTaskActivity.this.findViewById(R.id.location_display_text);
+		locationView.setText("latitude: " + latitude + " - longitude: " + longitude);
+		
 		addTaskButton.setOnClickListener(listener);
 		
 		setCurrentGpsLocation(null);
+		
+		Button setMyLocationButton = (Button) AddTaskActivity.this.findViewById(R.id.set_current_location_button);
+		setMyLocationButton.setOnClickListener(setMyLocationButtonListener);
 	}
+	
+	OnClickListener setMyLocationButtonListener = new OnClickListener() {
+		public void onClick(View v) {
+			setCurrentGpsLocation(null);
+			
+			longitude = currentLongitude;
+			latitude = currentLatitude;
+			
+			TextView locationView = (TextView) AddTaskActivity.this.findViewById(R.id.location_display_text);
+			locationView.setText("latitude: " + latitude + " - longitude: " + longitude);
+		}
+	};
 	
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -72,6 +95,8 @@ public class AddTaskActivity extends Activity implements LocationListener {
 	};
 	
 	private int index = -1;
+	private Double currentLatitude;
+	private Double currentLongitude;
 	private Double latitude;
 	private Double longitude;
 
@@ -84,8 +109,8 @@ public class AddTaskActivity extends Activity implements LocationListener {
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 			location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		}
-		latitude = location.getLatitude();
-		longitude = location.getLongitude();
+		currentLatitude = location.getLatitude();
+		currentLongitude = location.getLongitude();
 	}
 	
 	public void onLocationChanged(Location location) {

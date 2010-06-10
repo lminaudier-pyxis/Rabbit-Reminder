@@ -17,5 +17,18 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" 
 		android:text="@string/validation_button_text" />
-  	
+		
+	<Button
+		android:id="@+id/set_current_location_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Set my position as location" />
+		
+	<TextView
+		android:id="@+id/location_display_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="(location)"
+		android:textColor="#390000" />
+		
 </LinearLayout>

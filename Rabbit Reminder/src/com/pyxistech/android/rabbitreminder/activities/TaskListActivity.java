@@ -28,6 +28,8 @@ public class TaskListActivity extends ListActivity {
         TaskList.Items._ID, // 0
         TaskList.Items.NAME, // 1
         TaskList.Items.DONE, // 2
+        TaskList.Items.LATITUDE, // 3
+        TaskList.Items.LONGITUDE // 4
     };
     
     @Override
@@ -141,18 +143,20 @@ public class TaskListActivity extends ListActivity {
 	    		addItemInListAndDatabase(data, latitude, longitude);
 	    	}
 	    	else {
-	    		editItemInListAndDatabase(data, index);
+	    		editItemInListAndDatabase(data, index, latitude, longitude);
 	    	}
 	    	refreshListFromDatabase();
     	}
     }
 
-	private void editItemInListAndDatabase(String data, int index) {
+	private void editItemInListAndDatabase(String data, int index, Double latitude, Double longitude) {
 		getTaskListAdapter().updateItem(index, data);
 
 		ContentValues values = new ContentValues();
 		values.put(TaskList.Items.NAME, data);
 		values.put(TaskList.Items.DONE, getTaskListAdapter().getItem(index).isDone() ? 1 : 0);
+		values.put(TaskList.Items.LATITUDE, latitude);
+		values.put(TaskList.Items.LONGITUDE, longitude);
 		getContentResolver().update(TaskList.Items.CONTENT_URI, 
 				values,
 				TaskList.Items._ID + "=" + getTaskListAdapter().getItem(index).getIndex(), 
@@ -200,7 +204,7 @@ public class TaskListActivity extends ListActivity {
     	Cursor cursor = getRefreshedCursor();
         if( cursor.moveToFirst() ) {
 			do {
-				adapter.addItem( new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, 0.0, 0.0) );
+				adapter.addItem( new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getDouble(3), cursor.getDouble(4)) );
 	        } while(cursor.moveToNext());
         }
     	
