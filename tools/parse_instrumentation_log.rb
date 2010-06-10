@@ -114,12 +114,19 @@ class XmlGenerator
 	end
 end
 
-f = open('log.txt', 'r')
-raw_log = f.read()
 
-p = Parser.new(raw_log)
-xml_gen = XmlGenerator.new(p.get_results)
+if ARGV.size != 2
+	puts "Syntax: ruby parse_instrumentation_log.rb <LOG FILENAME> <OUTPUT FILENAME>"
+elsif
+	f = open(ARGV[0], 'r')
+	raw_log = f.read()
 
-f_out = open('log_xunit.xml', 'w')
-xml_gen.get_document.write(f_out, 2)
+	p = Parser.new(raw_log)
+	xml_gen = XmlGenerator.new(p.get_results)
+
+	f_out = open(ARGV[1], 'w')
+	xml_gen.get_document.write(f_out, 2)
+end
+
+
 
