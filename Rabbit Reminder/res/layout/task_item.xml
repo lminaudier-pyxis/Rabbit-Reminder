@@ -9,4 +9,5 @@
 	android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 	android:paddingLeft="6dip"
 	android:paddingRight="6dip" 
+	android:textColor="#390000"
 	/>

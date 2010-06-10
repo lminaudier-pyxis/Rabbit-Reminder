@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.pyxistech.android.rabbitreminder.R;
@@ -32,21 +31,11 @@ public class TaskListActivity extends ListActivity {
         TaskList.Items.LIST_ID // 3
     };
     
-    private int listId = -1;
-    private String listName = "All Your Tasks";
-    
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.tasklist);
-    	
-    	if(getIntent() != null) {
-    		if( getIntent().getExtras() != null) {
-    			this.listId = getIntent().getExtras().getInt("listId", -1);
-    			this.listName = getIntent().getExtras().getString("listName");
-    		}
-    	}
-    	
+    	    	
     	Resources res = getResources();
     	getListView().setCacheColorHint(0);
     	getListView().setDivider(res.getDrawable(android.R.drawable.divider_horizontal_bright));
@@ -57,9 +46,6 @@ public class TaskListActivity extends ListActivity {
 
     	setListAdapter(adapter);
     	registerForContextMenu(getListView());
-    	
-   		TextView listTitle = (TextView) findViewById(R.id.list_title);
-    	listTitle.setText(listName);
     }
     
     @Override
@@ -68,7 +54,6 @@ public class TaskListActivity extends ListActivity {
     	
     	TaskList list = getTaskListAdapter().getList();
 		outState.putParcelable("TaskList", list);
-		outState.putInt("listId", listId);
     }
     
     @Override
@@ -135,7 +120,6 @@ public class TaskListActivity extends ListActivity {
     
     private void addItem() {
 		Intent intent = new Intent(this, AddTaskActivity.class);
-		intent.putExtra("listId", listId);
 		startActivityForResult(intent, 0);
 	}
 
@@ -151,7 +135,6 @@ public class TaskListActivity extends ListActivity {
     	if( intent != null ){
 	    	String data = intent.getExtras().get("newTaskText").toString();
 	    	int index = intent.getExtras().getInt("index");
-	    	listId = intent.getExtras().getInt("listId");
 	    	if (index == -1) {
 	    		addItemInListAndDatabase(data);
 	    	}
@@ -179,12 +162,12 @@ public class TaskListActivity extends ListActivity {
 	}
 
 	private void addItemInListAndDatabase(String data) {
-		getTaskListAdapter().addItem(new TaskItem(data, false, listId));
+		getTaskListAdapter().addItem(new TaskItem(data, false, -1));
 
 		ContentValues values = new ContentValues();
 		values.put(TaskList.Items.NAME, data);
 		values.put(TaskList.Items.DONE, 0);
-		values.put(TaskList.Items.LIST_ID, listId);
+		values.put(TaskList.Items.LIST_ID, -1);
 		getContentResolver().insert(TaskList.Items.CONTENT_URI, values);
 	}
 
@@ -222,12 +205,8 @@ public class TaskListActivity extends ListActivity {
     }
 
 	private Cursor getRefreshedCursor() {
-		String where = null;
-    	if ( this.listId > 0 ) {
-    		where = TaskList.Items.LIST_ID + "=" + listId;
-    	}
     	return managedQuery(TaskList.Items.CONTENT_URI, 
-    				PROJECTION, where, null, 
+    				PROJECTION, null, null, 
     				TaskList.Items.DEFAULT_SORT_ORDER);
 	}
     

@@ -29,13 +29,10 @@ public class AddTaskActivity extends Activity {
 					editText.setText(item.getText());
 					index = bundle.getInt("index");
 				}
-				
-				listId = bundle.getInt("listId");
 			}
 		}
 		else {
 			index = savedInstanceState.getInt("index");
-			listId = savedInstanceState.getInt("listId");
 		}
 		
 		addTaskButton.setOnClickListener(listener);
@@ -46,7 +43,6 @@ public class AddTaskActivity extends Activity {
     	super.onSaveInstanceState(outState);
     	
 		outState.putInt("index", index);
-		outState.putInt("listId", listId);
     }
 	
 	private OnClickListener listener = new OnClickListener() {
@@ -57,7 +53,6 @@ public class AddTaskActivity extends Activity {
 			String text = editText.getText().toString();
 			data.putExtra("newTaskText", text);
 			data.putExtra("index", index);
-			data.putExtra("listId", listId);
 			
 			AddTaskActivity.this.setResult(Activity.RESULT_OK, data);
 			AddTaskActivity.this.finish();
@@ -65,5 +60,4 @@ public class AddTaskActivity extends Activity {
 	};
 	
 	private int index = -1;
-	private int listId = -1;
 }

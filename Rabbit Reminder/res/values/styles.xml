@@ -6,15 +6,7 @@
   
   <style name="Theme.Fancy">
   	<item name="android:windowBackground">@drawable/background</item>
-    <item name="android:windowNoTitle">true</item>
-    <item name="android:textColor">#390000</item>
-  </style>
-  
-  <style name="Theme.Topbar">
-  	<item name="android:background">@drawable/topbarback</item>
-  </style>
-  <style name="Theme.Topbar.Text">
-  	<item name="android:textColor">#ffdddd</item>
+    <item name="android:windowNoTitle">false</item>
   </style>
   
 </resources>

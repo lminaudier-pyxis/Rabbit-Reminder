@@ -4,11 +4,7 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
-	
-	<include 
-		layout="@layout/topbar"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
+
   
 	<EditText
 		android:id="@+id/new_task_text"

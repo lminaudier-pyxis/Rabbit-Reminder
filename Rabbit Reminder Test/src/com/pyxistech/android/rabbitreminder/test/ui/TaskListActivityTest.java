@@ -66,7 +66,7 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 		int numberOfNewItems = 5;
 		
 		for (int i = 0; i < numberOfNewItems; i++) {
-			solo.clickOnMenuItem("Add Item");
+			solo.clickOnMenuItem("Add Task");
 			solo.enterText(0, "item " + String.valueOf(initialListSize + i + 1).toUpperCase() );
 			solo.clickOnButton("OK");
 		}
@@ -153,7 +153,7 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 	}
 	
 	public void testCancelingTheCurrentTaskEditionWorks() {
-		solo.clickOnMenuItem("Add Item");
+		solo.clickOnMenuItem("Add Task");
 		solo.sleep(1000);
 		solo.goBack();
 		solo.sleep(1000);
