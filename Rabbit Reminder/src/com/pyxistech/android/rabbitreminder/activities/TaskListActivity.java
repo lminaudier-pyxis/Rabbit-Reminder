@@ -210,31 +210,25 @@ public class TaskListActivity extends ListActivity {
 	}
      
     public TaskList refreshList(TaskListAdapter adapter) {
+    	adapter.clearList();
     	Cursor cursor = getRefreshedCursor();
-        
-        adapter.clearList();
-        
-        int count = cursor.getCount();
-		for (int i = 0; i < count; i++) {
-			cursor.moveToPosition(i);
-			adapter.addItem(new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getInt(3)));
+        if( cursor.moveToFirst() ) {
+			do {
+				adapter.addItem(new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getInt(3)));
+	        } while(cursor.moveToNext());
         }
     	
     	return adapter.getList();
     }
 
 	private Cursor getRefreshedCursor() {
-		Cursor cursor;
+		String where = null;
     	if ( this.listId > 0 ) {
-    		cursor = managedQuery(TaskList.Items.CONTENT_URI, 
-    				PROJECTION, TaskList.Items.LIST_ID + "=" + listId, null, 
-    				TaskList.Items.DEFAULT_SORT_ORDER);
-    	} else {
-    		cursor = managedQuery(TaskList.Items.CONTENT_URI, 
-    				PROJECTION, null, null, 
-    				TaskList.Items.DEFAULT_SORT_ORDER);
+    		where = TaskList.Items.LIST_ID + "=" + listId;
     	}
-		return cursor;
+    	return managedQuery(TaskList.Items.CONTENT_URI, 
+    				PROJECTION, where, null, 
+    				TaskList.Items.DEFAULT_SORT_ORDER);
 	}
     
     public static final int ADD_ITEM = Menu.FIRST + 1;

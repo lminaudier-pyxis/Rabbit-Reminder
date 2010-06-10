@@ -36,7 +36,6 @@ public class ListsListActivity extends ListActivity {
          		PROJECTION, null, null, 
          		ListsList.Items.DEFAULT_SORT_ORDER);
     	
-    	
     	ListsListAdapter adapter = new ListsListAdapter(this, cursor);
     	setListAdapter(adapter);
 
@@ -146,14 +145,14 @@ public class ListsListActivity extends ListActivity {
         
         adapter.clearList();
         
-        int count = cursor.getCount();
-		for (int i = 0; i < count; i++) {
-			cursor.moveToPosition(i);
-			adapter.addList(new ListItem(Integer.valueOf(cursor.getString(0)), 
+        if(cursor.moveToFirst()) {
+        	do {
+        		adapter.addList(new ListItem(Integer.valueOf(cursor.getString(0)), 
 										 cursor.getString(1),
 										 1337,
 										 cursor.getInt(2), 
 										 cursor.getInt(3)));
+        	} while(cursor.moveToNext());
         }
     	
     	return adapter.getList();
