@@ -1,7 +1,11 @@
 package com.pyxistech.android.rabbitreminder.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,7 +15,7 @@ import android.widget.EditText;
 import com.pyxistech.android.rabbitreminder.R;
 import com.pyxistech.android.rabbitreminder.models.TaskItem;
 
-public class AddTaskActivity extends Activity {
+public class AddTaskActivity extends Activity implements LocationListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -33,9 +37,13 @@ public class AddTaskActivity extends Activity {
 		}
 		else {
 			index = savedInstanceState.getInt("index");
+			latitude = savedInstanceState.getDouble("latitude");
+			longitude = savedInstanceState.getDouble("longitude");
 		}
 		
 		addTaskButton.setOnClickListener(listener);
+		
+		setCurrentGpsLocation(null);
 	}
 	
     @Override
@@ -43,6 +51,8 @@ public class AddTaskActivity extends Activity {
     	super.onSaveInstanceState(outState);
     	
 		outState.putInt("index", index);
+		outState.putDouble("latitude", latitude);
+		outState.putDouble("longitude", longitude);
     }
 	
 	private OnClickListener listener = new OnClickListener() {
@@ -52,6 +62,8 @@ public class AddTaskActivity extends Activity {
 			EditText editText = (EditText) findViewById(R.id.new_task_text);
 			String text = editText.getText().toString();
 			data.putExtra("newTaskText", text);
+			data.putExtra("latitude", latitude);
+			data.putExtra("longitude", longitude);
 			data.putExtra("index", index);
 			
 			AddTaskActivity.this.setResult(Activity.RESULT_OK, data);
@@ -60,4 +72,35 @@ public class AddTaskActivity extends Activity {
 	};
 	
 	private int index = -1;
+	private Double latitude;
+	private Double longitude;
+
+	// GPS management
+	private LocationManager locationManager;
+
+	private void setCurrentGpsLocation(Location location) {
+		if (location == null) {
+			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE); 
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+			location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		}
+		latitude = location.getLatitude();
+		longitude = location.getLongitude();
+	}
+	
+	public void onLocationChanged(Location location) {
+		setCurrentGpsLocation(location);
+	}
+
+	public void onProviderDisabled(String provider) {
+		setCurrentGpsLocation(null);
+	}
+
+	public void onProviderEnabled(String provider) {
+		setCurrentGpsLocation(null);
+	}
+
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		setCurrentGpsLocation(null);
+	}
 }

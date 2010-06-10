@@ -18,7 +18,11 @@ public class TaskItem implements Parcelable {
 	}
 	
 	public TaskItem(Parcel in) {
-		
+		this.index = in.readInt();
+		this.text = in.readString();
+		this.done = in.readInt() == 1;
+		this.latitude = in.readDouble();
+		this.longitude = in.readDouble();
 	}
 	
 	public static final Parcelable.Creator<TaskItem> CREATOR = new Parcelable.Creator<TaskItem>() {
@@ -64,7 +68,11 @@ public class TaskItem implements Parcelable {
 	}
 
 	public void writeToParcel(Parcel out, int flags) {
-		
+		out.writeInt(index);
+		out.writeString(text);
+		out.writeInt(done ? 1 : 0);
+		out.writeDouble(latitude);
+		out.writeDouble(longitude);
 	}
 
 	public int getIndex() {

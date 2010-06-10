@@ -98,7 +98,8 @@ public class TaskListActivity extends ListActivity {
     private void editItem(final long index) {
 		Intent intent = new Intent(this, AddTaskActivity.class);
 		intent.putExtra("index", (int) index);
-		intent.putExtra("item", getTaskListAdapter().getItem((int) index));
+		TaskItem item = getTaskListAdapter().getItem((int) index);
+		intent.putExtra("item", item);
 		
 		startActivityForResult(intent, 0);
     }
@@ -133,9 +134,11 @@ public class TaskListActivity extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     	if( intent != null ){
 	    	String data = intent.getExtras().get("newTaskText").toString();
+	    	Double latitude = intent.getExtras().getDouble("latitude");
+	    	Double longitude = intent.getExtras().getDouble("longitude");
 	    	int index = intent.getExtras().getInt("index");
 	    	if (index == -1) {
-	    		addItemInListAndDatabase(data);
+	    		addItemInListAndDatabase(data, latitude, longitude);
 	    	}
 	    	else {
 	    		editItemInListAndDatabase(data, index);
@@ -160,12 +163,14 @@ public class TaskListActivity extends ListActivity {
 		refreshList((TaskListAdapter)getListAdapter());
 	}
 
-	private void addItemInListAndDatabase(String data) {
-		getTaskListAdapter().addItem(new TaskItem(data, false, 0.0, 0.0));
+	private void addItemInListAndDatabase(String data, Double latitude, Double longitude) {
+		getTaskListAdapter().addItem(new TaskItem(data, false, latitude, longitude));
 
 		ContentValues values = new ContentValues();
 		values.put(TaskList.Items.NAME, data);
 		values.put(TaskList.Items.DONE, 0);
+		values.put(TaskList.Items.LATITUDE, latitude);
+		values.put(TaskList.Items.LONGITUDE, longitude);
 		getContentResolver().insert(TaskList.Items.CONTENT_URI, values);
 	}
 
