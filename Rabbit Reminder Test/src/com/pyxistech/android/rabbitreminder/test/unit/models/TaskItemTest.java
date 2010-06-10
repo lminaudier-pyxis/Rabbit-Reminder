@@ -10,10 +10,10 @@ public class TaskItemTest extends AndroidTestCase {
 	}
 	
 	public void testEqualsWorks() {
-		TaskItem item1 = new TaskItem("item", true);
-		TaskItem item2 = new TaskItem("item", true);
-		TaskItem item3 = new TaskItem("item", false);
-		TaskItem item4 = new TaskItem("foo", true);
+		TaskItem item1 = new TaskItem("item", true, 0.0, 0.0);
+		TaskItem item2 = new TaskItem("item", true, 0.0, 0.0);
+		TaskItem item3 = new TaskItem("item", false, 0.0, 0.0);
+		TaskItem item4 = new TaskItem("foo", true, 0.0, 0.0);
 		
 		assertTrue(item1.equals(item2));
 		assertFalse(item1.equals(item3));

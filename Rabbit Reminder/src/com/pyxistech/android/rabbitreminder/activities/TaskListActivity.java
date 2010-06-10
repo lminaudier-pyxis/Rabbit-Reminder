@@ -161,7 +161,7 @@ public class TaskListActivity extends ListActivity {
 	}
 
 	private void addItemInListAndDatabase(String data) {
-		getTaskListAdapter().addItem(new TaskItem(data, false));
+		getTaskListAdapter().addItem(new TaskItem(data, false, 0.0, 0.0));
 
 		ContentValues values = new ContentValues();
 		values.put(TaskList.Items.NAME, data);
@@ -195,7 +195,7 @@ public class TaskListActivity extends ListActivity {
     	Cursor cursor = getRefreshedCursor();
         if( cursor.moveToFirst() ) {
 			do {
-				adapter.addItem( new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1) );
+				adapter.addItem( new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, 0.0, 0.0) );
 	        } while(cursor.moveToNext());
         }
     	

@@ -55,7 +55,7 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 		int numberOfNewItems = 10;
 		
 		for (int i = 0; i < numberOfNewItems; i++) {
-			getListAdapter().addItem(new TaskItem("test item " + i, false));
+			getListAdapter().addItem(new TaskItem("test item " + i, false, null, null));
 		}
 		int afterCount = getListSize();
 		
@@ -163,7 +163,7 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 		getListAdapter().clearList();
 		getActivity().getContentResolver().delete(TaskList.Items.CONTENT_URI, "", null);
 		for (int i = 0; i < 50; i++) {
-			getListAdapter().addItem(new TaskItem("item " + i, false));
+			getListAdapter().addItem(new TaskItem("item " + i, false, null, null));
 
 	    	ContentValues values = new ContentValues();
 	    	values.put(TaskList.Items.NAME, "item " + i);

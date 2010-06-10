@@ -19,6 +19,8 @@ public class TaskList implements Parcelable {
 		public static final String DEFAULT_SORT_ORDER = "modified DESC";
 		public static final String NAME = "name";
 		public static final String DONE = "done";
+		public static final String LATITUDE = "latitude";
+		public static final String LONGITUDE = "longitude";
 		public static final String CREATED_DATE = "created";
 		public static final String MODIFIED_DATE = "modified";
 	}

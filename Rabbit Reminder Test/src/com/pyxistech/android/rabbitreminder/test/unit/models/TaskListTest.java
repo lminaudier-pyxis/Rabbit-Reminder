@@ -30,7 +30,7 @@ public class TaskListTest extends AndroidTestCase {
 	
 	public void testTaskListIsParcelableAfterAnItemIsAdded() {
 		Bundle bundle = new Bundle();
-		list.addItem(new TaskItem("last item", true));
+		list.addItem(new TaskItem("last item", true, 42.0, 1337.42));
 		bundle.putParcelable("TaskList", list);
 		TaskList newList = bundle.getParcelable("TaskList");
 		
@@ -56,16 +56,16 @@ public class TaskListTest extends AndroidTestCase {
     private TaskList buildList() {
     	TaskList newList = new TaskList();
     	
-    	newList.addItem(new TaskItem("item 1", false));
-    	newList.addItem(new TaskItem("item 2", false));
-    	newList.addItem(new TaskItem("item 3", false));
-    	newList.addItem(new TaskItem("item 4", false));
-    	newList.addItem(new TaskItem("item 5", false));
-    	newList.addItem(new TaskItem("item 6", false));
-    	newList.addItem(new TaskItem("item 7", false));
-    	newList.addItem(new TaskItem("item 8", false));
-    	newList.addItem(new TaskItem("item 9", false));
-    	newList.addItem(new TaskItem("item 10", false));
+    	newList.addItem(new TaskItem("item 1", false, null, null));
+    	newList.addItem(new TaskItem("item 2", false, null, null));
+    	newList.addItem(new TaskItem("item 3", false, null, null));
+    	newList.addItem(new TaskItem("item 4", false, null, null));
+    	newList.addItem(new TaskItem("item 5", false, null, null));
+    	newList.addItem(new TaskItem("item 6", false, null, null));
+    	newList.addItem(new TaskItem("item 7", false, null, null));
+    	newList.addItem(new TaskItem("item 8", false, null, null));
+    	newList.addItem(new TaskItem("item 9", false, null, null));
+    	newList.addItem(new TaskItem("item 10", false, null, null));
     	
     	return newList;
     }

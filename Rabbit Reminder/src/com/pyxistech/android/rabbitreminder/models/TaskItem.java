@@ -5,20 +5,20 @@ import android.os.Parcelable;
 
 public class TaskItem implements Parcelable {
 	
-	public TaskItem(int index, String text, boolean done) {
+	public TaskItem(int index, String text, boolean done, Double latitude, Double longitude) {
 		this.index = index;
 		this.text = text;
 		this.done = done;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 	
-	public TaskItem(String text, boolean done) {
-		this.text = text;
-		this.done = done;
+	public TaskItem(String text, boolean done, Double latitude, Double longitude) {
+		this(-1, text, done, latitude, longitude);
 	}
 	
 	public TaskItem(Parcel in) {
-		this.text = in.readString();
-		this.done = in.readString().equals("true");
+		
 	}
 	
 	public static final Parcelable.Creator<TaskItem> CREATOR = new Parcelable.Creator<TaskItem>() {
@@ -53,7 +53,10 @@ public class TaskItem implements Parcelable {
 	}
 	
 	public boolean equals(TaskItem item) {
-		return (item.getText().equals(text)) && (item.isDone() == done);
+		return (item.getText().equals(text)) 
+				&& (item.isDone() == done)
+				&& (item.latitude.equals(latitude))
+				&& (item.longitude.equals(longitude));
 	}
 	
 	public int describeContents() {
@@ -61,8 +64,7 @@ public class TaskItem implements Parcelable {
 	}
 
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeString(text);
-		out.writeString(done ? "true" : "false");
+		
 	}
 
 	public int getIndex() {
@@ -71,5 +73,7 @@ public class TaskItem implements Parcelable {
 
 	private String text;
 	private boolean done;
+	private Double latitude;
+	private Double longitude;
 	private int index = -1;
 }
