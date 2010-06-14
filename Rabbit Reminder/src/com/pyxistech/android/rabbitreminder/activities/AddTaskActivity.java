@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pyxistech.android.rabbitreminder.R;
 import com.pyxistech.android.rabbitreminder.models.TaskItem;
@@ -61,15 +62,20 @@ public class AddTaskActivity extends Activity implements LocationListener {
 		public void onClick(View v) {
 			setCurrentGpsLocation(null);
 			
-			
+			checkGPSAvailability();
 			
 			longitude = currentLongitude;
 			latitude = currentLatitude;
 			
-			
-			
 			TextView locationView = (TextView) AddTaskActivity.this.findViewById(R.id.location_display_text);
 			locationView.setText("latitude: " + latitude + " - longitude: " + longitude);
+		}
+
+		private void checkGPSAvailability() {
+			if (currentLatitude == null || currentLongitude == null) {
+				Toast toast = Toast.makeText(getApplicationContext(), R.string.gps_availability_alert, 2000);
+				toast.show();
+			}
 		}
 	};
 	
