@@ -36,6 +36,17 @@ public class TaskList implements Parcelable {
 		}
 	}
 	
+	public static final Parcelable.Creator<TaskList> CREATOR = new Parcelable.Creator<TaskList>() {
+
+		public TaskList createFromParcel(Parcel in) {
+			return new TaskList(in);
+		}
+
+		public TaskList[] newArray(int size) {
+			return new TaskList[size];
+		}
+	};
+	
 	public boolean equals(TaskList list) {
 		return items.equals(list.items);
 	}

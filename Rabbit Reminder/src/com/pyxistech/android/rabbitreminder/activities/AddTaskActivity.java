@@ -61,8 +61,12 @@ public class AddTaskActivity extends Activity implements LocationListener {
 		public void onClick(View v) {
 			setCurrentGpsLocation(null);
 			
+			
+			
 			longitude = currentLongitude;
 			latitude = currentLatitude;
+			
+			
 			
 			TextView locationView = (TextView) AddTaskActivity.this.findViewById(R.id.location_display_text);
 			locationView.setText("latitude: " + latitude + " - longitude: " + longitude);
@@ -88,15 +92,15 @@ public class AddTaskActivity extends Activity implements LocationListener {
 			data.putExtra("latitude", latitude);
 			data.putExtra("longitude", longitude);
 			data.putExtra("index", index);
-			
+
 			AddTaskActivity.this.setResult(Activity.RESULT_OK, data);
 			AddTaskActivity.this.finish();
 		}
 	};
 	
 	private int index = -1;
-	private Double currentLatitude;
-	private Double currentLongitude;
+	private Double currentLatitude = null;
+	private Double currentLongitude = null;
 	private Double latitude;
 	private Double longitude;
 
@@ -109,8 +113,13 @@ public class AddTaskActivity extends Activity implements LocationListener {
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 			location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		}
-		currentLatitude = location.getLatitude();
-		currentLongitude = location.getLongitude();
+		if( location != null ) {
+			currentLatitude = location.getLatitude();
+			currentLongitude = location.getLongitude();
+		} else {
+			currentLatitude = null;
+			currentLongitude = null;
+		}
 	}
 	
 	public void onLocationChanged(Location location) {

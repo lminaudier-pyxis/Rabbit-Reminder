@@ -1,5 +1,6 @@
 package com.pyxistech.android.rabbitreminder.test.unit.models;
 
+import android.os.Bundle;
 import android.test.AndroidTestCase;
 
 import com.pyxistech.android.rabbitreminder.models.TaskItem;
@@ -19,4 +20,14 @@ public class TaskItemTest extends AndroidTestCase {
 		assertFalse(item1.equals(item3));
 		assertFalse(item1.equals(item4));
 	}
+	
+	public void testTaskItemIsParcelable() {
+		Bundle bundle = new Bundle();
+		TaskItem item = new TaskItem("last item", true, 42.0, 1337.42);
+		bundle.putParcelable("item", item);
+		TaskItem newItem = (TaskItem) bundle.getParcelable("item");
+		
+		assertEquals(item, newItem);
+	}
+	
 }
