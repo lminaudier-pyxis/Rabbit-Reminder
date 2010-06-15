@@ -158,6 +158,8 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 		solo.goBack();
 		solo.sleep(1000);
 	}
+	
+
 
 	private void buildList() {
 		getListAdapter().clearList();

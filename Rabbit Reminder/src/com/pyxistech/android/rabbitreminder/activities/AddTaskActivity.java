@@ -24,22 +24,8 @@ public class AddTaskActivity extends Activity implements LocationListener {
 		
 		setContentView(R.layout.add_task);
 		
-		Button addTaskButton = (Button) findViewById(R.id.add_task_button);
-		EditText editText = (EditText) findViewById(R.id.new_task_text);
-		
 		if (savedInstanceState == null) {
-			Bundle bundle = getIntent().getExtras();
-			if (bundle != null) {
-				TaskItem item = bundle.getParcelable("item");
-				if( item != null ) {
-					editText.setText(item.getText());
-					
-					latitude = item.getLatitude();
-					longitude = item.getLongitude();
-					
-					index = bundle.getInt("index");
-				}
-			}
+			getParametersFromBundle(getIntent().getExtras());
 		}
 		else {
 			index = savedInstanceState.getInt("index");
@@ -47,6 +33,30 @@ public class AddTaskActivity extends Activity implements LocationListener {
 			longitude = savedInstanceState.getDouble("longitude");
 		}
 		
+		refreshUi();
+	}
+
+
+	private void getParametersFromBundle(Bundle bundle) {
+		if (bundle != null) {
+			TaskItem item = bundle.getParcelable("item");
+			if( item != null ) {
+				text = item.getText();
+				
+				latitude = item.getLatitude();
+				longitude = item.getLongitude();
+				
+				index = bundle.getInt("index");
+			}
+		}
+	}
+
+
+	private void refreshUi() {
+		Button addTaskButton = (Button) findViewById(R.id.add_task_button);
+		EditText editText = (EditText) findViewById(R.id.new_task_text);
+
+		editText.setText(text);
 		TextView locationView = (TextView) AddTaskActivity.this.findViewById(R.id.location_display_text);
 		locationView.setText("latitude: " + latitude + " - longitude: " + longitude);
 		
@@ -57,7 +67,16 @@ public class AddTaskActivity extends Activity implements LocationListener {
 		Button setMyLocationButton = (Button) AddTaskActivity.this.findViewById(R.id.set_current_location_button);
 		setMyLocationButton.setOnClickListener(setMyLocationButtonListener);
 	}
-	
+
+	@Override
+	public void setIntent (Intent newIntent) {
+		super.setIntent(newIntent);
+		
+		getParametersFromBundle(newIntent.getExtras());
+		refreshUi();
+	}
+    
+    
 	OnClickListener setMyLocationButtonListener = new OnClickListener() {
 		public void onClick(View v) {
 			setCurrentGpsLocation(null);
@@ -73,7 +92,7 @@ public class AddTaskActivity extends Activity implements LocationListener {
 
 		private void checkGPSAvailability() {
 			if (currentLatitude == null || currentLongitude == null) {
-				Toast toast = Toast.makeText(getApplicationContext(), R.string.gps_availability_alert, 2000);
+				Toast toast = Toast.makeText(getApplicationContext(), R.string.gps_availability_alert, Toast.LENGTH_SHORT);
 				toast.show();
 			}
 		}
@@ -105,6 +124,7 @@ public class AddTaskActivity extends Activity implements LocationListener {
 	};
 	
 	private int index = -1;
+	private String text = "";
 	private Double currentLatitude = null;
 	private Double currentLongitude = null;
 	private Double latitude;
