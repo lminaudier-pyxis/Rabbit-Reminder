@@ -1,5 +1,8 @@
 package com.pyxistech.android.rabbitreminder.test.ui;
 
+import android.app.Activity;
+import android.app.KeyguardManager;
+import android.app.KeyguardManager.KeyguardLock;
 import android.content.ContentValues;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
@@ -20,6 +23,10 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 	@Override
 	public void setUp() throws Exception {
 		solo = new Solo(getInstrumentation(), getActivity());
+		
+		KeyguardManager mKeyGuardManager = (KeyguardManager) getActivity().getSystemService(Activity.KEYGUARD_SERVICE);
+		KeyguardLock mLock = mKeyGuardManager.newKeyguardLock("activity_classname");
+		mLock.disableKeyguard();
 		
 		try {
 			runTestOnUiThread(new Runnable() {
