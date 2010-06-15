@@ -1,9 +1,7 @@
 package com.pyxistech.android.rabbitreminder.activities;
 
-import android.app.KeyguardManager;
 import android.app.ListActivity;
 import android.app.AlertDialog.Builder;
-import android.app.KeyguardManager.KeyguardLock;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;

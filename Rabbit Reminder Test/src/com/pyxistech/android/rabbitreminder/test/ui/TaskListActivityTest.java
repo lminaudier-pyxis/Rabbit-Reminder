@@ -87,9 +87,7 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 	
 	public void testCheckStateAreSavedOnScrolling() {
 		solo.clickOnText("item 49");
-		solo.sleep(1000);
 		solo.scrollDown();
-		solo.sleep(1000);
 		solo.scrollUp();
 		solo.scrollUp();
 		
@@ -98,45 +96,39 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 	
 	public void testCheckStateAreSavedOnRotation() {
 		solo.clickOnText("item 49");
-		solo.sleep(1000);
 		solo.setActivityOrientation(Solo.LANDSCAPE);
 		assertTrue(getListItemView(0).isChecked());
-		solo.sleep(1000);
 		solo.setActivityOrientation(Solo.PORTRAIT);
 		assertTrue(getListItemView(0).isChecked());
 	}
 	
 	public void testItemCanBeDeleted() {
 		solo.clickLongOnText("item 1");
-		solo.sleep(1000);
 		solo.clickOnText("Delete");
-		solo.sleep(1000);
 		solo.clickOnText("OK");
-		solo.sleep(1000);
+		
+		solo.sleep(500);
 		
 		assertEquals(initialListSize - 1, getListSize());
 	}
 	
 	public void testItemDeletionCanBeCancelled() {
 		solo.clickLongOnText("item 1");
-		solo.sleep(1000);
 		solo.clickOnText("Delete");
-		solo.sleep(1000);
 		solo.clickOnText("Cancel");
-		solo.sleep(1000);
+		
+		solo.sleep(500);
 		
 		assertEquals(initialListSize, getListSize());
 	}
 	
 	public void testItemCanBeEdited() {
 		solo.clickLongOnText("item 49");
-		solo.sleep(1000);
 		solo.clickOnText("Edit");
-		solo.sleep(1000);
 		solo.enterText(0, " edited");
-		solo.sleep(1000);
 		solo.clickOnText("OK");
-		solo.sleep(1000);
+		
+		solo.sleep(500);
 		
 		assertEquals(initialListSize, getListSize());
 		assertEquals("item 49 edited", getListItemView(0).getText());
@@ -144,16 +136,13 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 	
 	public void testRotationDoesNotAffectEdition() {
 		solo.clickLongOnText("item 49");
-		solo.sleep(1000);
 		solo.clickOnText("Edit");
-		solo.sleep(1000);
 		solo.enterText(0, " edited");
-		solo.sleep(1000);
 		solo.setActivityOrientation(Solo.PORTRAIT);
 		solo.setActivityOrientation(Solo.LANDSCAPE);
-		solo.sleep(1000);
 		solo.clickOnText("OK");
-		solo.sleep(1000);
+		
+		solo.sleep(500);
 		
 		assertEquals(initialListSize, getListSize());
 		assertEquals("item 49 edited", getListItemView(0).getText());
@@ -161,12 +150,8 @@ public class TaskListActivityTest extends ActivityInstrumentationTestCase2<TaskL
 	
 	public void testCancelingTheCurrentTaskEditionWorks() {
 		solo.clickOnMenuItem("Add Task");
-		solo.sleep(1000);
 		solo.goBack();
-		solo.sleep(1000);
 	}
-	
-
 
 	private void buildList() {
 		getListAdapter().clearList();
