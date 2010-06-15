@@ -75,6 +75,8 @@ public class AddTaskActivityTest extends ActivityInstrumentationTestCase2<AddTas
 		
 		Location gpsLocation = manager.getLastKnownLocation(MOCK_GPS_PROVIDER);
 	
+		assertNotNull("No GPS available on the test device", gpsLocation);
+		
 		assertEquals(location.getLatitude(), gpsLocation.getLatitude());
 		assertEquals(location.getLongitude(), gpsLocation.getLongitude());
 	}
