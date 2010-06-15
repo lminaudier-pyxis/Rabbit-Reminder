@@ -4,6 +4,6 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Rabbit Reminder"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="D:/Projects/P. Rabbit Reminder/Rabbit Reminder Test/libs/robotium-solo-1.5.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/Projets/Rabbit-Reminder/Rabbit Reminder Test/libs/robotium-solo-1.5.1-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
