@@ -98,7 +98,7 @@ public class TaskListActivity extends ListActivity {
     }
     
     private void editItem(final long index) {
-		Intent intent = new Intent(this, AddTaskActivity.class);
+		Intent intent = new Intent(this, TaskActivity.class);
 		intent.putExtra("index", (int) index);
 		TaskItem item = getTaskListAdapter().getItem((int) index);
 		intent.putExtra("item", item);
@@ -121,7 +121,7 @@ public class TaskListActivity extends ListActivity {
     }
     
     private void addItem() {
-		Intent intent = new Intent(this, AddTaskActivity.class);
+		Intent intent = new Intent(this, TaskActivity.class);
 		startActivityForResult(intent, 0);
 	}
 

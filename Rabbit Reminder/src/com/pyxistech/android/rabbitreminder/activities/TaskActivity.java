@@ -1,8 +1,11 @@
 package com.pyxistech.android.rabbitreminder.activities;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,10 +17,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
 import com.pyxistech.android.rabbitreminder.R;
+import com.pyxistech.android.rabbitreminder.RabbitItemizedOverlay;
 import com.pyxistech.android.rabbitreminder.models.TaskItem;
 
-public class AddTaskActivity extends Activity implements LocationListener {
+public class TaskActivity extends MapActivity implements LocationListener {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -25,16 +34,59 @@ public class AddTaskActivity extends Activity implements LocationListener {
 		
 		setContentView(R.layout.add_task);
 		
+		initializeOverlays();
+		
 		if (savedInstanceState == null) {
 			if (getBundle() != null) {
 				getParametersFromBundle(getBundle());
 			}
+			mapView.getController().setZoom(11);
 		}
 		else {
 			getParametersFromSavedInstanceState(savedInstanceState);
 		}
 		
+		if (latitude != null && longitude != null) {
+			setOverlayOnCoordinates(latitude, longitude);
+		}
+
 		refreshUi();
+		
+		/** current position overlay **/
+//		GeoPoint point = new GeoPoint(19240000,-99120000);
+//		OverlayItem overlayitem = new OverlayItem(point, "", "");
+//		itemizedOverlay.setOverlay(overlayitem);
+//		mapOverlays.add(itemizedOverlay);
+//		
+//		mapView.getController().animateTo(point);
+		
+		
+	}
+
+	private void setOverlayOnCoordinates(Double latitude, Double longitude) {
+		GeoPoint point = createGeoPointFromCoordinates(latitude, longitude);
+		OverlayItem overlayitem = new OverlayItem(point, "", "");
+		itemizedOverlay.setOverlay(overlayitem);
+		mapOverlays.clear();
+		mapOverlays.add(itemizedOverlay);
+	}
+
+	private GeoPoint createGeoPointFromCoordinates(Double latitude, Double longitude) {
+		Double latitudeE6 = latitude*1E6;
+		Double longitudeE6 = longitude*1E6;
+		
+		GeoPoint point = new GeoPoint(latitudeE6.intValue(), longitudeE6.intValue());
+		return point;
+	}
+
+	private void initializeOverlays() {
+		mapView = (MapView) findViewById(R.id.mapview);
+		mapView.setBuiltInZoomControls(true);
+		
+		mapOverlays = mapView.getOverlays();
+		drawable = this.getResources().getDrawable(android.R.drawable.star_on);
+		
+		itemizedOverlay = new RabbitItemizedOverlay(drawable);
 	}
 
 	@Override
@@ -97,14 +149,14 @@ public class AddTaskActivity extends Activity implements LocationListener {
 		EditText taskText = (EditText) findViewById(R.id.new_task_text);
 
 		taskText.setText(text);
-		TextView locationView = (TextView) AddTaskActivity.this.findViewById(R.id.location_display_text);
+		TextView locationView = (TextView) TaskActivity.this.findViewById(R.id.location_display_text);
 		locationView.setText("latitude: " + latitude + " - longitude: " + longitude);
 		
 		addTaskButton.setOnClickListener(okButtonListener);
 		
 		setCurrentGpsLocation(null);
 		
-		Button setMyLocationButton = (Button) AddTaskActivity.this.findViewById(R.id.set_current_location_button);
+		Button setMyLocationButton = (Button) TaskActivity.this.findViewById(R.id.set_current_location_button);
 		setMyLocationButton.setOnClickListener(setMyLocationButtonListener);
 	}
 
@@ -112,8 +164,9 @@ public class AddTaskActivity extends Activity implements LocationListener {
 		updateLocationManagerIfNeeded(location);
 		location = getLastKnownPosition();
 		
-		if( location != null ) 
-			setCurrentLocation(location.getLatitude(), location.getLongitude()); 
+		if( location != null ) { 
+			setCurrentLocation(location.getLatitude(), location.getLongitude());
+		}
 		else 
 			setCurrentLocation(null, null);
 	}
@@ -134,6 +187,11 @@ public class AddTaskActivity extends Activity implements LocationListener {
 		}
 	}
 	
+	@Override
+	protected boolean isRouteDisplayed() {
+		return false;
+	}
+
 	private OnClickListener setMyLocationButtonListener = new OnClickListener() {
 		public void onClick(View v) {
 			setCurrentGpsLocation(null);
@@ -143,8 +201,15 @@ public class AddTaskActivity extends Activity implements LocationListener {
 			longitude = currentLongitude;
 			latitude = currentLatitude;
 			
-			TextView locationView = (TextView) AddTaskActivity.this.findViewById(R.id.location_display_text);
+			updateMapView();
+			
+			TextView locationView = (TextView) TaskActivity.this.findViewById(R.id.location_display_text);
 			locationView.setText("latitude: " + latitude + " - longitude: " + longitude);
+		}
+
+		private void updateMapView() {
+			setOverlayOnCoordinates(latitude, longitude);
+			mapView.getController().animateTo(createGeoPointFromCoordinates(latitude, longitude));
 		}
 	
 		private void checkGPSAvailability() {
@@ -166,8 +231,8 @@ public class AddTaskActivity extends Activity implements LocationListener {
 			data.putExtra("longitude", longitude);
 			data.putExtra("index", index);
 	
-			AddTaskActivity.this.setResult(Activity.RESULT_OK, data);
-			AddTaskActivity.this.finish();
+			TaskActivity.this.setResult(Activity.RESULT_OK, data);
+			TaskActivity.this.finish();
 		}
 	};
 	
@@ -179,4 +244,12 @@ public class AddTaskActivity extends Activity implements LocationListener {
 	private Double longitude;
 
 	private LocationManager locationManager;
+
+	private MapView mapView;
+
+	private List<Overlay> mapOverlays;
+
+	private Drawable drawable;
+
+	private RabbitItemizedOverlay itemizedOverlay;
 }

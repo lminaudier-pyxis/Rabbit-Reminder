@@ -31,4 +31,12 @@
 		android:text="(location)"
 		android:textColor="#390000" />
 		
+	<com.google.android.maps.MapView
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="true"
+        android:apiKey="0t31wYhXvCx6P8EOW_C5Y0_T7idUk-7oBVpkIGg"
+    />
+		
 </LinearLayout>
