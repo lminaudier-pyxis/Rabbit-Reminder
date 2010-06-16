@@ -46,21 +46,11 @@ public class TaskActivity extends MapActivity implements LocationListener {
 			getParametersFromSavedInstanceState(savedInstanceState);
 		}
 		
-		if (latitude != null && longitude != null) {
-			setOverlayOnCoordinates(latitude, longitude);
+		if (taskLatitude != null && taskLongitude != null) {
+			setOverlayOnCoordinates(taskLatitude, taskLongitude);
 		}
 
 		refreshUi();
-		
-		/** current position overlay **/
-//		GeoPoint point = new GeoPoint(19240000,-99120000);
-//		OverlayItem overlayitem = new OverlayItem(point, "", "");
-//		itemizedOverlay.setOverlay(overlayitem);
-//		mapOverlays.add(itemizedOverlay);
-//		
-//		mapView.getController().animateTo(point);
-		
-		
 	}
 
 	private void setOverlayOnCoordinates(Double latitude, Double longitude) {
@@ -94,8 +84,8 @@ public class TaskActivity extends MapActivity implements LocationListener {
 		super.onSaveInstanceState(outState);
 		
 		outState.putInt("index", index);
-		outState.putDouble("latitude", latitude);
-		outState.putDouble("longitude", longitude);
+		outState.putDouble("latitude", taskLatitude);
+		outState.putDouble("longitude", taskLongitude);
 	}
 
 	public void onLocationChanged(Location location) {
@@ -128,8 +118,8 @@ public class TaskActivity extends MapActivity implements LocationListener {
 	
 	private void getParametersFromSavedInstanceState(Bundle savedInstanceState) {
 		index = savedInstanceState.getInt("index");
-		latitude = savedInstanceState.getDouble("latitude");
-		longitude = savedInstanceState.getDouble("longitude");
+		taskLatitude = savedInstanceState.getDouble("latitude");
+		taskLongitude = savedInstanceState.getDouble("longitude");
 	}
 
 	private void getParametersFromBundle(Bundle bundle) {
@@ -137,8 +127,8 @@ public class TaskActivity extends MapActivity implements LocationListener {
 		if( item != null ) {
 			text = item.getText();
 			
-			latitude = item.getLatitude();
-			longitude = item.getLongitude();
+			taskLatitude = item.getLatitude();
+			taskLongitude = item.getLongitude();
 			
 			index = bundle.getInt("index");
 		}
@@ -150,7 +140,7 @@ public class TaskActivity extends MapActivity implements LocationListener {
 
 		taskText.setText(text);
 		TextView locationView = (TextView) TaskActivity.this.findViewById(R.id.location_display_text);
-		locationView.setText("latitude: " + latitude + " - longitude: " + longitude);
+		locationView.setText("latitude: " + taskLatitude + " - longitude: " + taskLongitude);
 		
 		addTaskButton.setOnClickListener(okButtonListener);
 		
@@ -169,6 +159,22 @@ public class TaskActivity extends MapActivity implements LocationListener {
 		}
 		else 
 			setCurrentLocation(null, null);
+	
+		if (taskLatitude == null || taskLongitude == null) {
+			setTaskCoordinates();
+			setOverlayAndMoveToCoordinates(taskLatitude, taskLongitude);
+		}
+	}
+
+	private void setOverlayAndMoveToCoordinates(Double latitude,
+			Double longitude) {
+		setOverlayOnCoordinates(latitude, longitude);
+		mapView.getController().animateTo(createGeoPointFromCoordinates(latitude, longitude));
+	}
+
+	private void setTaskCoordinates() {
+		taskLatitude = currentLatitude;
+		taskLongitude = currentLongitude;
 	}
 	
 	private void setCurrentLocation(Double latitude, Double longitude) {
@@ -198,18 +204,16 @@ public class TaskActivity extends MapActivity implements LocationListener {
 			
 			checkGPSAvailability();
 			
-			longitude = currentLongitude;
-			latitude = currentLatitude;
+			setTaskCoordinates();
 			
 			updateMapView();
 			
 			TextView locationView = (TextView) TaskActivity.this.findViewById(R.id.location_display_text);
-			locationView.setText("latitude: " + latitude + " - longitude: " + longitude);
+			locationView.setText("latitude: " + taskLatitude + " - longitude: " + taskLongitude);
 		}
 
 		private void updateMapView() {
-			setOverlayOnCoordinates(latitude, longitude);
-			mapView.getController().animateTo(createGeoPointFromCoordinates(latitude, longitude));
+			setOverlayAndMoveToCoordinates(taskLatitude, taskLongitude);
 		}
 	
 		private void checkGPSAvailability() {
@@ -227,8 +231,8 @@ public class TaskActivity extends MapActivity implements LocationListener {
 			EditText taskText = (EditText) findViewById(R.id.new_task_text);
 			String text = taskText.getText().toString();
 			data.putExtra("newTaskText", text);
-			data.putExtra("latitude", latitude);
-			data.putExtra("longitude", longitude);
+			data.putExtra("latitude", taskLatitude);
+			data.putExtra("longitude", taskLongitude);
 			data.putExtra("index", index);
 	
 			TaskActivity.this.setResult(Activity.RESULT_OK, data);
@@ -240,8 +244,8 @@ public class TaskActivity extends MapActivity implements LocationListener {
 	private String text = "";
 	private Double currentLatitude = null;
 	private Double currentLongitude = null;
-	private Double latitude;
-	private Double longitude;
+	private Double taskLatitude;
+	private Double taskLongitude;
 
 	private LocationManager locationManager;
 
