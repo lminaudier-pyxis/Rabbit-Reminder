@@ -80,6 +80,12 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 		setCurrentGpsLocation(null);
 	}
 
+	public void onCoordinatesTouched(Double x, Double y) {
+		setOverlayOnCoordinates(x, y);
+		setCurrentLocation(x, y);
+		setTaskCoordinates();
+	}
+
 	@Override
 	public void setIntent (Intent newIntent) {
 		super.setIntent(newIntent);
@@ -256,8 +262,4 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 	private Drawable drawable;
 
 	private RabbitItemizedOverlay itemizedOverlay;
-
-	public void onCoordinatesTouched(Double x, Double y) {
-		Toast.makeText(this, "coordinates: " + x + "," + y, 1000).show();
-	}
 }

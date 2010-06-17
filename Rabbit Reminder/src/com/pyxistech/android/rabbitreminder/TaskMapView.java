@@ -44,6 +44,10 @@ public class TaskMapView extends MapView {
 		return super.onTouchEvent(event);
 	}
 
+	public void setCoordinatesTouchedListener(CoordinatesTouchedListener touchedListener) {
+		this.touchedListener = touchedListener;
+	}
+
 	private GeoPoint geoPointFromPixels(int x, int y) {
 		return this.getProjection().fromPixels(x, y);
 	}
@@ -52,10 +56,6 @@ public class TaskMapView extends MapView {
 		if (touchedListener != null) {
 			touchedListener.onCoordinatesTouched( point.getLatitudeE6() / 1E6, point.getLongitudeE6() /1E6);
 		}
-	}
-
-	public void setCoordinatesTouchedListener(CoordinatesTouchedListener touchedListener) {
-		this.touchedListener = touchedListener;
 	}
 
 	private double movementLength(MotionEvent event) {
