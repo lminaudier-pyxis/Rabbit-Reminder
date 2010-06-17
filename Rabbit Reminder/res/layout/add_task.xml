@@ -10,7 +10,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent" 
 		android:clickable="true"
-		android:apiKey="0t31wYhXvCx6P8EOW_C5Y0_T7idUk-7oBVpkIGg" />
+		android:apiKey="@string/maps_api_key" />
 
 	<LinearLayout 
 		android:layout_width="fill_parent"
