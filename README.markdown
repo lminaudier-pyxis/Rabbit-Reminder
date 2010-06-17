@@ -52,8 +52,8 @@ This application use the _Google Maps API_ to work, so you need a _Maps API key_
 
 To set up the key, simply create a XML file called `\Rabbit Reminder\res\values\keys.xml` with the following content :
 
-  <?xml version="1.0" encoding="utf-8"?>
-  <resources>
-	  <string name="maps_api_key">[[YOUR API KEY GOES HERE]]</string>
-  </resources>
+	<?xml version="1.0" encoding="utf-8"?>
+	<resources>
+		<string name="maps_api_key">[[YOUR API KEY GOES HERE]]</string>
+	</resources>
 
