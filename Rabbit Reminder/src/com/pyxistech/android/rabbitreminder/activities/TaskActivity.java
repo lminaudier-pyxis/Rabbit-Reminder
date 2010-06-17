@@ -20,14 +20,14 @@ import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.pyxistech.android.rabbitreminder.R;
 import com.pyxistech.android.rabbitreminder.RabbitItemizedOverlay;
+import com.pyxistech.android.rabbitreminder.TaskMapView;
 import com.pyxistech.android.rabbitreminder.models.TaskItem;
 
-public class TaskActivity extends MapActivity implements LocationListener {
+public class TaskActivity extends MapActivity implements LocationListener, TaskMapView.CoordinatesTouchedListener {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -80,6 +80,12 @@ public class TaskActivity extends MapActivity implements LocationListener {
 		setCurrentGpsLocation(null);
 	}
 
+	public void onCoordinatesTouched(Double x, Double y) {
+		setOverlayOnCoordinates(x, y);
+		setCurrentLocation(x, y);
+		setTaskCoordinates();
+	}
+
 	@Override
 	public void setIntent (Intent newIntent) {
 		super.setIntent(newIntent);
@@ -89,8 +95,9 @@ public class TaskActivity extends MapActivity implements LocationListener {
 	}
 
 	private void initializeOverlays() {
-		mapView = (MapView) findViewById(R.id.mapview);
+		mapView = (TaskMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
+		mapView.setCoordinatesTouchedListener(this);
 		
 		mapOverlays = mapView.getOverlays();
 		drawable = this.getResources().getDrawable(android.R.drawable.star_on);
@@ -248,7 +255,7 @@ public class TaskActivity extends MapActivity implements LocationListener {
 
 	private LocationManager locationManager;
 
-	private MapView mapView;
+	private TaskMapView mapView;
 
 	private List<Overlay> mapOverlays;
 
