@@ -166,8 +166,10 @@ public class TaskActivity extends MapActivity implements LocationListener {
 
 	private void setOverlayAndMoveToCoordinates(Double latitude,
 			Double longitude) {
-		setOverlayOnCoordinates(latitude, longitude);
-		mapView.getController().animateTo(createGeoPointFromCoordinates(latitude, longitude));
+		if (latitude != null && longitude != null) {
+			setOverlayOnCoordinates(latitude, longitude);
+			mapView.getController().animateTo(createGeoPointFromCoordinates(latitude, longitude));
+		}
 	}
 
 	private void setTaskCoordinates() {

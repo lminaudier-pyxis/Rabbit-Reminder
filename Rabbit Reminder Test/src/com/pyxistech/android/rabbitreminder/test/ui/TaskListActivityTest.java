@@ -33,7 +33,6 @@ public class TaskListActivityTest extends
 
 		try {
 			runTestOnUiThread(new Runnable() {
-				@Override
 				public void run() {
 					buildList();
 				}
