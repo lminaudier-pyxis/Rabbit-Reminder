@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -139,14 +139,12 @@ public class TaskActivity extends MapActivity implements LocationListener {
 		EditText taskText = (EditText) findViewById(R.id.new_task_text);
 
 		taskText.setText(text);
-		TextView locationView = (TextView) TaskActivity.this.findViewById(R.id.location_display_text);
-		locationView.setText("latitude: " + taskLatitude + " - longitude: " + taskLongitude);
 		
 		addTaskButton.setOnClickListener(okButtonListener);
 		
 		setCurrentGpsLocation(null);
 		
-		Button setMyLocationButton = (Button) TaskActivity.this.findViewById(R.id.set_current_location_button);
+		ImageButton setMyLocationButton = (ImageButton) TaskActivity.this.findViewById(R.id.set_current_location_button);
 		setMyLocationButton.setOnClickListener(setMyLocationButtonListener);
 	}
 
@@ -207,9 +205,6 @@ public class TaskActivity extends MapActivity implements LocationListener {
 			setTaskCoordinates();
 			
 			updateMapView();
-			
-			TextView locationView = (TextView) TaskActivity.this.findViewById(R.id.location_display_text);
-			locationView.setText("latitude: " + taskLatitude + " - longitude: " + taskLongitude);
 		}
 
 		private void updateMapView() {

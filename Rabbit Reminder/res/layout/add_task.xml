@@ -5,17 +5,27 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
+	<TextView 
+		android:id="@+id/new_task_name"
+		android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+		android:text="Task Name" 
+		android:textColor="#444444"
+		android:paddingTop="5dip"
+		/>
+	
  	<RelativeLayout 
-        android:id="@+id/InnerRelativeLayout"
+        android:id="@+id/taskname_form_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" >
-
+				
         <Button 
         	android:text="@string/validation_button_text"
             android:id="@+id/add_task_button"
             android:layout_alignParentRight="true" 
-            android:layout_width="wrap_content"
+            android:layout_width="50dip"
             android:layout_height="wrap_content">
         </Button>
 
@@ -27,26 +37,28 @@
             android:singleLine="true">
         </EditText>
     </RelativeLayout>
-		
-	<Button
-		android:id="@+id/set_current_location_button"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Set my position as location" />
-		
-	<TextView
-		android:id="@+id/location_display_text"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="(location)"
-		android:textColor="#390000" />
-		
-	<com.google.android.maps.MapView
-        android:id="@+id/mapview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:clickable="true"
-        android:apiKey="0t31wYhXvCx6P8EOW_C5Y0_T7idUk-7oBVpkIGg"
-    />
+
+	<FrameLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		>
+			
+		<com.google.android.maps.MapView
+	        android:id="@+id/mapview"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:clickable="true"
+	        android:apiKey="0t31wYhXvCx6P8EOW_C5Y0_T7idUk-7oBVpkIGg"
+	    />
+	    
+	    <ImageButton
+			android:id="@+id/set_current_location_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom|right"
+			android:src="@android:drawable/star_on"
+		/>
+    
+    </FrameLayout>
 		
 </LinearLayout>
