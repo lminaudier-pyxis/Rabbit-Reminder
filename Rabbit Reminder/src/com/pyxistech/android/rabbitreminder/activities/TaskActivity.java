@@ -55,32 +55,6 @@ public class TaskActivity extends MapActivity implements LocationListener {
 		refreshUi();
 	}
 
-	private void setOverlayOnCoordinates(Double latitude, Double longitude) {
-		GeoPoint point = createGeoPointFromCoordinates(latitude, longitude);
-		OverlayItem overlayitem = new OverlayItem(point, "", "");
-		itemizedOverlay.setOverlay(overlayitem);
-		mapOverlays.clear();
-		mapOverlays.add(itemizedOverlay);
-	}
-
-	private GeoPoint createGeoPointFromCoordinates(Double latitude, Double longitude) {
-		Double latitudeE6 = latitude*1E6;
-		Double longitudeE6 = longitude*1E6;
-		
-		GeoPoint point = new GeoPoint(latitudeE6.intValue(), longitudeE6.intValue());
-		return point;
-	}
-
-	private void initializeOverlays() {
-		mapView = (MapView) findViewById(R.id.mapview);
-		mapView.setBuiltInZoomControls(true);
-		
-		mapOverlays = mapView.getOverlays();
-		drawable = this.getResources().getDrawable(android.R.drawable.star_on);
-		
-		itemizedOverlay = new RabbitItemizedOverlay(drawable);
-	}
-
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -112,6 +86,24 @@ public class TaskActivity extends MapActivity implements LocationListener {
 		
 		getParametersFromBundle(newIntent.getExtras());
 		refreshUi();
+	}
+
+	private void initializeOverlays() {
+		mapView = (MapView) findViewById(R.id.mapview);
+		mapView.setBuiltInZoomControls(true);
+		
+		mapOverlays = mapView.getOverlays();
+		drawable = this.getResources().getDrawable(android.R.drawable.star_on);
+		
+		itemizedOverlay = new RabbitItemizedOverlay(drawable);
+	}
+
+	private GeoPoint createGeoPointFromCoordinates(Double latitude, Double longitude) {
+		Double latitudeE6 = latitude*1E6;
+		Double longitudeE6 = longitude*1E6;
+		
+		GeoPoint point = new GeoPoint(latitudeE6.intValue(), longitudeE6.intValue());
+		return point;
 	}
 
 	private Bundle getBundle() {
@@ -164,6 +156,14 @@ public class TaskActivity extends MapActivity implements LocationListener {
 			setTaskCoordinates();
 			setOverlayAndMoveToCoordinates(taskLatitude, taskLongitude);
 		}
+	}
+
+	private void setOverlayOnCoordinates(Double latitude, Double longitude) {
+		GeoPoint point = createGeoPointFromCoordinates(latitude, longitude);
+		OverlayItem overlayitem = new OverlayItem(point, "", "");
+		itemizedOverlay.setOverlay(overlayitem);
+		mapOverlays.clear();
+		mapOverlays.add(itemizedOverlay);
 	}
 
 	private void setOverlayAndMoveToCoordinates(Double latitude,
