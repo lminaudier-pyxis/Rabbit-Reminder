@@ -4,7 +4,6 @@
 	android:layout_width="fill_parent" 
 	android:layout_height="wrap_content">
 
-
 	<com.google.android.maps.MapView
 		android:id="@+id/mapview" 
 		android:layout_width="fill_parent"
@@ -16,7 +15,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" 
 		android:orientation="vertical"
-		android:background="#ddCCCCCC"
+		android:background="#DDCCCCCC"
 		>
 
 		<TextView 
@@ -25,33 +24,44 @@
 			android:layout_height="wrap_content"
 			android:paddingLeft="8dip"
 			android:layout_alignParentLeft="true" 
-			android:text="Task Name"
+			android:text="@string/task_name_label"
 			android:textSize="15dip"
 			android:textColor="#000000" 
 			android:paddingTop="5dip"
 			/>
 
-		<RelativeLayout android:id="@+id/taskname_form_layout"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
+		<RelativeLayout 
+			android:id="@+id/taskname_form_layout"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
 			android:layout_alignParentBottom="true">
 
-			<Button android:text="@string/validation_button_text"
-				android:id="@+id/add_task_button" android:layout_alignParentRight="true"
-				android:layout_width="50dip" android:layout_height="wrap_content">
+			<Button 
+				android:text="@string/validation_button_text"
+				android:id="@+id/add_task_button" 
+				android:layout_alignParentRight="true"
+				android:layout_width="50dip" 
+				android:layout_height="wrap_content">
 			</Button>
 
-			<EditText android:id="@+id/new_task_text"
-				android:layout_width="fill_parent" android:layout_toLeftOf="@id/add_task_button"
-				android:layout_height="wrap_content" android:singleLine="true">
+			<EditText 
+				android:id="@+id/new_task_text"
+				android:layout_width="fill_parent" 
+				android:layout_toLeftOf="@id/add_task_button"
+				android:layout_height="wrap_content" 
+				android:singleLine="true">
 			</EditText>
 		</RelativeLayout>
 
 	</LinearLayout>
 
 
-	<ImageButton android:id="@+id/set_current_location_button"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_gravity="bottom|right" android:src="@android:drawable/star_on" />
+	<ImageButton 
+		android:id="@+id/set_current_location_button"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|right" 
+		android:src="@android:drawable/star_on" />
 
 
 </FrameLayout>
