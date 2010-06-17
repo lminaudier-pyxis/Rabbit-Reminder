@@ -43,3 +43,17 @@ to update the build script. You can now build the test projet with `ant release`
 - Check that both _emulator_ and _sdk images_ are **up-to-date**
 - Check the state of your `ANDROID_HOME` environment variable
 - Check that the path inside your _local.properties_ file points to the right directory (the root of the android sdk)
+
+
+Setting Maps API key
+--------------------
+
+This application use the _Google Maps API_ to work, so you need a _Maps API key_ in order to make it work properly (refer to the Android document if you don't know how to generate a _Maps API key_).
+
+To set up the key, simply create a XML file called `\Rabbit Reminder\res\values\keys.xml` with the following content :
+
+`<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="maps_api_key">[[YOUR API KEY GOES HERE]]</string>
+</resources>`
+
