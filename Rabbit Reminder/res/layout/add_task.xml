@@ -5,18 +5,28 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-  
-	<EditText
-		android:id="@+id/new_task_text"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:singleLine="true" />
-	  	
-	<Button
-		android:id="@+id/add_task_button"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" 
-		android:text="@string/validation_button_text" />
+ 	<RelativeLayout 
+        android:id="@+id/InnerRelativeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+
+        <Button 
+        	android:text="@string/validation_button_text"
+            android:id="@+id/add_task_button"
+            android:layout_alignParentRight="true" 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </Button>
+
+        <EditText 
+            android:id="@+id/new_task_text"
+            android:layout_width="fill_parent"
+            android:layout_toLeftOf="@id/add_task_button"
+            android:layout_height="wrap_content"
+            android:singleLine="true">
+        </EditText>
+    </RelativeLayout>
 		
 	<Button
 		android:id="@+id/set_current_location_button"
