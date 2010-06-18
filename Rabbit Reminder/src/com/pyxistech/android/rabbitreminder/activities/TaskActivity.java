@@ -39,17 +39,10 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 		initializeOverlays();
 		
 		if (savedInstanceState == null) {
-			if (getBundle() != null) {
-				getParametersFromBundle(getBundle());
-			}
-			mapView.getController().setZoom(11);
+			restoreOverlayFromBundle();
 		}
 		else {
-			getParametersFromSavedInstanceState(savedInstanceState);
-		}
-		
-		if (taskLatitude != null && taskLongitude != null) {
-			setOverlayOnCoordinates(taskLatitude, taskLongitude);
+			restoreOverlayFromSavedInstance(savedInstanceState);
 		}
 
 		refreshUi();
@@ -60,8 +53,11 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 		super.onSaveInstanceState(outState);
 		
 		outState.putInt("index", index);
-		outState.putDouble("latitude", taskLatitude);
-		outState.putDouble("longitude", taskLongitude);
+		outState.putBoolean("taskOverlayExist", isSetTaskCoordinates());
+		if (isSetTaskCoordinates()) {
+			outState.putDouble("latitude", taskLatitude);
+			outState.putDouble("longitude", taskLongitude);
+		}
 	}
 
 	public void onLocationChanged(Location location) {
@@ -94,6 +90,28 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 		refreshUi();
 	}
 
+	private void restoreOverlayFromSavedInstance(Bundle savedInstanceState) {
+		getParametersFromSavedInstanceState(savedInstanceState);
+		if (isSetTaskCoordinates()) {
+			setOverlayOnCoordinates(taskLatitude, taskLongitude);
+		}
+	}
+
+	private void restoreOverlayFromBundle() {
+		if (getBundle() != null) {
+			getParametersFromBundle(getBundle());
+		}
+		
+		if (isSetTaskCoordinates()) {
+			mapView.getController().setZoom(11);
+			setOverlayAndMoveToCoordinates(taskLatitude, taskLongitude);
+		}
+	}
+
+	private boolean isSetTaskCoordinates() {
+		return taskLatitude != null && taskLongitude != null;
+	}
+
 	private void initializeOverlays() {
 		mapView = (TaskMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
@@ -119,8 +137,10 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 	
 	private void getParametersFromSavedInstanceState(Bundle savedInstanceState) {
 		index = savedInstanceState.getInt("index");
-		taskLatitude = savedInstanceState.getDouble("latitude");
-		taskLongitude = savedInstanceState.getDouble("longitude");
+		if (savedInstanceState.getBoolean("taskOverlayExist")) {
+			taskLatitude = savedInstanceState.getDouble("latitude");
+			taskLongitude = savedInstanceState.getDouble("longitude");
+		}
 	}
 
 	private void getParametersFromBundle(Bundle bundle) {
@@ -159,7 +179,7 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 		else 
 			setCurrentLocation(null, null);
 	
-		if (taskLatitude == null || taskLongitude == null) {
+		if ((taskLatitude == null || taskLongitude == null) && index == -1) {
 			setTaskCoordinates();
 			setOverlayAndMoveToCoordinates(taskLatitude, taskLongitude);
 		}
