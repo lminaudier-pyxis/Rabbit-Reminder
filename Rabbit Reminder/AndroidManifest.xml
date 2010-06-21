@@ -19,6 +19,8 @@
         <provider android:name=".providers.TaskListProvider" android:authorities="com.pyxistech.rabbitreminder.models.TaskList" />
         
         <uses-library android:name="com.google.android.maps" />
+        
+        <service android:name=".services.AlertService" />
     </application>
     
     <uses-sdk android:minSdkVersion="3" />

@@ -21,6 +21,7 @@ import com.pyxistech.android.rabbitreminder.R;
 import com.pyxistech.android.rabbitreminder.adaptaters.TaskListAdapter;
 import com.pyxistech.android.rabbitreminder.models.TaskItem;
 import com.pyxistech.android.rabbitreminder.models.TaskList;
+import com.pyxistech.android.rabbitreminder.services.AlertService;
 
 public class TaskListActivity extends ListActivity {
 	
@@ -45,6 +46,8 @@ public class TaskListActivity extends ListActivity {
 
 		refreshList(adapter);
 
+		startService(new Intent(this, AlertService.class));
+		
     	setListAdapter(adapter);
     	registerForContextMenu(getListView());
     }
