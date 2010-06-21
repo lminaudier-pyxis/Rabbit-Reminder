@@ -2,6 +2,7 @@ package com.pyxistech.android.rabbitreminder.adaptaters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,12 @@ public class TaskListAdapter extends BaseAdapter {
 		}
 		
 		wrapper.getCheckedTextView().setText(list.getItemAt(position).getText());
-		wrapper.getCheckedTextView().setChecked(list.getItemAt(position).isDone());
+		boolean isDone = list.getItemAt(position).isDone();
+		
+		wrapper.getCheckedTextView().setChecked(isDone);
+		if( isDone ){
+			wrapper.getCheckedTextView().setPaintFlags(wrapper.getCheckedTextView().getPaintFlags()|Paint.STRIKE_THRU_TEXT_FLAG);
+		}
 		
 		return convertView;
 	}
