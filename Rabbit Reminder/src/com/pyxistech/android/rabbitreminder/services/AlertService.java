@@ -48,13 +48,15 @@ public class AlertService extends Service {
 						Location myLocation = getLocation();
 						Vector<TaskItem> tasks = getUndoneTasks();
 						
-						for (TaskItem taskItem : tasks) {
-							Location taskItemLocation = buildLocationFromTaskItem(taskItem);
-							
-							if (isTaskLocationNearMyLocation(myLocation, taskItemLocation)) {
-								Intent intent = buildNotificationIntent(taskItem);
-								notifyUser(taskItem, intent);
-								threadWait(10000);
+						if (myLocation != null) {
+							for (TaskItem taskItem : tasks) {
+								Location taskItemLocation = buildLocationFromTaskItem(taskItem);
+								
+								if (isTaskLocationNearMyLocation(myLocation, taskItemLocation)) {
+									Intent intent = buildNotificationIntent(taskItem);
+									notifyUser(taskItem, intent);
+									threadWait(10000);
+								}
 							}
 						}
 
