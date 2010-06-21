@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -184,7 +185,9 @@ public class TaskListActivity extends ListActivity {
 	@Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
     	CheckedTextView checkableItem = (CheckedTextView) v.findViewById(R.id.task_item);
-    	checkableItem.toggle();
+    	checkableItem.toggle();   	
+   		checkableItem.setPaintFlags(checkableItem.getPaintFlags()^Paint.STRIKE_THRU_TEXT_FLAG);
+    	
     	getModel(position).setDone(checkableItem.isChecked());
     	
     	ContentValues values = new ContentValues();
