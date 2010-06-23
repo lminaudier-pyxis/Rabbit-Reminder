@@ -46,15 +46,33 @@ public class AlertListAdapter extends BaseAdapter {
 			wrapper = (AlertViewWrapper) convertView.getTag();
 		}
 		
-		wrapper.getCheckedTextView().setText(list.getItemAt(position).getText());
-		boolean isDone = list.getItemAt(position).isDone();
+		setItemText(position, wrapper);
 		
-		wrapper.getCheckedTextView().setChecked(isDone);
-		if( isDone ){
-			wrapper.getCheckedTextView().setPaintFlags(wrapper.getCheckedTextView().getPaintFlags()|Paint.STRIKE_THRU_TEXT_FLAG);
-		}
+		checkItemIfDone(position, wrapper);
+		strikeThroughtItemIfDone(position, wrapper);
 		
 		return convertView;
+	}
+
+	private void setItemText(int position, AlertViewWrapper wrapper) {
+		wrapper.getCheckedTextView().setText(list.getItemAt(position).getText());
+	}
+
+	private void strikeThroughtItemIfDone(int position, AlertViewWrapper wrapper) {
+		if( isDone(position) ){
+			wrapper.getCheckedTextView().setPaintFlags(wrapper.getCheckedTextView().getPaintFlags()|Paint.STRIKE_THRU_TEXT_FLAG);
+		}
+		else {
+			wrapper.getCheckedTextView().setPaintFlags(wrapper.getCheckedTextView().getPaintFlags()& (~Paint.STRIKE_THRU_TEXT_FLAG));
+		}
+	}
+
+	private boolean isDone(int position) {
+		return list.getItemAt(position).isDone();
+	}
+
+	private void checkItemIfDone(int position, AlertViewWrapper wrapper) {
+		wrapper.getCheckedTextView().setChecked(isDone(position));
 	}
 
 	public AlertList getList(){
