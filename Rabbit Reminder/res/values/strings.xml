@@ -12,7 +12,8 @@
     
     <string name="delete_item_confirmation_dialog_title">Delete</string>
     <string name="delete_item_confirmation_dialog_text">This item will be deleted.</string>
-    <string name="gps_availability_alert">GPS not available</string>
+    <string name="gps_availability_alert">GPS not available!</string>
     
     <string name="task_name_label">Task Name</string>
+    <string name="location_not_set_alert">You must set a location for this alert!</string>
 </resources>

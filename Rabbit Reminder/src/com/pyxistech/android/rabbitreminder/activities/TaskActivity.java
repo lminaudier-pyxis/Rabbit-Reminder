@@ -252,17 +252,22 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 	
 	private OnClickListener okButtonListener = new OnClickListener() {
 		public void onClick(View v) {
-			Intent data = new Intent();
-			
-			EditText taskText = (EditText) findViewById(R.id.new_task_text);
-			String text = taskText.getText().toString();
-			data.putExtra("newTaskText", text);
-			data.putExtra("latitude", taskLatitude);
-			data.putExtra("longitude", taskLongitude);
-			data.putExtra("index", index);
-	
-			TaskActivity.this.setResult(Activity.RESULT_OK, data);
-			TaskActivity.this.finish();
+			if(isSetTaskCoordinates()) {
+				Intent data = new Intent();
+				
+				EditText taskText = (EditText) findViewById(R.id.new_task_text);
+				String text = taskText.getText().toString();
+				data.putExtra("newTaskText", text);
+				data.putExtra("latitude", taskLatitude);
+				data.putExtra("longitude", taskLongitude);
+				data.putExtra("index", index);
+		
+				TaskActivity.this.setResult(Activity.RESULT_OK, data);
+				TaskActivity.this.finish();
+			} else {
+				Toast toast = Toast.makeText(TaskActivity.this, R.string.location_not_set_alert, Toast.LENGTH_LONG);
+				toast.show();
+			}
 		}
 	};
 	

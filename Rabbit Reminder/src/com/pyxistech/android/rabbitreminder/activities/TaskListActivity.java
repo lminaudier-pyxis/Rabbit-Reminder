@@ -140,8 +140,8 @@ public class TaskListActivity extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     	if( intent != null ){
 	    	String data = intent.getExtras().get("newTaskText").toString();
-	    	Double latitude = intent.getExtras().getDouble("latitude");
-	    	Double longitude = intent.getExtras().getDouble("longitude");
+    		Double latitude = intent.getExtras().getDouble("latitude");
+    		Double longitude = intent.getExtras().getDouble("longitude");
 	    	int index = intent.getExtras().getInt("index");
 	    	if (index == -1) {
 	    		addItemInListAndDatabase(data, latitude, longitude);
