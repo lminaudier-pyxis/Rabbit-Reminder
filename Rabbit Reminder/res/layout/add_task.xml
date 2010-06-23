@@ -25,7 +25,7 @@
 			android:layout_height="wrap_content"
 			android:paddingLeft="8dip"
 			android:layout_alignParentLeft="true" 
-			android:text="@string/task_name_label"
+			android:text="@string/alert_name_label"
 			android:textSize="15dip"
 			android:textColor="#000000" 
 			android:paddingTop="5dip"

@@ -244,7 +244,7 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 	
 		private void checkGPSAvailability() {
 			if (currentLatitude == null || currentLongitude == null) {
-				Toast toast = Toast.makeText(getApplicationContext(), R.string.gps_availability_alert, Toast.LENGTH_SHORT);
+				Toast toast = Toast.makeText(getApplicationContext(), R.string.gps_availability_warning, Toast.LENGTH_SHORT);
 				toast.show();
 			}
 		}
@@ -265,7 +265,7 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 				TaskActivity.this.setResult(Activity.RESULT_OK, data);
 				TaskActivity.this.finish();
 			} else {
-				Toast toast = Toast.makeText(TaskActivity.this, R.string.location_not_set_alert, Toast.LENGTH_LONG);
+				Toast toast = Toast.makeText(TaskActivity.this, R.string.location_not_set_warning, Toast.LENGTH_LONG);
 				toast.show();
 			}
 		}
