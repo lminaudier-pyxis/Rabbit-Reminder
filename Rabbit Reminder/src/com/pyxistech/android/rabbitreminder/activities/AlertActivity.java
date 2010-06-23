@@ -251,11 +251,19 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	};
 	
 	private OnClickListener okButtonListener = new OnClickListener() {
+		
 		public void onClick(View v) {
-			if(isSetTaskCoordinates()) {
+		EditText taskText = (EditText) findViewById(R.id.new_task_text);
+			if(!isSetTaskCoordinates()) {
+				Toast toast = Toast.makeText(AlertActivity.this, R.string.location_not_set_warning, Toast.LENGTH_LONG);
+				toast.show();
+			}
+			else if (taskText.getText().toString().equals("")) {
+				Toast toast = Toast.makeText(AlertActivity.this, R.string.alert_name_not_set_warning, Toast.LENGTH_LONG);
+				toast.show();
+			} else {
 				Intent data = new Intent();
 				
-				EditText taskText = (EditText) findViewById(R.id.new_task_text);
 				String text = taskText.getText().toString();
 				data.putExtra("newTaskText", text);
 				data.putExtra("latitude", taskLatitude);
@@ -264,9 +272,6 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		
 				AlertActivity.this.setResult(Activity.RESULT_OK, data);
 				AlertActivity.this.finish();
-			} else {
-				Toast toast = Toast.makeText(AlertActivity.this, R.string.location_not_set_warning, Toast.LENGTH_LONG);
-				toast.show();
 			}
 		}
 	};

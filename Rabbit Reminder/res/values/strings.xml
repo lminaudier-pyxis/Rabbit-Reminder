@@ -14,5 +14,6 @@
     <string name="gps_availability_warning">GPS not available!</string>
     
     <string name="alert_name_label">Alert Name</string>
+    <string name="alert_name_not_set_warning">You must specify a name!</string>
     <string name="location_not_set_warning">You must set a location for this alert!</string>
 </resources>
