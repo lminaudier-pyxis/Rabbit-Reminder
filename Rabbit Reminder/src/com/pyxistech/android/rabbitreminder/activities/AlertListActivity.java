@@ -19,31 +19,31 @@ import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.pyxistech.android.rabbitreminder.R;
-import com.pyxistech.android.rabbitreminder.adaptaters.TaskListAdapter;
-import com.pyxistech.android.rabbitreminder.models.TaskItem;
-import com.pyxistech.android.rabbitreminder.models.TaskList;
+import com.pyxistech.android.rabbitreminder.adaptaters.AlertListAdapter;
+import com.pyxistech.android.rabbitreminder.models.AlertItem;
+import com.pyxistech.android.rabbitreminder.models.AlertList;
 import com.pyxistech.android.rabbitreminder.services.AlertService;
 
-public class TaskListActivity extends ListActivity {
+public class AlertListActivity extends ListActivity {
 	
     private static final String[] PROJECTION = new String[] {
-        TaskList.Items._ID, // 0
-        TaskList.Items.NAME, // 1
-        TaskList.Items.DONE, // 2
-        TaskList.Items.LATITUDE, // 3
-        TaskList.Items.LONGITUDE // 4
+        AlertList.Items._ID, // 0
+        AlertList.Items.NAME, // 1
+        AlertList.Items.DONE, // 2
+        AlertList.Items.LATITUDE, // 3
+        AlertList.Items.LONGITUDE // 4
     };
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
-    	setContentView(R.layout.tasklist);
+    	setContentView(R.layout.alert_list);
     	    	
     	Resources res = getResources();
     	getListView().setCacheColorHint(0);
     	getListView().setDivider(res.getDrawable(android.R.drawable.divider_horizontal_bright));
 
-    	TaskListAdapter adapter = new TaskListAdapter(this, new TaskList());
+    	AlertListAdapter adapter = new AlertListAdapter(this, new AlertList());
 
 		refreshList(adapter);
 
@@ -57,7 +57,7 @@ public class TaskListActivity extends ListActivity {
     public void onSaveInstanceState(Bundle outState) {
     	super.onSaveInstanceState(outState);
     	
-    	TaskList list = getTaskListAdapter().getList();
+    	AlertList list = getTaskListAdapter().getList();
 		outState.putParcelable("TaskList", list);
     }
     
@@ -101,9 +101,9 @@ public class TaskListActivity extends ListActivity {
     }
     
     private void editItem(final long index) {
-		Intent intent = new Intent(this, TaskActivity.class);
+		Intent intent = new Intent(this, AlertActivity.class);
 		intent.putExtra("index", (int) index);
-		TaskItem item = getTaskListAdapter().getItem((int) index);
+		AlertItem item = getTaskListAdapter().getItem((int) index);
 		intent.putExtra("item", item);
 		
 		startActivityForResult(intent, 0);
@@ -124,13 +124,13 @@ public class TaskListActivity extends ListActivity {
     }
     
     private void addItem() {
-		Intent intent = new Intent(this, TaskActivity.class);
+		Intent intent = new Intent(this, AlertActivity.class);
 		startActivityForResult(intent, 0);
 	}
 
 	private void deleteItemFromListAndDatabase(final long index) {
-		getContentResolver().delete(TaskList.Items.CONTENT_URI, 
-				TaskList.Items._ID + "=" + getTaskListAdapter().getItem((int)index).getIndex(), 
+		getContentResolver().delete(AlertList.Items.CONTENT_URI, 
+				AlertList.Items._ID + "=" + getTaskListAdapter().getItem((int)index).getIndex(), 
 				null);
 		getTaskListAdapter().deleteItem((int) index);
 	}
@@ -156,29 +156,29 @@ public class TaskListActivity extends ListActivity {
 		getTaskListAdapter().updateItem(index, data);
 
 		ContentValues values = new ContentValues();
-		values.put(TaskList.Items.NAME, data);
-		values.put(TaskList.Items.DONE, getTaskListAdapter().getItem(index).isDone() ? 1 : 0);
-		values.put(TaskList.Items.LATITUDE, latitude);
-		values.put(TaskList.Items.LONGITUDE, longitude);
-		getContentResolver().update(TaskList.Items.CONTENT_URI, 
+		values.put(AlertList.Items.NAME, data);
+		values.put(AlertList.Items.DONE, getTaskListAdapter().getItem(index).isDone() ? 1 : 0);
+		values.put(AlertList.Items.LATITUDE, latitude);
+		values.put(AlertList.Items.LONGITUDE, longitude);
+		getContentResolver().update(AlertList.Items.CONTENT_URI, 
 				values,
-				TaskList.Items._ID + "=" + getTaskListAdapter().getItem(index).getIndex(), 
+				AlertList.Items._ID + "=" + getTaskListAdapter().getItem(index).getIndex(), 
 				null);
 	}
 
 	private void refreshListFromDatabase() {
-		refreshList((TaskListAdapter)getListAdapter());
+		refreshList((AlertListAdapter)getListAdapter());
 	}
 
 	private void addItemInListAndDatabase(String data, Double latitude, Double longitude) {
-		getTaskListAdapter().addItem(new TaskItem(data, false, latitude, longitude));
+		getTaskListAdapter().addItem(new AlertItem(data, false, latitude, longitude));
 
 		ContentValues values = new ContentValues();
-		values.put(TaskList.Items.NAME, data);
-		values.put(TaskList.Items.DONE, 0);
-		values.put(TaskList.Items.LATITUDE, latitude);
-		values.put(TaskList.Items.LONGITUDE, longitude);
-		getContentResolver().insert(TaskList.Items.CONTENT_URI, values);
+		values.put(AlertList.Items.NAME, data);
+		values.put(AlertList.Items.DONE, 0);
+		values.put(AlertList.Items.LATITUDE, latitude);
+		values.put(AlertList.Items.LONGITUDE, longitude);
+		getContentResolver().insert(AlertList.Items.CONTENT_URI, values);
 	}
 
 	@Override
@@ -190,26 +190,26 @@ public class TaskListActivity extends ListActivity {
     	getModel(position).setDone(checkableItem.isChecked());
     	
     	ContentValues values = new ContentValues();
-    	values.put(TaskList.Items.DONE, checkableItem.isChecked() ? 1 : 0);
-    	getContentResolver().update(TaskList.Items.CONTENT_URI, 
-    			values, TaskList.Items._ID + "=" + getTaskListAdapter().getItem((int)position).getIndex(), 
+    	values.put(AlertList.Items.DONE, checkableItem.isChecked() ? 1 : 0);
+    	getContentResolver().update(AlertList.Items.CONTENT_URI, 
+    			values, AlertList.Items._ID + "=" + getTaskListAdapter().getItem((int)position).getIndex(), 
 				null);
     }
     
-    private TaskItem getModel(int position) {
+    private AlertItem getModel(int position) {
     	return getTaskListAdapter().getItem(position);
     }
 
-	private TaskListAdapter getTaskListAdapter() {
-		return ((TaskListAdapter) getListAdapter());
+	private AlertListAdapter getTaskListAdapter() {
+		return ((AlertListAdapter) getListAdapter());
 	}
      
-    public TaskList refreshList(TaskListAdapter adapter) {
+    public AlertList refreshList(AlertListAdapter adapter) {
     	adapter.clearList();
     	Cursor cursor = getRefreshedCursor();
         if( cursor.moveToFirst() ) {
 			do {
-				adapter.addItem( new TaskItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getDouble(3), cursor.getDouble(4)) );
+				adapter.addItem( new AlertItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getDouble(3), cursor.getDouble(4)) );
 	        } while(cursor.moveToNext());
         }
     	
@@ -217,9 +217,9 @@ public class TaskListActivity extends ListActivity {
     }
 
 	private Cursor getRefreshedCursor() {
-    	return managedQuery(TaskList.Items.CONTENT_URI, 
+    	return managedQuery(AlertList.Items.CONTENT_URI, 
     				PROJECTION, null, null, 
-    				TaskList.Items.DEFAULT_SORT_ORDER);
+    				AlertList.Items.DEFAULT_SORT_ORDER);
 	}
     
     public static final int ADD_ITEM = Menu.FIRST + 1;

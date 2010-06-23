@@ -5,8 +5,8 @@ import com.pyxistech.android.rabbitreminder.R;
 import android.view.View;
 import android.widget.CheckedTextView;
 
-public class TaskViewWrapper {
-	public TaskViewWrapper(View taskItem) {
+public class AlertViewWrapper {
+	public AlertViewWrapper(View taskItem) {
 		this.base = taskItem;
 	}
 	

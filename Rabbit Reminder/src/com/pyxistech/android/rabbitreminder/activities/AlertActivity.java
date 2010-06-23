@@ -24,17 +24,17 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.pyxistech.android.rabbitreminder.R;
 import com.pyxistech.android.rabbitreminder.RabbitItemizedOverlay;
-import com.pyxistech.android.rabbitreminder.TaskMapView;
-import com.pyxistech.android.rabbitreminder.models.TaskItem;
+import com.pyxistech.android.rabbitreminder.AlertMapView;
+import com.pyxistech.android.rabbitreminder.models.AlertItem;
 
-public class TaskActivity extends MapActivity implements LocationListener, TaskMapView.CoordinatesTouchedListener {
+public class AlertActivity extends MapActivity implements LocationListener, AlertMapView.CoordinatesTouchedListener {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
-		setContentView(R.layout.add_task);
+		setContentView(R.layout.alert_show);
 		
 		initializeOverlays();
 		
@@ -113,7 +113,7 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 	}
 
 	private void initializeOverlays() {
-		mapView = (TaskMapView) findViewById(R.id.mapview);
+		mapView = (AlertMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setCoordinatesTouchedListener(this);
 		
@@ -144,7 +144,7 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 	}
 
 	private void getParametersFromBundle(Bundle bundle) {
-		TaskItem item = bundle.getParcelable("item");
+		AlertItem item = bundle.getParcelable("item");
 		if( item != null ) {
 			text = item.getText();
 			
@@ -165,7 +165,7 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 		
 		setCurrentGpsLocation(null);
 		
-		ImageButton setMyLocationButton = (ImageButton) TaskActivity.this.findViewById(R.id.set_current_location_button);
+		ImageButton setMyLocationButton = (ImageButton) AlertActivity.this.findViewById(R.id.set_current_location_button);
 		setMyLocationButton.setOnClickListener(setMyLocationButtonListener);
 	}
 
@@ -262,10 +262,10 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 				data.putExtra("longitude", taskLongitude);
 				data.putExtra("index", index);
 		
-				TaskActivity.this.setResult(Activity.RESULT_OK, data);
-				TaskActivity.this.finish();
+				AlertActivity.this.setResult(Activity.RESULT_OK, data);
+				AlertActivity.this.finish();
 			} else {
-				Toast toast = Toast.makeText(TaskActivity.this, R.string.location_not_set_warning, Toast.LENGTH_LONG);
+				Toast toast = Toast.makeText(AlertActivity.this, R.string.location_not_set_warning, Toast.LENGTH_LONG);
 				toast.show();
 			}
 		}
@@ -280,7 +280,7 @@ public class TaskActivity extends MapActivity implements LocationListener, TaskM
 
 	private LocationManager locationManager;
 
-	private TaskMapView mapView;
+	private AlertMapView mapView;
 
 	private List<Overlay> mapOverlays;
 

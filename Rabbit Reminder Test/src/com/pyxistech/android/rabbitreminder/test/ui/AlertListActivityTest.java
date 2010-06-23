@@ -9,16 +9,16 @@ import android.test.UiThreadTest;
 import android.widget.CheckedTextView;
 
 import com.jayway.android.robotium.solo.Solo;
-import com.pyxistech.android.rabbitreminder.activities.TaskListActivity;
-import com.pyxistech.android.rabbitreminder.adaptaters.TaskListAdapter;
-import com.pyxistech.android.rabbitreminder.models.TaskItem;
-import com.pyxistech.android.rabbitreminder.models.TaskList;
+import com.pyxistech.android.rabbitreminder.activities.AlertListActivity;
+import com.pyxistech.android.rabbitreminder.adaptaters.AlertListAdapter;
+import com.pyxistech.android.rabbitreminder.models.AlertItem;
+import com.pyxistech.android.rabbitreminder.models.AlertList;
 
-public class TaskListActivityTest extends
-		ActivityInstrumentationTestCase2<TaskListActivity> {
+public class AlertListActivityTest extends
+		ActivityInstrumentationTestCase2<AlertListActivity> {
 
-	public TaskListActivityTest() {
-		super("com.pyxistech.android.rabbitreminder", TaskListActivity.class);
+	public AlertListActivityTest() {
+		super("com.pyxistech.android.rabbitreminder", AlertListActivity.class);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class TaskListActivityTest extends
 
 		for (int i = 0; i < numberOfNewItems; i++) {
 			getListAdapter().addItem(
-					new TaskItem("test item " + i, false, null, null));
+					new AlertItem("test item " + i, false, null, null));
 		}
 		int afterCount = getListSize();
 
@@ -76,7 +76,7 @@ public class TaskListActivityTest extends
 		int numberOfNewItems = 5;
 
 		for (int i = 0; i < numberOfNewItems; i++) {
-			solo.clickOnMenuItem("Add Task");
+			solo.clickOnMenuItem("Create Alert");
 			solo.enterText(0, "item "
 					+ String.valueOf(initialListSize + i + 1).toUpperCase());
 			solo.clickOnButton("OK");
@@ -153,26 +153,26 @@ public class TaskListActivityTest extends
 	}
 
 	public void testCancelingTheCurrentTaskEditionWorks() {
-		solo.clickOnMenuItem("Add Task");
+		solo.clickOnMenuItem("Create Alert");
 		solo.goBack();
 	}
 
 	private void buildList() {
 		getListAdapter().clearList();
-		getActivity().getContentResolver().delete(TaskList.Items.CONTENT_URI,
+		getActivity().getContentResolver().delete(AlertList.Items.CONTENT_URI,
 				"", null);
 		for (int i = 0; i < 50; i++) {
 			getListAdapter().addItem(
-					new TaskItem("item " + i, false, null, null));
+					new AlertItem("item " + i, false, null, null));
 
 			ContentValues values = new ContentValues();
-			values.put(TaskList.Items.NAME, "item " + i);
-			values.put(TaskList.Items.DONE, 0);
+			values.put(AlertList.Items.NAME, "item " + i);
+			values.put(AlertList.Items.DONE, 0);
 			getActivity().getContentResolver().insert(
-					TaskList.Items.CONTENT_URI, values);
+					AlertList.Items.CONTENT_URI, values);
 		}
 		getActivity().refreshList(
-				(TaskListAdapter) getActivity().getListAdapter());
+				(AlertListAdapter) getActivity().getListAdapter());
 	}
 
 	private CheckedTextView getListItemView(int index) {
@@ -184,8 +184,8 @@ public class TaskListActivityTest extends
 		return getListAdapter().getCount();
 	}
 
-	private TaskListAdapter getListAdapter() {
-		return ((TaskListAdapter) getActivity().getListAdapter());
+	private AlertListAdapter getListAdapter() {
+		return ((AlertListAdapter) getActivity().getListAdapter());
 	}
 
 	private Solo solo;

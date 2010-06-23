@@ -17,9 +17,9 @@ import android.os.IBinder;
 import android.os.Looper;
 
 import com.pyxistech.android.rabbitreminder.R;
-import com.pyxistech.android.rabbitreminder.activities.TaskActivity;
-import com.pyxistech.android.rabbitreminder.models.TaskItem;
-import com.pyxistech.android.rabbitreminder.models.TaskList;
+import com.pyxistech.android.rabbitreminder.activities.AlertActivity;
+import com.pyxistech.android.rabbitreminder.models.AlertItem;
+import com.pyxistech.android.rabbitreminder.models.AlertList;
 
 public class AlertService extends Service {
 
@@ -34,11 +34,11 @@ public class AlertService extends Service {
 			notificationThread = new Thread( new Runnable() {
 
 			    private final String[] PROJECTION = new String[] {
-			        TaskList.Items._ID, // 0
-			        TaskList.Items.NAME, // 1
-			        TaskList.Items.DONE, // 2
-			        TaskList.Items.LATITUDE, // 3
-			        TaskList.Items.LONGITUDE // 4
+			        AlertList.Items._ID, // 0
+			        AlertList.Items.NAME, // 1
+			        AlertList.Items.DONE, // 2
+			        AlertList.Items.LATITUDE, // 3
+			        AlertList.Items.LONGITUDE // 4
 			    };
 			    
 				public void run() {
@@ -46,11 +46,11 @@ public class AlertService extends Service {
 					
 					while (true) {
 						Location myLocation = getLocation();
-						Vector<TaskItem> tasks = getUndoneTasks();
-						Vector<TaskItem> localTasks = new Vector<TaskItem>();
+						Vector<AlertItem> tasks = getUndoneTasks();
+						Vector<AlertItem> localTasks = new Vector<AlertItem>();
 						
 						if (myLocation != null) {
-							for (TaskItem taskItem : tasks) {
+							for (AlertItem taskItem : tasks) {
 								Location taskItemLocation = buildLocationFromTaskItem(taskItem);
 								
 								if (isTaskLocationNearMyLocation(myLocation, taskItemLocation)) {
@@ -69,8 +69,8 @@ public class AlertService extends Service {
 					}
 				}
 
-				private Intent buildNotificationIntent(Vector<TaskItem> taskItems) {
-					Intent intent = new Intent(AlertService.this, TaskActivity.class);
+				private Intent buildNotificationIntent(Vector<AlertItem> taskItems) {
+					Intent intent = new Intent(AlertService.this, AlertActivity.class);
 //					intent.putExtra("index", (int) -1);
 //					intent.putExtra("item", taskItem);
 					return intent;
@@ -80,7 +80,7 @@ public class AlertService extends Service {
 					return taskItemLocation.distanceTo(myLocation) < 100;
 				}
 
-				private Location buildLocationFromTaskItem(TaskItem taskItem) {
+				private Location buildLocationFromTaskItem(AlertItem taskItem) {
 					Location taskItemLocation = new Location("com.pyxistech.android.rabbitreminder.providers.TaskListProvider");
 					taskItemLocation.setLatitude(taskItem.getLatitude());
 					taskItemLocation.setLongitude(taskItem.getLongitude());
@@ -104,16 +104,16 @@ public class AlertService extends Service {
 					}
 				}
 
-				private Vector<TaskItem> getUndoneTasks() {
-					Vector<TaskItem> tasks = new Vector<TaskItem>();
+				private Vector<AlertItem> getUndoneTasks() {
+					Vector<AlertItem> tasks = new Vector<AlertItem>();
 					
-					Cursor tasksCursor = getContentResolver().query(TaskList.Items.CONTENT_URI, 
+					Cursor tasksCursor = getContentResolver().query(AlertList.Items.CONTENT_URI, 
 		    				PROJECTION, undoneTaskWhereClause(), null, 
-		    				TaskList.Items.DEFAULT_SORT_ORDER);
+		    				AlertList.Items.DEFAULT_SORT_ORDER);
 					
 					if( tasksCursor.moveToFirst() ) {
 						do {
-							tasks.add(new TaskItem(
+							tasks.add(new AlertItem(
 										Integer.valueOf(tasksCursor.getString(0)), 
 										tasksCursor.getString(1), 
 										tasksCursor.getInt(2) == 1, 
@@ -127,7 +127,7 @@ public class AlertService extends Service {
 				}
 
 				private String undoneTaskWhereClause() {
-					return TaskList.Items.DONE + "=0";
+					return AlertList.Items.DONE + "=0";
 				}
 				
 				private Location getLocation() {

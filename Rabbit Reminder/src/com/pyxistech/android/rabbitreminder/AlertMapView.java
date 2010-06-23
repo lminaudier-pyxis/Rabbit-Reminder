@@ -7,21 +7,21 @@ import android.view.MotionEvent;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 
-public class TaskMapView extends MapView {
+public class AlertMapView extends MapView {
 	
 	public interface CoordinatesTouchedListener {
 		public void onCoordinatesTouched(Double x, Double y);
 	}
 
-	public TaskMapView(Context context, AttributeSet attrs) {
+	public AlertMapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public TaskMapView(Context context, String apiKey) {
+	public AlertMapView(Context context, String apiKey) {
 		super(context, apiKey);
 	}
 
-	public TaskMapView(Context context, AttributeSet attrs, int defStyle) {
+	public AlertMapView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 	

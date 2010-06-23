@@ -5,16 +5,16 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.pyxistech.android.rabbitreminder.activities.TaskActivity;
+import com.pyxistech.android.rabbitreminder.activities.AlertActivity;
 
 public class TaskActivityTest extends
-		ActivityInstrumentationTestCase2<TaskActivity> {
+		ActivityInstrumentationTestCase2<AlertActivity> {
 
 	public TaskActivityTest() {
-		super("com.pyxistech.android.rabbitreminder", TaskActivity.class);
+		super("com.pyxistech.android.rabbitreminder", AlertActivity.class);
 	}
 
-	public TaskActivityTest(String pkg, Class<TaskActivity> activityClass) {
+	public TaskActivityTest(String pkg, Class<AlertActivity> activityClass) {
 		super(pkg, activityClass);
 	}
 

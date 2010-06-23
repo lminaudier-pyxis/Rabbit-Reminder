@@ -7,15 +7,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
 
-public class TaskList implements Parcelable {
-	public static final String AUTHORITY = "com.pyxistech.rabbitreminder.models.TaskList";
+public class AlertList implements Parcelable {
+	public static final String AUTHORITY = "com.pyxistech.rabbitreminder.models.AlertList";
 	
 	public static final class Items implements BaseColumns {
 		private Items() {}
 
 		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/items");
-		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.pyxistech.android.rabbitreminder.providers.tasklist";
-		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.pyxistech.android.rabbitreminder.providers.tasklist";
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.pyxistech.android.rabbitreminder.providers.alertlist";
+		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.pyxistech.android.rabbitreminder.providers.alertlist";
 		public static final String DEFAULT_SORT_ORDER = "modified DESC";
 		public static final String NAME = "name";
 		public static final String DONE = "done";
@@ -25,33 +25,33 @@ public class TaskList implements Parcelable {
 		public static final String MODIFIED_DATE = "modified";
 	}
 	
-	public TaskList() {
+	public AlertList() {
 	}
 	
-	public TaskList(Parcel in) {
+	public AlertList(Parcel in) {
 		int size = in.readInt();
 		for (int i = 0; i < size; i++) {
-			TaskItem item = in.readParcelable(getClass().getClassLoader());
+			AlertItem item = in.readParcelable(getClass().getClassLoader());
 			items.add(item);
 		}
 	}
 	
-	public static final Parcelable.Creator<TaskList> CREATOR = new Parcelable.Creator<TaskList>() {
+	public static final Parcelable.Creator<AlertList> CREATOR = new Parcelable.Creator<AlertList>() {
 
-		public TaskList createFromParcel(Parcel in) {
-			return new TaskList(in);
+		public AlertList createFromParcel(Parcel in) {
+			return new AlertList(in);
 		}
 
-		public TaskList[] newArray(int size) {
-			return new TaskList[size];
+		public AlertList[] newArray(int size) {
+			return new AlertList[size];
 		}
 	};
 	
-	public boolean equals(TaskList list) {
+	public boolean equals(AlertList list) {
 		return items.equals(list.items);
 	}
 	
-	public void addItem(TaskItem item) {
+	public void addItem(AlertItem item) {
 		items.add(item);
 	}
 	
@@ -59,12 +59,12 @@ public class TaskList implements Parcelable {
 		items.remove(index);
 	}
 	
-	public TaskItem getItemAt(int index) {
+	public AlertItem getItemAt(int index) {
 		return items.elementAt(index);
 	}
 	
-	public TaskItem[] toArray() {
-		return (TaskItem[]) items.toArray(new TaskItem[items.size()]);
+	public AlertItem[] toArray() {
+		return (AlertItem[]) items.toArray(new AlertItem[items.size()]);
 	}
 
 	public int describeContents() {
@@ -77,7 +77,7 @@ public class TaskList implements Parcelable {
 
 	public void writeToParcel(Parcel out, int flag) {
 		out.writeInt(items.size());
-		for (TaskItem item : items) {
+		for (AlertItem item : items) {
 			out.writeParcelable(item, 0);
 		}
 	}
@@ -90,5 +90,5 @@ public class TaskList implements Parcelable {
 		items.clear();
 	}
 	
-	private Vector<TaskItem> items = new Vector<TaskItem>();
+	private Vector<AlertItem> items = new Vector<AlertItem>();
 }

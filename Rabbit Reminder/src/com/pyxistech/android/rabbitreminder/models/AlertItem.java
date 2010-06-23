@@ -3,9 +3,9 @@ package com.pyxistech.android.rabbitreminder.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TaskItem implements Parcelable {
+public class AlertItem implements Parcelable {
 	
-	public TaskItem(int index, String text, boolean done, Double latitude, Double longitude) {
+	public AlertItem(int index, String text, boolean done, Double latitude, Double longitude) {
 		this.index = index;
 		this.text = text;
 		this.done = done;
@@ -13,11 +13,11 @@ public class TaskItem implements Parcelable {
 		this.longitude = longitude;
 	}
 	
-	public TaskItem(String text, boolean done, Double latitude, Double longitude) {
+	public AlertItem(String text, boolean done, Double latitude, Double longitude) {
 		this(-1, text, done, latitude, longitude);
 	}
 	
-	public TaskItem(Parcel in) {
+	public AlertItem(Parcel in) {
 		this.index = in.readInt();
 		this.text = in.readString();
 		this.done = in.readInt() == 1;
@@ -25,14 +25,14 @@ public class TaskItem implements Parcelable {
 		this.longitude = in.readDouble();
 	}
 	
-	public static final Parcelable.Creator<TaskItem> CREATOR = new Parcelable.Creator<TaskItem>() {
+	public static final Parcelable.Creator<AlertItem> CREATOR = new Parcelable.Creator<AlertItem>() {
 
-		public TaskItem createFromParcel(Parcel in) {
-			return new TaskItem(in);
+		public AlertItem createFromParcel(Parcel in) {
+			return new AlertItem(in);
 		}
 
-		public TaskItem[] newArray(int size) {
-			return new TaskItem[size];
+		public AlertItem[] newArray(int size) {
+			return new AlertItem[size];
 		}
 	};
 	
@@ -64,7 +64,7 @@ public class TaskItem implements Parcelable {
 		return longitude;
 	}
 	
-	public boolean equals(TaskItem item) {
+	public boolean equals(AlertItem item) {
 		return (item.getText().equals(text)) 
 				&& (item.isDone() == done)
 				&& (item.latitude.equals(latitude))

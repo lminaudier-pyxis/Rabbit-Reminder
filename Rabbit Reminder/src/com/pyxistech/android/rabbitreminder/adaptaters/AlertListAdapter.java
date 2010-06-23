@@ -9,18 +9,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.pyxistech.android.rabbitreminder.R;
-import com.pyxistech.android.rabbitreminder.models.TaskItem;
-import com.pyxistech.android.rabbitreminder.models.TaskList;
+import com.pyxistech.android.rabbitreminder.models.AlertItem;
+import com.pyxistech.android.rabbitreminder.models.AlertList;
 
-public class TaskListAdapter extends BaseAdapter {
+public class AlertListAdapter extends BaseAdapter {
 
-	public TaskListAdapter(Activity context, TaskList list) {
+	public AlertListAdapter(Activity context, AlertList list) {
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
 		this.list = list;
 	}
 
-	public void addItem(TaskItem item){
+	public void addItem(AlertItem item){
 		list.addItem(item);
 		notifyDataSetChanged();
 	}
@@ -36,14 +36,14 @@ public class TaskListAdapter extends BaseAdapter {
 	}
 	
 	public View getView(int position, View convertView, ViewGroup parent) {
-		TaskViewWrapper wrapper = null;
+		AlertViewWrapper wrapper = null;
 		if (convertView == null){
-			convertView = inflater.inflate(R.layout.task_item, null);
-			wrapper = new TaskViewWrapper(convertView);
+			convertView = inflater.inflate(R.layout.alert_list_item, null);
+			wrapper = new AlertViewWrapper(convertView);
 			convertView.setTag(wrapper);
 		}
 		else {
-			wrapper = (TaskViewWrapper) convertView.getTag();
+			wrapper = (AlertViewWrapper) convertView.getTag();
 		}
 		
 		wrapper.getCheckedTextView().setText(list.getItemAt(position).getText());
@@ -57,11 +57,11 @@ public class TaskListAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-	public TaskList getList(){
+	public AlertList getList(){
 		return list;
 	}
 	
-	public void setList(TaskList list){
+	public void setList(AlertList list){
 		this.list = list;
 	}
 	
@@ -69,7 +69,7 @@ public class TaskListAdapter extends BaseAdapter {
 		return list.size();
 	}
 
-	public TaskItem getItem(int position) {
+	public AlertItem getItem(int position) {
 		return list.getItemAt(position);
 	}
 
@@ -82,5 +82,5 @@ public class TaskListAdapter extends BaseAdapter {
 	}
 	
 	private LayoutInflater inflater;
-	private TaskList list;
+	private AlertList list;
 }

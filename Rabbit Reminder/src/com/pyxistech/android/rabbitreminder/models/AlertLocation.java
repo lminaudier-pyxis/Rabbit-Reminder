@@ -2,11 +2,11 @@ package com.pyxistech.android.rabbitreminder.models;
 
 import android.location.Location;
 
-public class TaskLocation {
+public class AlertLocation {
 	String name;
 	Location location;
 	
-	public TaskLocation(String name, Location location){
+	public AlertLocation(String name, Location location){
 		setName(name);
 		setLocation(location);
 	}
@@ -27,7 +27,7 @@ public class TaskLocation {
 		this.location = location;
 	}
 	
-	public boolean equals(TaskLocation location) {
+	public boolean equals(AlertLocation location) {
 		return name.equals(location.getName()) && location.equals(location.getLocation());
 	}
 }

@@ -3,7 +3,7 @@ package com.pyxistech.android.rabbitreminder.test.unit.models;
 import android.os.Bundle;
 import android.test.AndroidTestCase;
 
-import com.pyxistech.android.rabbitreminder.models.TaskItem;
+import com.pyxistech.android.rabbitreminder.models.AlertItem;
 
 public class TaskItemTest extends AndroidTestCase {
 	public void setUp() {
@@ -11,10 +11,10 @@ public class TaskItemTest extends AndroidTestCase {
 	}
 
 	public void testEqualsWorks() {
-		TaskItem item1 = new TaskItem("item", true, 0.0, 0.0);
-		TaskItem item2 = new TaskItem("item", true, 0.0, 0.0);
-		TaskItem item3 = new TaskItem("item", false, 0.0, 0.0);
-		TaskItem item4 = new TaskItem("foo", true, 0.0, 0.0);
+		AlertItem item1 = new AlertItem("item", true, 0.0, 0.0);
+		AlertItem item2 = new AlertItem("item", true, 0.0, 0.0);
+		AlertItem item3 = new AlertItem("item", false, 0.0, 0.0);
+		AlertItem item4 = new AlertItem("foo", true, 0.0, 0.0);
 
 		assertTrue(item1.equals(item2));
 		assertFalse(item1.equals(item3));
@@ -23,9 +23,9 @@ public class TaskItemTest extends AndroidTestCase {
 
 	public void testTaskItemIsParcelable() {
 		Bundle bundle = new Bundle();
-		TaskItem item = new TaskItem("last item", true, 42.0, 1337.42);
+		AlertItem item = new AlertItem("last item", true, 42.0, 1337.42);
 		bundle.putParcelable("item", item);
-		TaskItem newItem = (TaskItem) bundle.getParcelable("item");
+		AlertItem newItem = (AlertItem) bundle.getParcelable("item");
 
 		assertEquals(item, newItem);
 	}
