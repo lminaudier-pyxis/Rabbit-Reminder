@@ -47,21 +47,33 @@ public class AlertService extends Service {
 					while (true) {
 						Location myLocation = getLocation();
 						Vector<TaskItem> tasks = getUndoneTasks();
+						Vector<TaskItem> localTasks = new Vector<TaskItem>();
 						
 						if (myLocation != null) {
 							for (TaskItem taskItem : tasks) {
 								Location taskItemLocation = buildLocationFromTaskItem(taskItem);
 								
 								if (isTaskLocationNearMyLocation(myLocation, taskItemLocation)) {
-									Intent intent = buildNotificationIntent(taskItem);
-									notifyUser(taskItem, intent);
-									threadWait(10000);
+									localTasks.add(taskItem);
 								}
+							}
+							
+							if (localTasks.size() > 0) {
+								Intent intent = buildNotificationIntent(localTasks);
+								notifyUser(localTasks.size(), intent);
+								threadWait(10000);
 							}
 						}
 
 						threadWait(1000);
 					}
+				}
+
+				private Intent buildNotificationIntent(Vector<TaskItem> taskItems) {
+					Intent intent = new Intent(AlertService.this, TaskActivity.class);
+//					intent.putExtra("index", (int) -1);
+//					intent.putExtra("item", taskItem);
+					return intent;
 				}
 
 				private boolean isTaskLocationNearMyLocation(Location myLocation, Location taskItemLocation) {
@@ -75,20 +87,13 @@ public class AlertService extends Service {
 					return taskItemLocation;
 				}
 
-				private Intent buildNotificationIntent(TaskItem taskItem) {
-					Intent intent = new Intent(AlertService.this, TaskActivity.class);
-					intent.putExtra("index", (int) -1);
-					intent.putExtra("item", taskItem);
-					return intent;
-				}
-
-				private void notifyUser(TaskItem taskItem, Intent notificationIntent) {
+				private void notifyUser(int taskItemsSize, Intent notificationIntent) {					
 					NotificationManager nm = (NotificationManager) AlertService.this.getSystemService(Context.NOTIFICATION_SERVICE);
 					Notification notification = new Notification(R.drawable.icon, "You have to accomplish a task here!", System.currentTimeMillis());
 					PendingIntent pendingIntent = PendingIntent.getActivity(AlertService.this, 0, notificationIntent, 0);
-					notification.setLatestEventInfo(AlertService.this, taskItem.getText(), "", pendingIntent);
-					
-					nm.notify(android.R.string.cancel, notification);
+					notification.setLatestEventInfo(AlertService.this, "There is " + taskItemsSize + " local tasks", "", pendingIntent);
+
+					nm.notify(0, notification);
 				}
 
 				private void threadWait(int time) {
