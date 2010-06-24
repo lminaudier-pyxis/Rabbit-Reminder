@@ -5,10 +5,12 @@ import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,7 +49,10 @@ public class AlertListActivity extends ListActivity {
 
 		refreshList(adapter);
 
-		startService(new Intent(this, AlertService.class));
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		if( prefs.getBoolean("rabbit reminder alert service", true) ) {
+			startService(new Intent(this, AlertService.class));
+		}
 		
     	setListAdapter(adapter);
     	registerForContextMenu(getListView());
