@@ -1,4 +1,4 @@
-package com.pyxistech.android.rabbitreminder;
+package com.pyxistech.android.rabbitreminder.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

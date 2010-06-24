@@ -20,4 +20,6 @@
     
     <string name="alert_service_ongoing_notification_info_message">Rabbit-Reminder is now running</string>
     <string name="alert_service_ongoing_notification_title">Rabbit-Reminder Service</string>
+    
+    <string name="settings_activity_title">Rabbit Reminder Settings</string>
 </resources>

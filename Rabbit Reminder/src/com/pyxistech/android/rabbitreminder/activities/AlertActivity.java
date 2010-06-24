@@ -23,9 +23,9 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.pyxistech.android.rabbitreminder.R;
-import com.pyxistech.android.rabbitreminder.RabbitItemizedOverlay;
-import com.pyxistech.android.rabbitreminder.AlertMapView;
 import com.pyxistech.android.rabbitreminder.models.AlertItem;
+import com.pyxistech.android.rabbitreminder.views.AlertMapView;
+import com.pyxistech.android.rabbitreminder.views.RabbitItemizedOverlay;
 
 public class AlertActivity extends MapActivity implements LocationListener, AlertMapView.CoordinatesTouchedListener {
 	

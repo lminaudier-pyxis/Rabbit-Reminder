@@ -18,6 +18,7 @@ import android.os.Looper;
 
 import com.pyxistech.android.rabbitreminder.R;
 import com.pyxistech.android.rabbitreminder.activities.AlertActivity;
+import com.pyxistech.android.rabbitreminder.activities.SettingsActivity;
 import com.pyxistech.android.rabbitreminder.models.AlertItem;
 import com.pyxistech.android.rabbitreminder.models.AlertList;
 
@@ -26,6 +27,11 @@ public class AlertService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+	}
+
+	@Override
+	public void onStart (Intent intent, int startId) {
+		super.onStart(intent, startId);
 		
 		if (isThreadNotStarted()) {
 			startThread();
@@ -34,15 +40,10 @@ public class AlertService extends Service {
 	}
 
 	@Override
-	public void onStart (Intent intent, int startId) {
-		super.onStart(intent, startId);
-	}
-
-	@Override
 	public IBinder onBind(Intent arg0) {
 		return null;
 	}
-
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -67,7 +68,7 @@ public class AlertService extends Service {
 	}
 
 	private void startOnGoingNotification() {
-		Intent intent = new Intent(this, AlertActivity.class);
+		Intent intent = new Intent(this, SettingsActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		
 		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
