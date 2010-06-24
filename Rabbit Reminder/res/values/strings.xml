@@ -4,6 +4,8 @@
     <string name="app_name">Rabbit Reminder</string>
     
     <string name="add_item_menu_text">Create Alert</string>
+    <string name="settings_menu_text">Settings</string>
+    
     <string name="delete_item_menu_text">Delete</string>
     <string name="edit_item_menu_text">Edit</string>
     <string name="validation_button_text">OK</string>

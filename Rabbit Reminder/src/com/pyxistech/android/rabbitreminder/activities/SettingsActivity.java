@@ -22,12 +22,17 @@ public class SettingsActivity extends PreferenceActivity {
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				Intent alertServiceIntent = new Intent(getBaseContext(), AlertService.class);
 				
-				if( !((CheckBoxPreference) preference).isChecked() ) {
+				if( !isServiceActive(preference) ) {
 					startService(alertServiceIntent);
 				} else {
 					stopService(alertServiceIntent);
 				}
+				
 				return true;
+			}
+
+			private boolean isServiceActive(Preference preference) {
+				return ((CheckBoxPreference) preference).isChecked();
 			}
 		});
 	}

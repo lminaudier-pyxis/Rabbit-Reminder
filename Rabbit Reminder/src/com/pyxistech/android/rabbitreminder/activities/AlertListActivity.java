@@ -64,6 +64,7 @@ public class AlertListActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	menu.add(Menu.NONE, ADD_ITEM, Menu.NONE, R.string.add_item_menu_text).setIcon(android.R.drawable.ic_menu_add);
+    	menu.add(Menu.NONE, SETTINGS, Menu.NONE, R.string.settings_menu_text).setIcon(android.R.drawable.ic_menu_preferences);
     	return super.onCreateOptionsMenu(menu);
     }
     
@@ -72,6 +73,9 @@ public class AlertListActivity extends ListActivity {
     	switch(item.getItemId()) {
     	case ADD_ITEM:
     		addItem();
+    		return true;
+    	case SETTINGS:
+    		startActivity(new Intent(this, SettingsActivity.class));
     		return true;
     	}
     	
@@ -223,6 +227,7 @@ public class AlertListActivity extends ListActivity {
 	}
     
     public static final int ADD_ITEM = Menu.FIRST + 1;
+    public static final int SETTINGS = Menu.FIRST + 2;
     public static final int EDIT_ITEM = Menu.FIRST + 3;
     public static final int DELETE_ITEM = Menu.FIRST + 4;
 }
