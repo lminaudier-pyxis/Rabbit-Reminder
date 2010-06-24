@@ -113,9 +113,11 @@ class AlertThread extends Thread {
 				Vector<AlertItem> localAlerts = getLocalUndoneAlerts(myLocation, undoneAlerts);
 				
 				if (localAlerts.size() > 0) {
-					Intent intent = buildNotificationIntent(localAlerts);
-					notifyUser(localAlerts.size(), intent);
-					threadWait(10000);
+					for (AlertItem alertItem : localAlerts) {
+						Intent intent = buildNotificationIntent(alertItem);
+						notifyUser(alertItem.getText(), intent);
+						threadWait(10000);
+					}
 				}
 			}
 
@@ -123,12 +125,22 @@ class AlertThread extends Thread {
 		}
 	}
 
-	private Intent buildNotificationIntent(Vector<AlertItem> taskItems) {
+	private Intent buildNotificationIntent(AlertItem alertItem) {
 			Intent intent = new Intent(context, AlertActivity.class);
-	//		intent.putExtra("index", (int) -1);
-	//		intent.putExtra("item", taskItem);
+			intent.putExtra("index", (int) alertItem.getIndex());
+			intent.putExtra("item", alertItem);
 			return intent;
 		}
+
+	private void notifyUser(String alertMessage, Intent notificationIntent) {					
+		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		Notification notification = new Notification(R.drawable.icon, "You have to accomplish a task here!", System.currentTimeMillis());
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+		notification.setLatestEventInfo(context, alertMessage, "", pendingIntent);
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+	
+		nm.notify(notificationId++, notification);
+	}
 
 	private Vector<AlertItem> getLocalUndoneAlerts(Location myLocation, Vector<AlertItem> tasks) {
 		Vector<AlertItem> localTasks = new Vector<AlertItem>();
@@ -151,15 +163,6 @@ class AlertThread extends Thread {
 		taskItemLocation.setLatitude(taskItem.getLatitude());
 		taskItemLocation.setLongitude(taskItem.getLongitude());
 		return taskItemLocation;
-	}
-
-	private void notifyUser(int taskItemsSize, Intent notificationIntent) {					
-		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notification = new Notification(R.drawable.icon, "You have to accomplish a task here!", System.currentTimeMillis());
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-		notification.setLatestEventInfo(context, "There is " + taskItemsSize + " local tasks", "", pendingIntent);
-
-		nm.notify(1, notification);
 	}
 
 	private void threadWait(int time) {
@@ -225,4 +228,5 @@ class AlertThread extends Thread {
     
 	private boolean interrupted = false;
 	private AlertService context;
+	private int notificationId = 1;
 }
