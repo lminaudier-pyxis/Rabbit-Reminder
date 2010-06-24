@@ -22,8 +22,6 @@ import com.pyxistech.android.rabbitreminder.models.AlertItem;
 import com.pyxistech.android.rabbitreminder.models.AlertList;
 
 public class AlertService extends Service {
-
-	AlertThread notificationThread;
 	
 	@Override
 	public void onCreate() {
@@ -32,6 +30,15 @@ public class AlertService extends Service {
 		if (notificationThread == null) {
 			notificationThread = new AlertThread(this);
 			notificationThread.start();
+			
+			Intent intent = new Intent(this, AlertActivity.class);
+			NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			Notification notification = new Notification(R.drawable.icon, "Rabbit-Reminder is now running", System.currentTimeMillis());
+			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+			notification.setLatestEventInfo(this, "Rabbit-Reminder Service", "Click here to desactivate it...", pendingIntent);
+			notification.flags |= Notification.FLAG_ONGOING_EVENT;
+			
+			nm.notify(ONGOING_SERVICE_NOTIFICATION_ID, notification);
 		}
 	}
 	
@@ -41,6 +48,9 @@ public class AlertService extends Service {
 		
 		notificationThread.interrupted = true;
 		notificationThread = null;
+		
+		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		nm.cancel(ONGOING_SERVICE_NOTIFICATION_ID);
 	}
 	
 	@Override
@@ -53,6 +63,9 @@ public class AlertService extends Service {
 	public IBinder onBind(Intent arg0) {
 		return null;
 	}
+
+	private static final int ONGOING_SERVICE_NOTIFICATION_ID = 0;
+	private AlertThread notificationThread;
 
 }
 
@@ -124,7 +137,7 @@ class AlertThread extends Thread {
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 		notification.setLatestEventInfo(context, "There is " + taskItemsSize + " local tasks", "", pendingIntent);
 
-		nm.notify(0, notification);
+		nm.notify(1, notification);
 	}
 
 	private void threadWait(int time) {
