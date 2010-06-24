@@ -111,43 +111,58 @@ class AlertThread extends Thread {
 			Location myLocation = getLocation();
 			Vector<AlertItem> undoneAlerts = getUndoneAlerts();
 			
-			for (AlertItem doneAlerts : getDoneAlerts()) {
-				if (localAndAlreadySeenAlerts.indexOf(doneAlerts.getIndex()) != -1) {
-					localAndAlreadySeenAlerts.remove(localAndAlreadySeenAlerts.indexOf(doneAlerts.getIndex()));
-				}
-			}			
+			removeDoneAlertFromAlreadySeenArray(localAndAlreadySeenAlerts);		
 			
 			if (myLocation != null) {
 				Vector<AlertItem> localUndoneAlerts = getLocalUndoneAlerts(myLocation, undoneAlerts);
 				Vector<AlertItem> nonLocalUndoneAlerts = getNonLocalUndoneAlerts(myLocation, undoneAlerts);
 				
-				for (AlertItem alertItem : localUndoneAlerts) {
-					if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) == -1) {
-						Intent intent = buildNotificationIntent(alertItem);
-						notifyUser(alertItem.getText(), intent);
-						localAndAlreadySeenAlerts.add(alertItem.getIndex());
-					}
-				}
-				
-				for (AlertItem alertItem : nonLocalUndoneAlerts) {
-					if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) != -1) {
-						Intent intent = buildNotificationIntent(alertItem);
-						notifyUser("End of " + alertItem.getText(), intent);
-						localAndAlreadySeenAlerts.remove(localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()));
-					}
-				}
+				notifyUserComingNearLocalAlert(localAndAlreadySeenAlerts, localUndoneAlerts);
+				notifyUserGoingAwayFromLocalAlert(localAndAlreadySeenAlerts, nonLocalUndoneAlerts);
 			}
 
 			threadWait(NOTIFICATION_REFRESH_RATE);
 		}
 	}
 
-	private Intent buildNotificationIntent(AlertItem alertItem) {
-			Intent intent = new Intent(context, AlertActivity.class);
-			intent.putExtra("index", (int) alertItem.getIndex());
-			intent.putExtra("item", alertItem);
-			return intent;
+	public void setInterrupted(boolean interrupted) {
+		this.interrupted = interrupted;
+	}
+
+	private void removeDoneAlertFromAlreadySeenArray(Vector<Integer> localAndAlreadySeenAlerts) {
+		for (AlertItem doneAlerts : getDoneAlerts()) {
+			if (localAndAlreadySeenAlerts.indexOf(doneAlerts.getIndex()) != -1) {
+				localAndAlreadySeenAlerts.remove(localAndAlreadySeenAlerts.indexOf(doneAlerts.getIndex()));
+			}
 		}
+	}
+
+	private void notifyUserGoingAwayFromLocalAlert( Vector<Integer> localAndAlreadySeenAlerts, Vector<AlertItem> nonLocalUndoneAlerts) {
+		for (AlertItem alertItem : nonLocalUndoneAlerts) {
+			if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) != -1) {
+				Intent intent = buildNotificationIntent(alertItem);
+				notifyUser("End of " + alertItem.getText(), intent);
+				localAndAlreadySeenAlerts.remove(localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()));
+			}
+		}
+	}
+
+	private void notifyUserComingNearLocalAlert( Vector<Integer> localAndAlreadySeenAlerts, Vector<AlertItem> localUndoneAlerts) {
+		for (AlertItem alertItem : localUndoneAlerts) {
+			if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) == -1) {
+				Intent intent = buildNotificationIntent(alertItem);
+				notifyUser(alertItem.getText(), intent);
+				localAndAlreadySeenAlerts.add(alertItem.getIndex());
+			}
+		}
+	}
+
+	private Intent buildNotificationIntent(AlertItem alertItem) {
+		Intent intent = new Intent(context, AlertActivity.class);
+		intent.putExtra("index", (int) alertItem.getIndex());
+		intent.putExtra("item", alertItem);
+		return intent;
+	}
 
 	private void notifyUser(String alertMessage, Intent notificationIntent) {					
 		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -176,11 +191,15 @@ class AlertThread extends Thread {
 		for (AlertItem taskItem : tasks) {
 			Location taskItemLocation = buildLocationFromTaskItem(taskItem);
 			
-			if (taskItemLocation.distanceTo(myLocation) > DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT) {
+			if (isTaskFarFromMyLocation(myLocation, taskItemLocation)) {
 				localTasks.add(taskItem);
 			}
 		}
 		return localTasks;
+	}
+
+	private boolean isTaskFarFromMyLocation(Location myLocation, Location taskItemLocation) {
+		return taskItemLocation.distanceTo(myLocation) > DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT;
 	}
 
 	private boolean isTaskLocationNearMyLocation(Location myLocation, Location taskItemLocation) {
@@ -203,51 +222,45 @@ class AlertThread extends Thread {
 	}
 
 	private Vector<AlertItem> getUndoneAlerts() {
-		Vector<AlertItem> tasks = new Vector<AlertItem>();
-		
-		Cursor tasksCursor = context.getContentResolver().query(AlertList.Items.CONTENT_URI, 
-				PROJECTION, undoneTaskWhereClause(), null, 
-				AlertList.Items.DEFAULT_SORT_ORDER);
-		
-		if( tasksCursor.moveToFirst() ) {
-			do {
-				tasks.add(new AlertItem(
-							Integer.valueOf(tasksCursor.getString(0)), 
-							tasksCursor.getString(1), 
-							tasksCursor.getInt(2) == 1, 
-							tasksCursor.getDouble(3), 
-							tasksCursor.getDouble(4)
-					));
-	        } while(tasksCursor.moveToNext());
-        }
-		
-		return tasks;
+		return getAlerts(undoneAlertWhereClause());
 	}
 	
 	private Vector<AlertItem> getDoneAlerts() {
-		Vector<AlertItem> tasks = new Vector<AlertItem>();
+		return getAlerts(doneAlertWhereClause());
+	}
+	
+	private Vector<AlertItem> getAlerts(String whereClause) {
+		Vector<AlertItem> alerts = new Vector<AlertItem>();
 		
-		Cursor tasksCursor = context.getContentResolver().query(AlertList.Items.CONTENT_URI, 
-				PROJECTION, AlertList.Items.DONE + "=1", null, 
+		Cursor alertsCursor = context.getContentResolver().query(AlertList.Items.CONTENT_URI, 
+				PROJECTION, whereClause, null, 
 				AlertList.Items.DEFAULT_SORT_ORDER);
 		
-		if( tasksCursor.moveToFirst() ) {
+		if( alertsCursor.moveToFirst() ) {
 			do {
-				tasks.add(new AlertItem(
-							Integer.valueOf(tasksCursor.getString(0)), 
-							tasksCursor.getString(1), 
-							tasksCursor.getInt(2) == 1, 
-							tasksCursor.getDouble(3), 
-							tasksCursor.getDouble(4)
-					));
-	        } while(tasksCursor.moveToNext());
+				addAlertFromCursor(alerts, alertsCursor);
+	        } while(alertsCursor.moveToNext());
         }
 		
-		return tasks;
+		return alerts;
+	}
+
+	private void addAlertFromCursor(Vector<AlertItem> alerts, Cursor alertsCursor) {
+		alerts.add(new AlertItem(
+					Integer.valueOf(alertsCursor.getString(0)), 
+					alertsCursor.getString(1), 
+					alertsCursor.getInt(2) == 1, 
+					alertsCursor.getDouble(3), 
+					alertsCursor.getDouble(4)
+			));
+	}
+
+	private String doneAlertWhereClause() {
+		return AlertList.Items.DONE + "=1";
 	}
 
 
-	private String undoneTaskWhereClause() {
+	private String undoneAlertWhereClause() {
 		return AlertList.Items.DONE + "=0";
 	}
 	
@@ -271,10 +284,6 @@ class AlertThread extends Thread {
 		}
 	};
 	
-	public void setInterrupted(boolean interrupted) {
-		this.interrupted = interrupted;
-	}
-
 	private static final int NOTIFICATION_REFRESH_RATE = 1000;
     private static final int DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT = 100;
     
