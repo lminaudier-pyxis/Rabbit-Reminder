@@ -7,8 +7,7 @@
 		android:title="Notifications"
 		android:summaryOff="Enable notifications"
 		android:summaryOn="Disable notifications" 
+		android:defaultValue="true"
 		/>
-		
-	
-	
+
 </PreferenceScreen>
