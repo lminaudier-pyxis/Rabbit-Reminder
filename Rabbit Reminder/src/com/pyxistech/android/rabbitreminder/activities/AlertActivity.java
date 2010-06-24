@@ -3,7 +3,9 @@ package com.pyxistech.android.rabbitreminder.activities;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -158,10 +160,12 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	private void refreshUi() {
 		Button addTaskButton = (Button) findViewById(R.id.add_task_button);
 		EditText taskText = (EditText) findViewById(R.id.new_task_text);
+		ImageButton editAlertButton = (ImageButton) findViewById(R.id.edit_alert_button);
 
 		taskText.setText(text);
 		
 		addTaskButton.setOnClickListener(okButtonListener);
+		editAlertButton.setOnClickListener(editAlertButtonListener);
 		
 		setCurrentGpsLocation(null);
 		
@@ -226,6 +230,23 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
+	
+	private OnClickListener editAlertButtonListener = new OnClickListener() {
+		public void onClick(View v) {
+			final CharSequence[] items = {"I am near of...", "I go out of..."};
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(AlertActivity.this);
+			builder.setTitle("Notify me when");
+			builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+			    public void onClick(DialogInterface dialog, int item) {
+			    	dialog.cancel();
+			        Toast.makeText(AlertActivity.this, items[item], Toast.LENGTH_SHORT).show();
+			    }
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
+		}
+	};
 
 	private OnClickListener setMyLocationButtonListener = new OnClickListener() {
 		public void onClick(View v) {
