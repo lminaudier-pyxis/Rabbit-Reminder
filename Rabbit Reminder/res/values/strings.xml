@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="alert_service_ongoing_notification_description">Click here to desactivate it...</string>
     <string name="app_name">Rabbit Reminder</string>
     
     <string name="add_item_menu_text">Create Alert</string>
@@ -16,4 +17,7 @@
     <string name="alert_name_label">Alert Name</string>
     <string name="alert_name_not_set_warning">You must specify a name!</string>
     <string name="location_not_set_warning">You must set a location for this alert!</string>
+    
+    <string name="alert_service_ongoing_notification_info_message">Rabbit-Reminder is now running</string>
+    <string name="alert_service_ongoing_notification_title">Rabbit-Reminder Service</string>
 </resources>

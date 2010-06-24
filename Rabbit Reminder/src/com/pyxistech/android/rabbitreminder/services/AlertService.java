@@ -27,53 +27,69 @@ public class AlertService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		
-		if (notificationThread == null) {
-			notificationThread = new AlertThread(this);
-			notificationThread.start();
-			
-			Intent intent = new Intent(this, AlertActivity.class);
-			NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			Notification notification = new Notification(R.drawable.icon, "Rabbit-Reminder is now running", System.currentTimeMillis());
-			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-			notification.setLatestEventInfo(this, "Rabbit-Reminder Service", "Click here to desactivate it...", pendingIntent);
-			notification.flags |= Notification.FLAG_ONGOING_EVENT;
-			
-			nm.notify(ONGOING_SERVICE_NOTIFICATION_ID, notification);
+		if (isThreadNotStarted()) {
+			startThread();
+			startOnGoingNotification();
 		}
 	}
-	
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		
-		notificationThread.interrupted = true;
-		notificationThread = null;
-		
-		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		nm.cancel(ONGOING_SERVICE_NOTIFICATION_ID);
-	}
-	
+
 	@Override
 	public void onStart (Intent intent, int startId) {
 		super.onStart(intent, startId);
 	}
-	
-	
+
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return null;
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		
+		interruptThread();
+		stopOnGoingNotification();
+	}
+
+	private boolean isThreadNotStarted() {
+		return notificationThread == null;
+	}
+
+	private void startThread() {
+		notificationThread = new AlertThread(this);
+		notificationThread.setInterrupted(false);
+		notificationThread.start();
+	}
+
+	private void interruptThread() {
+		notificationThread.setInterrupted(true);
+		notificationThread = null;
+	}
+
+	private void startOnGoingNotification() {
+		Intent intent = new Intent(this, AlertActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		
+		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		Notification notification = new Notification(R.drawable.icon, getString(R.string.alert_service_ongoing_notification_info_message), System.currentTimeMillis());
+		notification.setLatestEventInfo(this, getString(R.string.alert_service_ongoing_notification_title), getString(R.string.alert_service_ongoing_notification_description), pendingIntent);
+		notification.flags |= Notification.FLAG_ONGOING_EVENT;
+		
+		nm.notify(ONGOING_SERVICE_NOTIFICATION_ID, notification);
+	}
+	
+	private void stopOnGoingNotification() {
+		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		nm.cancel(ONGOING_SERVICE_NOTIFICATION_ID);
+	}
+	
 	private static final int ONGOING_SERVICE_NOTIFICATION_ID = 0;
 	private AlertThread notificationThread;
-
 }
 
 class AlertThread extends Thread {
-	public boolean interrupted = false;
-	private AlertService context;
 
-    private final String[] PROJECTION = new String[] {
+	private final String[] PROJECTION = new String[] {
         AlertList.Items._ID, // 0
         AlertList.Items.NAME, // 1
         AlertList.Items.DONE, // 2
@@ -90,38 +106,43 @@ class AlertThread extends Thread {
 		
 		while (!interrupted) {
 			Location myLocation = getLocation();
-			Vector<AlertItem> tasks = getUndoneTasks();
-			Vector<AlertItem> localTasks = new Vector<AlertItem>();
+			Vector<AlertItem> undoneAlerts = getUndoneAlerts();
 			
 			if (myLocation != null) {
-				for (AlertItem taskItem : tasks) {
-					Location taskItemLocation = buildLocationFromTaskItem(taskItem);
-					
-					if (isTaskLocationNearMyLocation(myLocation, taskItemLocation)) {
-						localTasks.add(taskItem);
-					}
-				}
+				Vector<AlertItem> localAlerts = getLocalUndoneAlerts(myLocation, undoneAlerts);
 				
-				if (localTasks.size() > 0) {
-					Intent intent = buildNotificationIntent(localTasks);
-					notifyUser(localTasks.size(), intent);
+				if (localAlerts.size() > 0) {
+					Intent intent = buildNotificationIntent(localAlerts);
+					notifyUser(localAlerts.size(), intent);
 					threadWait(10000);
 				}
 			}
 
-			threadWait(1000);
+			threadWait(NOTIFICATION_REFRESH_RATE);
 		}
 	}
 
 	private Intent buildNotificationIntent(Vector<AlertItem> taskItems) {
-		Intent intent = new Intent(context, AlertActivity.class);
-//		intent.putExtra("index", (int) -1);
-//		intent.putExtra("item", taskItem);
-		return intent;
+			Intent intent = new Intent(context, AlertActivity.class);
+	//		intent.putExtra("index", (int) -1);
+	//		intent.putExtra("item", taskItem);
+			return intent;
+		}
+
+	private Vector<AlertItem> getLocalUndoneAlerts(Location myLocation, Vector<AlertItem> tasks) {
+		Vector<AlertItem> localTasks = new Vector<AlertItem>();
+		for (AlertItem taskItem : tasks) {
+			Location taskItemLocation = buildLocationFromTaskItem(taskItem);
+			
+			if (isTaskLocationNearMyLocation(myLocation, taskItemLocation)) {
+				localTasks.add(taskItem);
+			}
+		}
+		return localTasks;
 	}
 
 	private boolean isTaskLocationNearMyLocation(Location myLocation, Location taskItemLocation) {
-		return taskItemLocation.distanceTo(myLocation) < 100;
+		return taskItemLocation.distanceTo(myLocation) < DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT;
 	}
 
 	private Location buildLocationFromTaskItem(AlertItem taskItem) {
@@ -148,7 +169,7 @@ class AlertThread extends Thread {
 		}
 	}
 
-	private Vector<AlertItem> getUndoneTasks() {
+	private Vector<AlertItem> getUndoneAlerts() {
 		Vector<AlertItem> tasks = new Vector<AlertItem>();
 		
 		Cursor tasksCursor = context.getContentResolver().query(AlertList.Items.CONTENT_URI, 
@@ -193,4 +214,14 @@ class AlertThread extends Thread {
 		public void onLocationChanged(Location location) {
 		}
 	};
+	
+	public void setInterrupted(boolean interrupted) {
+		this.interrupted = interrupted;
+	}
+
+	private static final int NOTIFICATION_REFRESH_RATE = 1000;
+    private static final int DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT = 100;
+    
+	private boolean interrupted = false;
+	private AlertService context;
 }
