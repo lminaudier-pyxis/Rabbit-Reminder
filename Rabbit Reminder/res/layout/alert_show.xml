@@ -44,11 +44,18 @@
 				android:layout_width="50dip" 
 				android:layout_height="wrap_content">
 			</Button>
+			
+			<ImageButton
+				android:id="@+id/edit_alert_button"
+				android:layout_toLeftOf="@id/add_task_button"
+				android:layout_width="50dip" 
+				android:layout_height="wrap_content"
+				android:src="@drawable/stat_notify_alarm" />
 
 			<EditText 
 				android:id="@+id/new_task_text"
 				android:layout_width="fill_parent" 
-				android:layout_toLeftOf="@id/add_task_button"
+				android:layout_toLeftOf="@id/edit_alert_button"
 				android:layout_height="wrap_content" 
 				android:singleLine="true">
 			</EditText>
@@ -56,13 +63,11 @@
 
 	</LinearLayout>
 
-
 	<ImageButton 
 		android:id="@+id/set_current_location_button"
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom|right" 
-		android:src="@android:drawable/star_on" />
-
+		android:src="@drawable/ic_maps_indicator_current_position" />
 
 </FrameLayout>
