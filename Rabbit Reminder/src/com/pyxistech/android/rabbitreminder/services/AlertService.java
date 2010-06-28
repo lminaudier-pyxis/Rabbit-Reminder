@@ -108,6 +108,9 @@ class AlertThread extends Thread {
 		
 		Looper.prepare();
 		
+		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, NOTIFICATION_REFRESH_RATE, 10, locationListener);
+		
 		while (!interrupted) {
 			Location myLocation = getLocation();
 			Vector<AlertItem> undoneAlerts = getUndoneAlerts();
@@ -124,6 +127,8 @@ class AlertThread extends Thread {
 
 			threadWait(NOTIFICATION_REFRESH_RATE);
 		}
+		
+		lm.removeUpdates(locationListener);
 	}
 
 	public void setInterrupted(boolean interrupted) {
@@ -140,9 +145,11 @@ class AlertThread extends Thread {
 
 	private void notifyUserGoingAwayFromLocalAlert( Vector<Integer> localAndAlreadySeenAlerts, Vector<AlertItem> nonLocalUndoneAlerts) {
 		for (AlertItem alertItem : nonLocalUndoneAlerts) {
-			if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) != -1) {
-				Intent intent = buildNotificationIntent(alertItem);
-				notifyUser("End of " + alertItem.getText(), intent);
+			if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) != -1) {	
+				if (alertItem.getNotificationMode() == AlertItem.NOTIFY_WHEN_GO_OUT) {
+					Intent intent = buildNotificationIntent(alertItem);
+					notifyUser("End of " + alertItem.getText(), intent);
+				}
 				localAndAlreadySeenAlerts.remove(localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()));
 			}
 		}
@@ -151,8 +158,10 @@ class AlertThread extends Thread {
 	private void notifyUserComingNearLocalAlert( Vector<Integer> localAndAlreadySeenAlerts, Vector<AlertItem> localUndoneAlerts) {
 		for (AlertItem alertItem : localUndoneAlerts) {
 			if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) == -1) {
-				Intent intent = buildNotificationIntent(alertItem);
-				notifyUser(alertItem.getText(), intent);
+				if (alertItem.getNotificationMode() == AlertItem.NOTIFY_WHEN_NEAR_OF) {
+					Intent intent = buildNotificationIntent(alertItem);
+					notifyUser(alertItem.getText(), intent);
+				}
 				localAndAlreadySeenAlerts.add(alertItem.getIndex());
 			}
 		}
@@ -267,8 +276,6 @@ class AlertThread extends Thread {
 	}
 	
 	private Location getLocation() {
-		LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 		return lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 	}
 	
@@ -286,10 +293,12 @@ class AlertThread extends Thread {
 		}
 	};
 	
-	private static final int NOTIFICATION_REFRESH_RATE = 1000;
+	private static final int NOTIFICATION_REFRESH_RATE = 60000;
     private static final int DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT = 100;
     
 	private boolean interrupted = false;
 	private AlertService context;
 	private int notificationId = 1;
+
+	private LocationManager lm;
 }

@@ -30,7 +30,7 @@ import com.pyxistech.android.rabbitreminder.views.AlertMapView;
 import com.pyxistech.android.rabbitreminder.views.RabbitItemizedOverlay;
 
 public class AlertActivity extends MapActivity implements LocationListener, AlertMapView.CoordinatesTouchedListener {
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,6 +48,26 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		}
 
 		refreshUi();
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		deactivateGpsService();
+	}
+
+	private void deactivateGpsService() {
+		locationManager.removeUpdates(this);
+	}
+	
+	@Override
+	public void onRestart() {
+		super.onRestart();
+		activateGpsService();
+	}
+
+	private void activateGpsService() {
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_RATE, 0, this);
 	}
 
 	@Override
@@ -226,7 +246,7 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	private void updateLocationManagerIfNeeded(Location location) {
 		if (location == null) {
 			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE); 
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+			activateGpsService();
 		}
 	}
 	
@@ -320,4 +340,6 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	private Drawable drawable;
 
 	private RabbitItemizedOverlay itemizedOverlay;
+	
+	private static final int GPS_UPDATE_RATE = 60000;
 }
