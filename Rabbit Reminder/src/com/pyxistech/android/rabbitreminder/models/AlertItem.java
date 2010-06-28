@@ -4,17 +4,21 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class AlertItem implements Parcelable {
+
+	public static final int NOTIFY_WHEN_NEAR_OF = 0;
+	public static final int NOTIFY_WHEN_GO_OUT = 1;
 	
-	public AlertItem(int index, String text, boolean done, Double latitude, Double longitude) {
+	public AlertItem(int index, String text, boolean done, Double latitude, Double longitude, int notificationMode) {
 		this.index = index;
 		this.text = text;
 		this.done = done;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.notificationMode = notificationMode;
 	}
 	
-	public AlertItem(String text, boolean done, Double latitude, Double longitude) {
-		this(-1, text, done, latitude, longitude);
+	public AlertItem(String text, boolean done, Double latitude, Double longitude, int notificationMode) {
+		this(-1, text, done, latitude, longitude, notificationMode);
 	}
 	
 	public AlertItem(Parcel in) {
@@ -23,6 +27,7 @@ public class AlertItem implements Parcelable {
 		this.done = in.readInt() == 1;
 		this.latitude = in.readDouble();
 		this.longitude = in.readDouble();
+		this.notificationMode = in.readInt();
 	}
 	
 	public static final Parcelable.Creator<AlertItem> CREATOR = new Parcelable.Creator<AlertItem>() {
@@ -63,12 +68,21 @@ public class AlertItem implements Parcelable {
 	public Double getLongitude() {
 		return longitude;
 	}
+
+	public int getIndex() {
+		return index;
+	}
+	
+	public int getNotificationMode() {
+		return notificationMode;
+	}
 	
 	public boolean equals(AlertItem item) {
 		return (item.getText().equals(text)) 
 				&& (item.isDone() == done)
 				&& (item.latitude.equals(latitude))
-				&& (item.longitude.equals(longitude));
+				&& (item.longitude.equals(longitude))
+				&& (item.notificationMode == notificationMode);
 	}
 	
 	public int describeContents() {
@@ -81,16 +95,14 @@ public class AlertItem implements Parcelable {
 		out.writeInt(done ? 1 : 0);
 		out.writeDouble(latitude);
 		out.writeDouble(longitude);
-	}
-
-	public int getIndex() {
-		return index;
+		out.writeInt(notificationMode);
 	}
 
 	private String text;
 	private boolean done;
 	private Double latitude;
 	private Double longitude;
+	private int notificationMode;
 
 	private int index = -1;
 }

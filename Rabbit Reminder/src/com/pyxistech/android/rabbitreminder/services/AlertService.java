@@ -40,7 +40,7 @@ public class AlertService extends Service {
 	}
 
 	@Override
-	public IBinder onBind(Intent arg0) {
+	public IBinder onBind(Intent intent) {
 		return null;
 	}
 	
@@ -72,7 +72,7 @@ public class AlertService extends Service {
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		
 		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notification = new Notification(R.drawable.icon, getString(R.string.alert_service_ongoing_notification_info_message), System.currentTimeMillis());
+		Notification notification = new Notification(R.drawable.locationsdashboard_button, getString(R.string.alert_service_ongoing_notification_info_message), System.currentTimeMillis());
 		notification.setLatestEventInfo(this, getString(R.string.alert_service_ongoing_notification_title), getString(R.string.alert_service_ongoing_notification_description), pendingIntent);
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		
@@ -95,7 +95,8 @@ class AlertThread extends Thread {
         AlertList.Items.NAME, // 1
         AlertList.Items.DONE, // 2
         AlertList.Items.LATITUDE, // 3
-        AlertList.Items.LONGITUDE // 4
+        AlertList.Items.LONGITUDE, // 4
+        AlertList.Items.NOTIFICATION_MODE // 5
     };
     
     public AlertThread(AlertService context) {
@@ -251,7 +252,8 @@ class AlertThread extends Thread {
 					alertsCursor.getString(1), 
 					alertsCursor.getInt(2) == 1, 
 					alertsCursor.getDouble(3), 
-					alertsCursor.getDouble(4)
+					alertsCursor.getDouble(4),
+					alertsCursor.getInt(5)
 			));
 	}
 

@@ -33,7 +33,8 @@ public class AlertListActivity extends ListActivity {
         AlertList.Items.NAME, // 1
         AlertList.Items.DONE, // 2
         AlertList.Items.LATITUDE, // 3
-        AlertList.Items.LONGITUDE // 4
+        AlertList.Items.LONGITUDE, // 4
+        AlertList.Items.NOTIFICATION_MODE // 5
     };
     
     @Override
@@ -150,18 +151,19 @@ public class AlertListActivity extends ListActivity {
 	    	String data = intent.getExtras().get("newTaskText").toString();
     		Double latitude = intent.getExtras().getDouble("latitude");
     		Double longitude = intent.getExtras().getDouble("longitude");
+    		int notificationMode = intent.getExtras().getInt("notificationMode");
 	    	int index = intent.getExtras().getInt("index");
 	    	if (index == -1) {
-	    		addItemInListAndDatabase(data, latitude, longitude);
+	    		addItemInListAndDatabase(data, latitude, longitude, notificationMode);
 	    	}
 	    	else {
-	    		editItemInListAndDatabase(data, index, latitude, longitude);
+	    		editItemInListAndDatabase(data, index, latitude, longitude, notificationMode);
 	    	}
 	    	refreshListFromDatabase();
     	}
     }
 
-	private void editItemInListAndDatabase(String data, int index, Double latitude, Double longitude) {
+	private void editItemInListAndDatabase(String data, int index, Double latitude, Double longitude, int notificationMode) {
 		getTaskListAdapter().updateItem(index, data);
 
 		ContentValues values = new ContentValues();
@@ -169,6 +171,7 @@ public class AlertListActivity extends ListActivity {
 		values.put(AlertList.Items.DONE, getTaskListAdapter().getItem(index).isDone() ? 1 : 0);
 		values.put(AlertList.Items.LATITUDE, latitude);
 		values.put(AlertList.Items.LONGITUDE, longitude);
+		values.put(AlertList.Items.NOTIFICATION_MODE, notificationMode);
 		getContentResolver().update(AlertList.Items.CONTENT_URI, 
 				values,
 				AlertList.Items._ID + "=" + getTaskListAdapter().getItem(index).getIndex(), 
@@ -179,14 +182,15 @@ public class AlertListActivity extends ListActivity {
 		refreshList((AlertListAdapter)getListAdapter());
 	}
 
-	private void addItemInListAndDatabase(String data, Double latitude, Double longitude) {
-		getTaskListAdapter().addItem(new AlertItem(data, false, latitude, longitude));
+	private void addItemInListAndDatabase(String data, Double latitude, Double longitude, int notificationMode) {
+		getTaskListAdapter().addItem(new AlertItem(data, false, latitude, longitude, AlertItem.NOTIFY_WHEN_NEAR_OF));
 
 		ContentValues values = new ContentValues();
 		values.put(AlertList.Items.NAME, data);
 		values.put(AlertList.Items.DONE, 0);
 		values.put(AlertList.Items.LATITUDE, latitude);
 		values.put(AlertList.Items.LONGITUDE, longitude);
+		values.put(AlertList.Items.NOTIFICATION_MODE, notificationMode);
 		getContentResolver().insert(AlertList.Items.CONTENT_URI, values);
 	}
 
@@ -218,7 +222,7 @@ public class AlertListActivity extends ListActivity {
     	Cursor cursor = getRefreshedCursor();
         if( cursor.moveToFirst() ) {
 			do {
-				adapter.addItem( new AlertItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getDouble(3), cursor.getDouble(4)) );
+				adapter.addItem( new AlertItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getDouble(3), cursor.getDouble(4), cursor.getInt(5)) );
 	        } while(cursor.moveToNext());
         }
     	

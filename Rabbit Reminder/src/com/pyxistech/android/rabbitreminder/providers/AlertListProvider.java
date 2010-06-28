@@ -14,7 +14,7 @@ import com.pyxistech.android.rabbitreminder.models.AlertList;
 public class AlertListProvider extends AbstractListProvider {
 
     private static final String DATABASE_NAME = "alert_list.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     private static final String TABLE_NAME = "alerts";
 
     private static HashMap<String, String> projectionMap;
@@ -32,6 +32,7 @@ public class AlertListProvider extends AbstractListProvider {
         projectionMap.put(AlertList.Items.DONE, AlertList.Items.DONE);
         projectionMap.put(AlertList.Items.LATITUDE, AlertList.Items.LATITUDE);
         projectionMap.put(AlertList.Items.LONGITUDE, AlertList.Items.LONGITUDE);
+        projectionMap.put(AlertList.Items.NOTIFICATION_MODE, AlertList.Items.NOTIFICATION_MODE);
         projectionMap.put(AlertList.Items.CREATED_DATE, AlertList.Items.CREATED_DATE);
         projectionMap.put(AlertList.Items.MODIFIED_DATE, AlertList.Items.MODIFIED_DATE);
     }
@@ -50,6 +51,7 @@ public class AlertListProvider extends AbstractListProvider {
                     + AlertList.Items.DONE + " INTEGER,"
                     + AlertList.Items.LATITUDE + " FLOAT,"
                     + AlertList.Items.LONGITUDE + " FLOAT,"
+                    + AlertList.Items.NOTIFICATION_MODE + " INTEGER,"
                     + AlertList.Items.CREATED_DATE + " INTEGER,"
                     + AlertList.Items.MODIFIED_DATE + " INTEGER"
                     + ");");

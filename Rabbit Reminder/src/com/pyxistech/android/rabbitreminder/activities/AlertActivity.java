@@ -55,6 +55,7 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		super.onSaveInstanceState(outState);
 		
 		outState.putInt("index", index);
+		outState.putInt("notificationMode", notificationMode);
 		outState.putBoolean("taskOverlayExist", isSetTaskCoordinates());
 		if (isSetTaskCoordinates()) {
 			outState.putDouble("latitude", taskLatitude);
@@ -139,6 +140,7 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	
 	private void getParametersFromSavedInstanceState(Bundle savedInstanceState) {
 		index = savedInstanceState.getInt("index");
+		notificationMode = savedInstanceState.getInt("notificationMode");
 		if (savedInstanceState.getBoolean("taskOverlayExist")) {
 			taskLatitude = savedInstanceState.getDouble("latitude");
 			taskLongitude = savedInstanceState.getDouble("longitude");
@@ -152,6 +154,8 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 			
 			taskLatitude = item.getLatitude();
 			taskLongitude = item.getLongitude();
+			
+			notificationMode = item.getNotificationMode();
 			
 			index = bundle.getInt("index");
 		}
@@ -237,8 +241,9 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(AlertActivity.this);
 			builder.setTitle("Notify me when");
-			builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+			builder.setSingleChoiceItems(items, notificationMode, new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int item) {
+			    	notificationMode = item;
 			    	dialog.cancel();
 			        Toast.makeText(AlertActivity.this, items[item], Toast.LENGTH_SHORT).show();
 			    }
@@ -290,6 +295,7 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 				data.putExtra("latitude", taskLatitude);
 				data.putExtra("longitude", taskLongitude);
 				data.putExtra("index", index);
+				data.putExtra("notificationMode", notificationMode);
 		
 				AlertActivity.this.setResult(Activity.RESULT_OK, data);
 				AlertActivity.this.finish();
@@ -303,6 +309,7 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	private Double currentLongitude = null;
 	private Double taskLatitude;
 	private Double taskLongitude;
+	private int notificationMode = AlertItem.NOTIFY_WHEN_NEAR_OF;
 
 	private LocationManager locationManager;
 

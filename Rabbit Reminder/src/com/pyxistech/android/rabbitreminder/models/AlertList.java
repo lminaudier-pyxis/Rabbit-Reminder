@@ -21,6 +21,7 @@ public class AlertList implements Parcelable {
 		public static final String DONE = "done";
 		public static final String LATITUDE = "latitude";
 		public static final String LONGITUDE = "longitude";
+		public static final String NOTIFICATION_MODE = "notification_mode";
 		public static final String CREATED_DATE = "created";
 		public static final String MODIFIED_DATE = "modified";
 	}
