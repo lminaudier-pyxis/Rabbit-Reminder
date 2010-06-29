@@ -72,7 +72,7 @@ public class AlertService extends Service {
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		
 		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notification = new Notification(R.drawable.locationsdashboard_button, getString(R.string.alert_service_ongoing_notification_info_message), System.currentTimeMillis());
+		Notification notification = new Notification(R.drawable.alert_service_icon, getString(R.string.alert_service_ongoing_notification_info_message), System.currentTimeMillis());
 		notification.setLatestEventInfo(this, getString(R.string.alert_service_ongoing_notification_title), getString(R.string.alert_service_ongoing_notification_description), pendingIntent);
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		

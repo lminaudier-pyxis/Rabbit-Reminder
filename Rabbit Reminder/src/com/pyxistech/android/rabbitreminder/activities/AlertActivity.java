@@ -12,6 +12,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -193,8 +195,8 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		
 		setCurrentGpsLocation(null);
 		
-		ImageButton setMyLocationButton = (ImageButton) AlertActivity.this.findViewById(R.id.set_current_location_button);
-		setMyLocationButton.setOnClickListener(setMyLocationButtonListener);
+//		ImageButton setMyLocationButton = (ImageButton) AlertActivity.this.findViewById(R.id.set_current_location_button);
+//		setMyLocationButton.setOnClickListener(setMyLocationButtonListener);
 	}
 
 	private void setCurrentGpsLocation(Location location) {
@@ -273,28 +275,18 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		}
 	};
 
-	private OnClickListener setMyLocationButtonListener = new OnClickListener() {
-		public void onClick(View v) {
-			setCurrentGpsLocation(null);
-			
-			checkGPSAvailability();
-			
-			setTaskCoordinates();
-			
-			updateMapView();
-		}
 
-		private void updateMapView() {
-			setOverlayAndMoveToCoordinates(taskLatitude, taskLongitude);
-		}
 	
-		private void checkGPSAvailability() {
-			if (currentLatitude == null || currentLongitude == null) {
-				Toast toast = Toast.makeText(getApplicationContext(), R.string.gps_availability_warning, Toast.LENGTH_SHORT);
-				toast.show();
-			}
+	private void updateMapView() {
+		setOverlayAndMoveToCoordinates(taskLatitude, taskLongitude);
+	}
+
+	private void checkGPSAvailability() {
+		if (currentLatitude == null || currentLongitude == null) {
+			Toast toast = Toast.makeText(getApplicationContext(), R.string.gps_availability_warning, Toast.LENGTH_SHORT);
+			toast.show();
 		}
-	};
+	}
 	
 	private OnClickListener okButtonListener = new OnClickListener() {
 		
@@ -323,6 +315,26 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		}
 	};
 	
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	menu.add(Menu.NONE, MY_LOCATION, Menu.NONE, R.string.go_to_my_location_menu_text).setIcon(android.R.drawable.ic_menu_mylocation);
+    	return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch(item.getItemId()) {
+    	case MY_LOCATION:
+    		setCurrentGpsLocation(null);
+			checkGPSAvailability();
+			setTaskCoordinates();
+			updateMapView();
+    		return true;
+    	}
+    	
+    	return super.onOptionsItemSelected(item);
+    }
+	
 	private int index = -1;
 	private String text = "";
 	private Double currentLatitude = null;
@@ -342,4 +354,6 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	private RabbitItemizedOverlay itemizedOverlay;
 	
 	private static final int GPS_UPDATE_RATE = 60000;
+	
+	private static final int MY_LOCATION = Menu.FIRST + 1;
 }
