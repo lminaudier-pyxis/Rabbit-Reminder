@@ -10,7 +10,9 @@
 			android:id="@+id/taskname_form_layout"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
-			android:layout_alignParentBottom="true">
+			android:layout_alignParentBottom="true"
+			android:paddingTop="5dip"
+			>
 
 			<Button 
 				android:text="@string/validation_button_text"
