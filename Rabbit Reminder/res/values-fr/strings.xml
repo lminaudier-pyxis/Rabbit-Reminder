@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alert_service_ongoing_notification_description">Cliquer pour désactiver le service...</string>
+    <string name="app_name">Rabbit Reminder</string>
+    
+    <string name="add_item_menu_text">Créer Alerte</string>
+    <string name="alert_type_title_text">Me notifier quand</string>
+    <string name="alert_type_description_go_out_of_label">Je sors de ...</string>
+    <string name="alert_type_description_near_of_label">Je suis prêt de ...</string>
+    
+    <string name="settings_menu_text">Paramètres</string>
+    <string name="settings_disable_notifications_description_text">Désactiver les notifications</string>
+    <string name="settings_ennable_notifications_description_text">Activer les notifications</string>
+    <string name="settings_ennable_notifications_menu_text">Notifications</string>
+    
+    <string name="delete_item_menu_text">Supprimer</string>
+    <string name="edit_item_menu_text">Editer</string>
+    <string name="validation_button_text">OK</string>
+    <string name="cancel_button_text">Annuler</string>
+    <string name="no_alert_hit_menu_text">Pas d\'alerte!\nPressez la touche menu pour ajouter une alerte...</string>
+    
+    <string name="delete_item_confirmation_dialog_title">Supprimer</string>
+    <string name="delete_item_confirmation_dialog_text">Cette alerte va être supprimée.</string>
+    <string name="gps_availability_warning">GPS non disponible!</string>
+    
+    <string name="alert_name_label">Nom de l\'alerte</string>
+    <string name="alert_name_not_set_warning">Vous devez spécifier un nom à l\'alerte!</string>
+    <string name="location_not_set_warning">Vous devez spécifier un lieu à l\'alerte!</string>
+    
+    <string name="alert_service_ongoing_notification_info_message">Rabbit-Reminder est lancé ...</string>
+    <string name="alert_service_ongoing_notification_title">Service Rabbit-Reminder</string>
+    
+    <string name="settings_activity_title">Paramètres Rabbit Reminder</string>
+
+    <string name="go_to_my_location_menu_text">Ma Position</string>
+</resources>

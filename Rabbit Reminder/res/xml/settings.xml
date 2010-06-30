@@ -4,9 +4,9 @@
 	
 	<CheckBoxPreference
 		android:key="rabbit reminder alert service"
-		android:title="Notifications"
-		android:summaryOff="Enable notifications"
-		android:summaryOn="Disable notifications" 
+		android:title="@string/settings_ennable_notifications_menu_text"
+		android:summaryOff="@string/settings_ennable_notifications_description_text"
+		android:summaryOn="@string/settings_disable_notifications_description_text" 
 		android:defaultValue="true"
 		/>
 

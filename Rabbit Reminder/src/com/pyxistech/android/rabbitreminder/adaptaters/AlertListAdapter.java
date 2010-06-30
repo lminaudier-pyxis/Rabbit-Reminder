@@ -1,5 +1,7 @@
 package com.pyxistech.android.rabbitreminder.adaptaters;
 
+import org.json.JSONException;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
@@ -18,6 +20,7 @@ public class AlertListAdapter extends BaseAdapter {
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
 		this.list = list;
+		this.context = context;
 	}
 
 	public void addItem(AlertItem item){
@@ -50,10 +53,23 @@ public class AlertListAdapter extends BaseAdapter {
 		
 		checkItemIfDone(position, wrapper);
 		strikeThroughtItemIfDone(position, wrapper);
+		try {
+			setNotificationModeText(position, wrapper);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return convertView;
 	}
 
+	private void setNotificationModeText(int position, AlertViewWrapper wrapper) throws JSONException {		
+		if( list.getItemAt(position).getNotificationMode() == AlertItem.NOTIFY_WHEN_GO_OUT )
+			wrapper.getNotificationModeTextView().setText(context.getString(R.string.alert_type_description_go_out_of_label));
+		else if(list.getItemAt(position).getNotificationMode() == AlertItem.NOTIFY_WHEN_NEAR_OF )
+			wrapper.getNotificationModeTextView().setText(context.getString(R.string.alert_type_description_near_of_label));
+	}
+	
 	private void setItemText(int position, AlertViewWrapper wrapper) {
 		wrapper.getCheckedTextView().setText(list.getItemAt(position).getText());
 	}
@@ -101,4 +117,5 @@ public class AlertListAdapter extends BaseAdapter {
 	
 	private LayoutInflater inflater;
 	private AlertList list;
+	private Activity context;
 }

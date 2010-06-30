@@ -143,7 +143,7 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		mapView.setCoordinatesTouchedListener(this);
 		
 		mapOverlays = mapView.getOverlays();
-		drawable = this.getResources().getDrawable(android.R.drawable.star_on);
+		drawable = this.getResources().getDrawable(overlayDrawable);
 		
 		itemizedOverlay = new RabbitItemizedOverlay(drawable);
 	}
@@ -259,10 +259,11 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	
 	private OnClickListener editAlertButtonListener = new OnClickListener() {
 		public void onClick(View v) {
-			final CharSequence[] items = {"I am near of...", "I go out of..."};
+			final String[] items = {AlertActivity.this.getString(R.string.alert_type_description_near_of_label),
+					AlertActivity.this.getString(R.string.alert_type_description_go_out_of_label)};
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(AlertActivity.this);
-			builder.setTitle("Notify me when");
+			builder.setTitle(R.string.alert_type_title_text);
 			builder.setSingleChoiceItems(items, notificationMode, new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int item) {
 			    	notificationMode = item;
@@ -356,4 +357,5 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	private static final int GPS_UPDATE_RATE = 60000;
 	
 	private static final int MY_LOCATION = Menu.FIRST + 1;
+	private int overlayDrawable = R.drawable.carrot;
 }

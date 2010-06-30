@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="alert_type_title_text">Notify me when</string>
+    <string name="alert_type_description_go_out_of_label">I go out of...</string>
+    <string name="alert_type_description_near_of_label">I am near of...</string>
+
     <string name="alert_service_ongoing_notification_description">Click here to desactivate it...</string>
     <string name="app_name">Rabbit Reminder</string>
     
     <string name="add_item_menu_text">Create Alert</string>
+    
     <string name="settings_menu_text">Settings</string>
+    <string name="settings_disable_notifications_description_text">Disable notifications</string>
+    <string name="settings_ennable_notifications_description_text">Enable notifications</string>
+    <string name="settings_ennable_notifications_menu_text">Notifications</string>
     
     <string name="delete_item_menu_text">Delete</string>
     <string name="edit_item_menu_text">Edit</string>
