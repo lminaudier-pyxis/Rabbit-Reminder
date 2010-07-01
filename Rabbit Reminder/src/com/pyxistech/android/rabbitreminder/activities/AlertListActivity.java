@@ -1,5 +1,6 @@
 package com.pyxistech.android.rabbitreminder.activities;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
@@ -71,6 +72,7 @@ public class AlertListActivity extends ListActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
     	menu.add(Menu.NONE, ADD_ITEM, Menu.NONE, R.string.add_item_menu_text).setIcon(android.R.drawable.ic_menu_add);
     	menu.add(Menu.NONE, SETTINGS, Menu.NONE, R.string.settings_menu_text).setIcon(android.R.drawable.ic_menu_preferences);
+    	menu.add(Menu.NONE, ABOUT, Menu.NONE, R.string.about_menu_text).setIcon(android.R.drawable.ic_menu_help);
     	return super.onCreateOptionsMenu(menu);
     }
     
@@ -83,10 +85,27 @@ public class AlertListActivity extends ListActivity {
     	case SETTINGS:
     		startActivity(new Intent(this, SettingsActivity.class));
     		return true;
+    	case ABOUT:
+    		showAboutDialog();
+    		return true;
     	}
     	
     	return super.onOptionsItemSelected(item);
     }
+
+	private void showAboutDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.about_menu_text);
+		builder.setInverseBackgroundForced(true);
+		builder.setMessage(R.string.about_text);
+		builder.setNeutralButton(R.string.validation_button_text, new DialogInterface.OnClickListener() {
+		  public void onClick(DialogInterface dialog, int which) {
+		    dialog.dismiss();
+		  }
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
     
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -239,4 +258,5 @@ public class AlertListActivity extends ListActivity {
     public static final int SETTINGS = Menu.FIRST + 2;
     public static final int EDIT_ITEM = Menu.FIRST + 3;
     public static final int DELETE_ITEM = Menu.FIRST + 4;
+    public static final int ABOUT = Menu.FIRST + 5;
 }

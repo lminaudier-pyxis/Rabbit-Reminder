@@ -165,7 +165,7 @@ class AlertThread extends Thread {
 				localAndAlreadySeenAlerts.add(alertItem.getIndex());
 			}
 		}
-	}
+	} 
 
 	private Intent buildNotificationIntent(AlertItem alertItem) {
 		Intent intent = new Intent(context, AlertActivity.class);
@@ -176,7 +176,7 @@ class AlertThread extends Thread {
 
 	private void notifyUser(String alertMessage, Intent notificationIntent) {					
 		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notification = new Notification(R.drawable.icon, "You have to accomplish a task here!", System.currentTimeMillis());
+		Notification notification = new Notification(R.drawable.alert_notification_icon, context.getString(R.string.notification_long_description_text), System.currentTimeMillis());
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 		notification.setLatestEventInfo(context, alertMessage, "", pendingIntent);
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;

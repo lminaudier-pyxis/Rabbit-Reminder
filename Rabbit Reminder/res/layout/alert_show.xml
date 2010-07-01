@@ -19,15 +19,18 @@
 				android:id="@+id/add_task_button" 
 				android:layout_alignParentRight="true"
 				android:layout_width="50dip" 
-				android:layout_height="wrap_content">
+				android:layout_height="48dip">
 			</Button>
 			
 			<ImageButton
 				android:id="@+id/edit_alert_button"
 				android:layout_toLeftOf="@id/add_task_button"
 				android:layout_width="50dip" 
-				android:layout_height="wrap_content"
-				android:src="@drawable/stat_notify_alarm" />
+				android:layout_height="48dip"
+				android:src="@drawable/notification_type"
+				android:scaleType="centerInside"
+				android:adjustViewBounds="true"
+				/>
 
 			<EditText 
 				android:id="@+id/new_task_text"

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="about_menu_text">About</string>
+	<string name="about_text"></string>
+
+    <string name="notification_long_description_text">You have to accomplish a task here!</string>
     <string name="alert_type_title_text">Notify me when</string>
     <string name="alert_type_description_go_out_of_label">I go out of...</string>
     <string name="alert_type_description_near_of_label">I am near of...</string>
