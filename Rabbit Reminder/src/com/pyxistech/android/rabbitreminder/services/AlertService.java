@@ -149,7 +149,7 @@ class AlertThread extends Thread {
 			if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) != -1) {	
 				if (alertItem.getNotificationMode() == AlertItem.NOTIFY_WHEN_GO_OUT) {
 					Intent intent = buildNotificationIntent(alertItem);
-					notifyUser("End of " + alertItem.getText(), intent);
+					notifyUser(alertItem.getText(), context.getString(R.string.alert_type_description_go_out_of_label), intent);
 				}
 				localAndAlreadySeenAlerts.remove(localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()));
 			}
@@ -161,7 +161,7 @@ class AlertThread extends Thread {
 			if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) == -1) {
 				if (alertItem.getNotificationMode() == AlertItem.NOTIFY_WHEN_NEAR_OF) {
 					Intent intent = buildNotificationIntent(alertItem);
-					notifyUser(alertItem.getText(), intent);
+					notifyUser(alertItem.getText(), context.getString(R.string.alert_type_description_near_of_label), intent);
 				}
 				localAndAlreadySeenAlerts.add(alertItem.getIndex());
 			}
@@ -175,11 +175,11 @@ class AlertThread extends Thread {
 		return intent;
 	}
 
-	private void notifyUser(String alertMessage, Intent notificationIntent) {					
+	private void notifyUser(String alertMessage, String alertSubMessage, Intent notificationIntent) {					
 		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notification = new Notification(R.drawable.alert_notification_icon, context.getString(R.string.notification_long_description_text), System.currentTimeMillis());
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId++, notificationIntent, 0);
-		notification.setLatestEventInfo(context, alertMessage, "", pendingIntent);
+		notification.setLatestEventInfo(context, alertMessage, alertSubMessage, pendingIntent);
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		notification.sound = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
 	
