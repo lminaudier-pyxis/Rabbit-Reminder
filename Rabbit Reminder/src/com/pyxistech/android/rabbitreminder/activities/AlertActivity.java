@@ -36,7 +36,6 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		setContentView(R.layout.alert_show);
 		
@@ -194,9 +193,6 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		editAlertButton.setOnClickListener(editAlertButtonListener);
 		
 		setCurrentGpsLocation(null);
-		
-//		ImageButton setMyLocationButton = (ImageButton) AlertActivity.this.findViewById(R.id.set_current_location_button);
-//		setMyLocationButton.setOnClickListener(setMyLocationButtonListener);
 	}
 
 	private void setCurrentGpsLocation(Location location) {

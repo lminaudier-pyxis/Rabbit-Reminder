@@ -7,9 +7,10 @@
     <string name="alert_type_title_text">Notify me when</string>
     <string name="alert_type_description_go_out_of_label">I go out of...</string>
     <string name="alert_type_description_near_of_label">I am near of...</string>
-
+    
     <string name="alert_service_ongoing_notification_description">Click here to desactivate it...</string>
     <string name="app_name">Rabbit Reminder</string>
+    <string name="alert_show_activity_title">Create an alert</string>
     
     <string name="add_item_menu_text">Create Alert</string>
     

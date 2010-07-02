@@ -177,11 +177,11 @@ class AlertThread extends Thread {
 	private void notifyUser(String alertMessage, Intent notificationIntent) {					
 		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notification = new Notification(R.drawable.alert_notification_icon, context.getString(R.string.notification_long_description_text), System.currentTimeMillis());
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId++, notificationIntent, 0);
 		notification.setLatestEventInfo(context, alertMessage, "", pendingIntent);
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 	
-		nm.notify(notificationId++, notification);
+		nm.notify(notificationId, notification);
 	}
 
 	private Vector<AlertItem> getLocalUndoneAlerts(Location myLocation, Vector<AlertItem> tasks) {
