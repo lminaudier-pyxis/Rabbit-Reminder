@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 
+import com.pyxistech.android.rabbitreminder.R;
 import com.pyxistech.android.rabbitreminder.models.AlertList;
 
 public class AlertListProvider extends AbstractListProvider {
@@ -38,14 +39,38 @@ public class AlertListProvider extends AbstractListProvider {
     }
     
     public class TaskListDatabaseHelper extends SQLiteOpenHelper {
+    	
+    	private Context context;
 
     	public TaskListDatabaseHelper(Context context) {
     		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    		this.context = context;
     	}
 
     	@Override
     	public void onCreate(SQLiteDatabase db) {
-    		db.execSQL("CREATE TABLE " + TABLE_NAME + " ("
+    		createDatabase(db);
+    		insertDefaultValues(db);
+    	}
+
+		private void insertDefaultValues(SQLiteDatabase db) {
+			db.execSQL("INSERT INTO " + TABLE_NAME + " (" +
+    				AlertList.Items.NAME +
+    				", " + AlertList.Items.DONE +
+    				", " + AlertList.Items.LATITUDE +
+    				", " + AlertList.Items.LONGITUDE +
+    				", " + AlertList.Items.NOTIFICATION_MODE +
+    				") VALUES (" +
+    				"'" + context.getString(R.string.default_alert_name) + "'" +
+    				", " + "'0'" +
+    				", " + "'45.14173764353202'" +
+    				", " + "'5.74069699873608'" +
+    				", " + "'1'" +
+    				")");
+		}
+
+		private void createDatabase(SQLiteDatabase db) {
+			db.execSQL("CREATE TABLE " + TABLE_NAME + " ("
                     + AlertList.Items._ID + " INTEGER PRIMARY KEY,"
                     + AlertList.Items.NAME + " TEXT,"
                     + AlertList.Items.DONE + " INTEGER,"
@@ -55,7 +80,7 @@ public class AlertListProvider extends AbstractListProvider {
                     + AlertList.Items.CREATED_DATE + " INTEGER,"
                     + AlertList.Items.MODIFIED_DATE + " INTEGER"
                     + ");");
-    	}
+		}
 
     	@Override
     	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
