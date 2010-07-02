@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
@@ -180,6 +181,7 @@ class AlertThread extends Thread {
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId++, notificationIntent, 0);
 		notification.setLatestEventInfo(context, alertMessage, "", pendingIntent);
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		notification.sound = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
 	
 		nm.notify(notificationId, notification);
 	}
