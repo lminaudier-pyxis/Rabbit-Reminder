@@ -263,7 +263,6 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 			    public void onClick(DialogInterface dialog, int item) {
 			    	notificationMode = item;
 			    	dialog.cancel();
-			        Toast.makeText(AlertActivity.this, items[item], Toast.LENGTH_SHORT).show();
 			    }
 			});
 			AlertDialog alert = builder.create();
