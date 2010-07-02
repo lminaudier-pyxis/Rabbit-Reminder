@@ -1,5 +1,6 @@
 package com.pyxistech.android.rabbitreminder.activities;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
@@ -33,7 +34,8 @@ public class AlertListActivity extends ListActivity {
         AlertList.Items.NAME, // 1
         AlertList.Items.DONE, // 2
         AlertList.Items.LATITUDE, // 3
-        AlertList.Items.LONGITUDE // 4
+        AlertList.Items.LONGITUDE, // 4
+        AlertList.Items.NOTIFICATION_MODE // 5
     };
     
     @Override
@@ -70,6 +72,7 @@ public class AlertListActivity extends ListActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
     	menu.add(Menu.NONE, ADD_ITEM, Menu.NONE, R.string.add_item_menu_text).setIcon(android.R.drawable.ic_menu_add);
     	menu.add(Menu.NONE, SETTINGS, Menu.NONE, R.string.settings_menu_text).setIcon(android.R.drawable.ic_menu_preferences);
+    	menu.add(Menu.NONE, ABOUT, Menu.NONE, R.string.about_menu_text).setIcon(android.R.drawable.ic_menu_help);
     	return super.onCreateOptionsMenu(menu);
     }
     
@@ -82,10 +85,27 @@ public class AlertListActivity extends ListActivity {
     	case SETTINGS:
     		startActivity(new Intent(this, SettingsActivity.class));
     		return true;
+    	case ABOUT:
+    		showAboutDialog();
+    		return true;
     	}
     	
     	return super.onOptionsItemSelected(item);
     }
+
+	private void showAboutDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.about_menu_text);
+		builder.setInverseBackgroundForced(true);
+		builder.setMessage(R.string.about_text);
+		builder.setNeutralButton(R.string.validation_button_text, new DialogInterface.OnClickListener() {
+		  public void onClick(DialogInterface dialog, int which) {
+		    dialog.dismiss();
+		  }
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
     
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -150,18 +170,19 @@ public class AlertListActivity extends ListActivity {
 	    	String data = intent.getExtras().get("newTaskText").toString();
     		Double latitude = intent.getExtras().getDouble("latitude");
     		Double longitude = intent.getExtras().getDouble("longitude");
+    		int notificationMode = intent.getExtras().getInt("notificationMode");
 	    	int index = intent.getExtras().getInt("index");
 	    	if (index == -1) {
-	    		addItemInListAndDatabase(data, latitude, longitude);
+	    		addItemInListAndDatabase(data, latitude, longitude, notificationMode);
 	    	}
 	    	else {
-	    		editItemInListAndDatabase(data, index, latitude, longitude);
+	    		editItemInListAndDatabase(data, index, latitude, longitude, notificationMode);
 	    	}
 	    	refreshListFromDatabase();
     	}
     }
 
-	private void editItemInListAndDatabase(String data, int index, Double latitude, Double longitude) {
+	private void editItemInListAndDatabase(String data, int index, Double latitude, Double longitude, int notificationMode) {
 		getTaskListAdapter().updateItem(index, data);
 
 		ContentValues values = new ContentValues();
@@ -169,6 +190,7 @@ public class AlertListActivity extends ListActivity {
 		values.put(AlertList.Items.DONE, getTaskListAdapter().getItem(index).isDone() ? 1 : 0);
 		values.put(AlertList.Items.LATITUDE, latitude);
 		values.put(AlertList.Items.LONGITUDE, longitude);
+		values.put(AlertList.Items.NOTIFICATION_MODE, notificationMode);
 		getContentResolver().update(AlertList.Items.CONTENT_URI, 
 				values,
 				AlertList.Items._ID + "=" + getTaskListAdapter().getItem(index).getIndex(), 
@@ -179,14 +201,15 @@ public class AlertListActivity extends ListActivity {
 		refreshList((AlertListAdapter)getListAdapter());
 	}
 
-	private void addItemInListAndDatabase(String data, Double latitude, Double longitude) {
-		getTaskListAdapter().addItem(new AlertItem(data, false, latitude, longitude));
+	private void addItemInListAndDatabase(String data, Double latitude, Double longitude, int notificationMode) {
+		getTaskListAdapter().addItem(new AlertItem(data, false, latitude, longitude, AlertItem.NOTIFY_WHEN_NEAR_OF));
 
 		ContentValues values = new ContentValues();
 		values.put(AlertList.Items.NAME, data);
 		values.put(AlertList.Items.DONE, 0);
 		values.put(AlertList.Items.LATITUDE, latitude);
 		values.put(AlertList.Items.LONGITUDE, longitude);
+		values.put(AlertList.Items.NOTIFICATION_MODE, notificationMode);
 		getContentResolver().insert(AlertList.Items.CONTENT_URI, values);
 	}
 
@@ -218,7 +241,7 @@ public class AlertListActivity extends ListActivity {
     	Cursor cursor = getRefreshedCursor();
         if( cursor.moveToFirst() ) {
 			do {
-				adapter.addItem( new AlertItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getDouble(3), cursor.getDouble(4)) );
+				adapter.addItem( new AlertItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getDouble(3), cursor.getDouble(4), cursor.getInt(5)) );
 	        } while(cursor.moveToNext());
         }
     	
@@ -235,4 +258,5 @@ public class AlertListActivity extends ListActivity {
     public static final int SETTINGS = Menu.FIRST + 2;
     public static final int EDIT_ITEM = Menu.FIRST + 3;
     public static final int DELETE_ITEM = Menu.FIRST + 4;
+    public static final int ABOUT = Menu.FIRST + 5;
 }

@@ -12,8 +12,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,11 +31,10 @@ import com.pyxistech.android.rabbitreminder.views.AlertMapView;
 import com.pyxistech.android.rabbitreminder.views.RabbitItemizedOverlay;
 
 public class AlertActivity extends MapActivity implements LocationListener, AlertMapView.CoordinatesTouchedListener {
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		setContentView(R.layout.alert_show);
 		
@@ -49,12 +49,33 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 
 		refreshUi();
 	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		deactivateGpsService();
+	}
+
+	private void deactivateGpsService() {
+		locationManager.removeUpdates(this);
+	}
+	
+	@Override
+	public void onRestart() {
+		super.onRestart();
+		activateGpsService();
+	}
+
+	private void activateGpsService() {
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_RATE, 0, this);
+	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		
 		outState.putInt("index", index);
+		outState.putInt("notificationMode", notificationMode);
 		outState.putBoolean("taskOverlayExist", isSetTaskCoordinates());
 		if (isSetTaskCoordinates()) {
 			outState.putDouble("latitude", taskLatitude);
@@ -120,7 +141,7 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		mapView.setCoordinatesTouchedListener(this);
 		
 		mapOverlays = mapView.getOverlays();
-		drawable = this.getResources().getDrawable(android.R.drawable.star_on);
+		drawable = this.getResources().getDrawable(overlayDrawable);
 		
 		itemizedOverlay = new RabbitItemizedOverlay(drawable);
 	}
@@ -139,6 +160,7 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	
 	private void getParametersFromSavedInstanceState(Bundle savedInstanceState) {
 		index = savedInstanceState.getInt("index");
+		notificationMode = savedInstanceState.getInt("notificationMode");
 		if (savedInstanceState.getBoolean("taskOverlayExist")) {
 			taskLatitude = savedInstanceState.getDouble("latitude");
 			taskLongitude = savedInstanceState.getDouble("longitude");
@@ -152,6 +174,8 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 			
 			taskLatitude = item.getLatitude();
 			taskLongitude = item.getLongitude();
+			
+			notificationMode = item.getNotificationMode();
 			
 			index = bundle.getInt("index");
 		}
@@ -168,9 +192,6 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		editAlertButton.setOnClickListener(editAlertButtonListener);
 		
 		setCurrentGpsLocation(null);
-		
-		ImageButton setMyLocationButton = (ImageButton) AlertActivity.this.findViewById(R.id.set_current_location_button);
-		setMyLocationButton.setOnClickListener(setMyLocationButtonListener);
 	}
 
 	private void setCurrentGpsLocation(Location location) {
@@ -222,7 +243,7 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	private void updateLocationManagerIfNeeded(Location location) {
 		if (location == null) {
 			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE); 
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+			activateGpsService();
 		}
 	}
 	
@@ -233,14 +254,15 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	
 	private OnClickListener editAlertButtonListener = new OnClickListener() {
 		public void onClick(View v) {
-			final CharSequence[] items = {"I am near of...", "I go out of..."};
+			final String[] items = {AlertActivity.this.getString(R.string.alert_type_description_near_of_label),
+					AlertActivity.this.getString(R.string.alert_type_description_go_out_of_label)};
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(AlertActivity.this);
-			builder.setTitle("Notify me when");
-			builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+			builder.setTitle(R.string.alert_type_title_text);
+			builder.setSingleChoiceItems(items, notificationMode, new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int item) {
+			    	notificationMode = item;
 			    	dialog.cancel();
-			        Toast.makeText(AlertActivity.this, items[item], Toast.LENGTH_SHORT).show();
 			    }
 			});
 			AlertDialog alert = builder.create();
@@ -248,28 +270,18 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		}
 	};
 
-	private OnClickListener setMyLocationButtonListener = new OnClickListener() {
-		public void onClick(View v) {
-			setCurrentGpsLocation(null);
-			
-			checkGPSAvailability();
-			
-			setTaskCoordinates();
-			
-			updateMapView();
-		}
 
-		private void updateMapView() {
-			setOverlayAndMoveToCoordinates(taskLatitude, taskLongitude);
-		}
 	
-		private void checkGPSAvailability() {
-			if (currentLatitude == null || currentLongitude == null) {
-				Toast toast = Toast.makeText(getApplicationContext(), R.string.gps_availability_warning, Toast.LENGTH_SHORT);
-				toast.show();
-			}
+	private void updateMapView() {
+		setOverlayAndMoveToCoordinates(taskLatitude, taskLongitude);
+	}
+
+	private void checkGPSAvailability() {
+		if (currentLatitude == null || currentLongitude == null) {
+			Toast toast = Toast.makeText(getApplicationContext(), R.string.gps_availability_warning, Toast.LENGTH_SHORT);
+			toast.show();
 		}
-	};
+	}
 	
 	private OnClickListener okButtonListener = new OnClickListener() {
 		
@@ -290,6 +302,7 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 				data.putExtra("latitude", taskLatitude);
 				data.putExtra("longitude", taskLongitude);
 				data.putExtra("index", index);
+				data.putExtra("notificationMode", notificationMode);
 		
 				AlertActivity.this.setResult(Activity.RESULT_OK, data);
 				AlertActivity.this.finish();
@@ -297,12 +310,33 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		}
 	};
 	
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	menu.add(Menu.NONE, MY_LOCATION, Menu.NONE, R.string.go_to_my_location_menu_text).setIcon(android.R.drawable.ic_menu_mylocation);
+    	return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch(item.getItemId()) {
+    	case MY_LOCATION:
+    		setCurrentGpsLocation(null);
+			checkGPSAvailability();
+			setTaskCoordinates();
+			updateMapView();
+    		return true;
+    	}
+    	
+    	return super.onOptionsItemSelected(item);
+    }
+	
 	private int index = -1;
 	private String text = "";
 	private Double currentLatitude = null;
 	private Double currentLongitude = null;
 	private Double taskLatitude;
 	private Double taskLongitude;
+	private int notificationMode = AlertItem.NOTIFY_WHEN_NEAR_OF;
 
 	private LocationManager locationManager;
 
@@ -313,4 +347,9 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	private Drawable drawable;
 
 	private RabbitItemizedOverlay itemizedOverlay;
+	
+	private static final int GPS_UPDATE_RATE = 60000;
+	
+	private static final int MY_LOCATION = Menu.FIRST + 1;
+	private int overlayDrawable = R.drawable.carrot;
 }

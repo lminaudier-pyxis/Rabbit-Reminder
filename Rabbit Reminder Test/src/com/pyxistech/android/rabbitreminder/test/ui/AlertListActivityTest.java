@@ -65,7 +65,7 @@ public class AlertListActivityTest extends
 
 		for (int i = 0; i < numberOfNewItems; i++) {
 			getListAdapter().addItem(
-					new AlertItem("test item " + i, false, null, null));
+					new AlertItem("test item " + i, false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
 		}
 		int afterCount = getListSize();
 
@@ -163,7 +163,7 @@ public class AlertListActivityTest extends
 				"", null);
 		for (int i = 0; i < 50; i++) {
 			getListAdapter().addItem(
-					new AlertItem("item " + i, false, null, null));
+					new AlertItem("item " + i, false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
 
 			ContentValues values = new ContentValues();
 			values.put(AlertList.Items.NAME, "item " + i);

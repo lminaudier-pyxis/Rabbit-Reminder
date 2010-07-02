@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
@@ -40,7 +41,7 @@ public class AlertService extends Service {
 	}
 
 	@Override
-	public IBinder onBind(Intent arg0) {
+	public IBinder onBind(Intent intent) {
 		return null;
 	}
 	
@@ -72,7 +73,7 @@ public class AlertService extends Service {
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		
 		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notification = new Notification(R.drawable.icon, getString(R.string.alert_service_ongoing_notification_info_message), System.currentTimeMillis());
+		Notification notification = new Notification(R.drawable.alert_service_icon, getString(R.string.alert_service_ongoing_notification_info_message), System.currentTimeMillis());
 		notification.setLatestEventInfo(this, getString(R.string.alert_service_ongoing_notification_title), getString(R.string.alert_service_ongoing_notification_description), pendingIntent);
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		
@@ -95,7 +96,8 @@ class AlertThread extends Thread {
         AlertList.Items.NAME, // 1
         AlertList.Items.DONE, // 2
         AlertList.Items.LATITUDE, // 3
-        AlertList.Items.LONGITUDE // 4
+        AlertList.Items.LONGITUDE, // 4
+        AlertList.Items.NOTIFICATION_MODE // 5
     };
     
     public AlertThread(AlertService context) {
@@ -106,6 +108,9 @@ class AlertThread extends Thread {
 		Vector<Integer> localAndAlreadySeenAlerts = new Vector<Integer>();
 		
 		Looper.prepare();
+		
+		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, NOTIFICATION_REFRESH_RATE, 10, locationListener);
 		
 		while (!interrupted) {
 			Location myLocation = getLocation();
@@ -123,6 +128,8 @@ class AlertThread extends Thread {
 
 			threadWait(NOTIFICATION_REFRESH_RATE);
 		}
+		
+		lm.removeUpdates(locationListener);
 	}
 
 	public void setInterrupted(boolean interrupted) {
@@ -139,9 +146,11 @@ class AlertThread extends Thread {
 
 	private void notifyUserGoingAwayFromLocalAlert( Vector<Integer> localAndAlreadySeenAlerts, Vector<AlertItem> nonLocalUndoneAlerts) {
 		for (AlertItem alertItem : nonLocalUndoneAlerts) {
-			if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) != -1) {
-				Intent intent = buildNotificationIntent(alertItem);
-				notifyUser("End of " + alertItem.getText(), intent);
+			if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) != -1) {	
+				if (alertItem.getNotificationMode() == AlertItem.NOTIFY_WHEN_GO_OUT) {
+					Intent intent = buildNotificationIntent(alertItem);
+					notifyUser(alertItem.getText(), context.getString(R.string.alert_type_description_go_out_of_label), intent);
+				}
 				localAndAlreadySeenAlerts.remove(localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()));
 			}
 		}
@@ -150,12 +159,14 @@ class AlertThread extends Thread {
 	private void notifyUserComingNearLocalAlert( Vector<Integer> localAndAlreadySeenAlerts, Vector<AlertItem> localUndoneAlerts) {
 		for (AlertItem alertItem : localUndoneAlerts) {
 			if (localAndAlreadySeenAlerts.indexOf(alertItem.getIndex()) == -1) {
-				Intent intent = buildNotificationIntent(alertItem);
-				notifyUser(alertItem.getText(), intent);
+				if (alertItem.getNotificationMode() == AlertItem.NOTIFY_WHEN_NEAR_OF) {
+					Intent intent = buildNotificationIntent(alertItem);
+					notifyUser(alertItem.getText(), context.getString(R.string.alert_type_description_near_of_label), intent);
+				}
 				localAndAlreadySeenAlerts.add(alertItem.getIndex());
 			}
 		}
-	}
+	} 
 
 	private Intent buildNotificationIntent(AlertItem alertItem) {
 		Intent intent = new Intent(context, AlertActivity.class);
@@ -164,14 +175,15 @@ class AlertThread extends Thread {
 		return intent;
 	}
 
-	private void notifyUser(String alertMessage, Intent notificationIntent) {					
+	private void notifyUser(String alertMessage, String alertSubMessage, Intent notificationIntent) {					
 		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notification = new Notification(R.drawable.icon, "You have to accomplish a task here!", System.currentTimeMillis());
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-		notification.setLatestEventInfo(context, alertMessage, "", pendingIntent);
+		Notification notification = new Notification(R.drawable.alert_notification_icon, context.getString(R.string.notification_long_description_text), System.currentTimeMillis());
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId++, notificationIntent, 0);
+		notification.setLatestEventInfo(context, alertMessage, alertSubMessage, pendingIntent);
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		notification.sound = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
 	
-		nm.notify(notificationId++, notification);
+		nm.notify(notificationId, notification);
 	}
 
 	private Vector<AlertItem> getLocalUndoneAlerts(Location myLocation, Vector<AlertItem> tasks) {
@@ -251,7 +263,8 @@ class AlertThread extends Thread {
 					alertsCursor.getString(1), 
 					alertsCursor.getInt(2) == 1, 
 					alertsCursor.getDouble(3), 
-					alertsCursor.getDouble(4)
+					alertsCursor.getDouble(4),
+					alertsCursor.getInt(5)
 			));
 	}
 
@@ -265,8 +278,6 @@ class AlertThread extends Thread {
 	}
 	
 	private Location getLocation() {
-		LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 		return lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 	}
 	
@@ -284,10 +295,12 @@ class AlertThread extends Thread {
 		}
 	};
 	
-	private static final int NOTIFICATION_REFRESH_RATE = 1000;
+	private static final int NOTIFICATION_REFRESH_RATE = 60000;
     private static final int DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT = 100;
     
 	private boolean interrupted = false;
 	private AlertService context;
 	private int notificationId = 1;
+
+	private LocationManager lm;
 }

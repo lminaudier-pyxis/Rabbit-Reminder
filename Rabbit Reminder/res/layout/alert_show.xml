@@ -1,56 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout 
+<LinearLayout 
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content">
-
-
-	<com.pyxistech.android.rabbitreminder.views.AlertMapView
-		android:id="@+id/mapview" 
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent" 
-		android:clickable="true"
-		android:apiKey="@string/maps_api_key" />
-
-	<LinearLayout 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" 
-		android:orientation="vertical"
-		android:background="#DDCCCCCC"
-		>
-
-		<TextView 
-			android:id="@+id/new_task_name"
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content"
-			android:paddingLeft="8dip"
-			android:layout_alignParentLeft="true" 
-			android:text="@string/alert_name_label"
-			android:textSize="15dip"
-			android:textColor="#000000" 
-			android:paddingTop="5dip"
-			/>
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	>
 
 		<RelativeLayout 
 			android:id="@+id/taskname_form_layout"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
-			android:layout_alignParentBottom="true">
+			android:layout_alignParentBottom="true"
+			android:paddingTop="5dip"
+			>
 
 			<Button 
 				android:text="@string/validation_button_text"
 				android:id="@+id/add_task_button" 
 				android:layout_alignParentRight="true"
 				android:layout_width="50dip" 
-				android:layout_height="wrap_content">
+				android:layout_height="48dip">
 			</Button>
 			
 			<ImageButton
 				android:id="@+id/edit_alert_button"
 				android:layout_toLeftOf="@id/add_task_button"
 				android:layout_width="50dip" 
-				android:layout_height="wrap_content"
-				android:src="@drawable/stat_notify_alarm" />
+				android:layout_height="48dip"
+				android:src="@drawable/notification_type"
+				android:scaleType="centerInside"
+				android:adjustViewBounds="true"
+				/>
 
 			<EditText 
 				android:id="@+id/new_task_text"
@@ -61,13 +41,11 @@
 			</EditText>
 		</RelativeLayout>
 
-	</LinearLayout>
+	<com.pyxistech.android.rabbitreminder.views.AlertMapView
+		android:id="@+id/mapview" 
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent" 
+		android:clickable="true"
+		android:apiKey="@string/maps_api_key" />
 
-	<ImageButton 
-		android:id="@+id/set_current_location_button"
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom|right" 
-		android:src="@drawable/ic_maps_indicator_current_position" />
-
-</FrameLayout>
+</LinearLayout>

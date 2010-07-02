@@ -4,6 +4,7 @@ import com.pyxistech.android.rabbitreminder.R;
 
 import android.view.View;
 import android.widget.CheckedTextView;
+import android.widget.TextView;
 
 public class AlertViewWrapper {
 	public AlertViewWrapper(View taskItem) {
@@ -17,6 +18,14 @@ public class AlertViewWrapper {
 		return checkedTextView;
 	}
 	
+	public TextView getNotificationModeTextView() {
+		if (notificationModeTextView == null) {
+			notificationModeTextView = (TextView) base.findViewById(R.id.alert_notification_mode);
+		}
+		return notificationModeTextView;
+	}
+	
 	private View base;
 	private CheckedTextView checkedTextView;
+	private TextView notificationModeTextView;
 }

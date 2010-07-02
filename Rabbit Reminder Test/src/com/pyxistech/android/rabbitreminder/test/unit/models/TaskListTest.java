@@ -30,7 +30,7 @@ public class TaskListTest extends AndroidTestCase {
 
 	public void testTaskListIsParcelableAfterAnItemIsAdded() {
 		Bundle bundle = new Bundle();
-		list.addItem(new AlertItem("last item", true, 42.0, 1337.42));
+		list.addItem(new AlertItem("last item", true, 42.0, 1337.42, AlertItem.NOTIFY_WHEN_NEAR_OF));
 		bundle.putParcelable("TaskList", list);
 		AlertList newList = bundle.getParcelable("TaskList");
 
@@ -56,16 +56,16 @@ public class TaskListTest extends AndroidTestCase {
 	private AlertList buildList() {
 		AlertList newList = new AlertList();
 
-		newList.addItem(new AlertItem("item 1", false, null, null));
-		newList.addItem(new AlertItem("item 2", false, null, null));
-		newList.addItem(new AlertItem("item 3", false, null, null));
-		newList.addItem(new AlertItem("item 4", false, null, null));
-		newList.addItem(new AlertItem("item 5", false, null, null));
-		newList.addItem(new AlertItem("item 6", false, null, null));
-		newList.addItem(new AlertItem("item 7", false, null, null));
-		newList.addItem(new AlertItem("item 8", false, null, null));
-		newList.addItem(new AlertItem("item 9", false, null, null));
-		newList.addItem(new AlertItem("item 10", false, null, null));
+		newList.addItem(new AlertItem("item 1", false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
+		newList.addItem(new AlertItem("item 2", false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
+		newList.addItem(new AlertItem("item 3", false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
+		newList.addItem(new AlertItem("item 4", false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
+		newList.addItem(new AlertItem("item 5", false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
+		newList.addItem(new AlertItem("item 6", false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
+		newList.addItem(new AlertItem("item 7", false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
+		newList.addItem(new AlertItem("item 8", false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
+		newList.addItem(new AlertItem("item 9", false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
+		newList.addItem(new AlertItem("item 10", false, null, null, AlertItem.NOTIFY_WHEN_NEAR_OF));
 
 		return newList;
 	}

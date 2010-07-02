@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CheckedTextView
+<LinearLayout 
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+>
+<CheckedTextView
 	android:id="@+id/task_item"
 	android:layout_width="fill_parent"
-	android:layout_height="?android:attr/listPreferredItemHeight"
+	android:layout_height="wrap_content"
 	android:textAppearance="?android:attr/textAppearanceLarge"
 	android:gravity="center_vertical"
 	android:checkMark="?android:attr/listChoiceIndicatorMultiple"
@@ -11,3 +16,12 @@
 	android:paddingRight="6dip" 
 	android:textColor="#390000"
 	/>
+<TextView
+	android:id="@+id/alert_notification_mode"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:paddingLeft="6dip"
+	android:textAppearance="?android:attr/textAppearanceSmall"
+	android:textColor="#aaaaaa"
+/>
+</LinearLayout>
