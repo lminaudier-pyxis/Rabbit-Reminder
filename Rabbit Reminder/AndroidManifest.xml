@@ -16,6 +16,10 @@
                   android:label="@string/alert_show_activity_title">
         </activity>
         
+        <activity android:name=".activities.AboutActivity"
+                  android:label="About">
+        </activity>
+        
         <activity android:name=".activities.SettingsActivity"
                   android:label="@string/settings_activity_title"
 				  android:theme="@style/Theme">

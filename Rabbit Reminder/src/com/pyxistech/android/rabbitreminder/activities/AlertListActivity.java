@@ -1,6 +1,5 @@
 package com.pyxistech.android.rabbitreminder.activities;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
@@ -94,17 +93,8 @@ public class AlertListActivity extends ListActivity {
     }
 
 	private void showAboutDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.about_menu_text);
-		builder.setInverseBackgroundForced(true);
-		builder.setMessage(R.string.about_text);
-		builder.setNeutralButton(R.string.validation_button_text, new DialogInterface.OnClickListener() {
-		  public void onClick(DialogInterface dialog, int which) {
-		    dialog.dismiss();
-		  }
-		});
-		AlertDialog alert = builder.create();
-		alert.show();
+		Intent about = new Intent(this, AboutActivity.class);
+		startActivity(about);
 	}
     
     @Override
