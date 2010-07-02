@@ -207,7 +207,7 @@ class AlertThread extends Thread {
 	}
 
 	private Location buildLocationFromTaskItem(AlertItem taskItem) {
-		Location taskItemLocation = new Location("com.pyxistech.android.rabbitreminder.providers.TaskListProvider");
+		Location taskItemLocation = new Location("com.pyxistech.android.rabbitreminder.providers.AlertListProvider");
 		taskItemLocation.setLatitude(taskItem.getLatitude());
 		taskItemLocation.setLongitude(taskItem.getLongitude());
 		return taskItemLocation;
