@@ -234,6 +234,7 @@ public class AlertListActivity extends ListActivity {
 				adapter.addItem( new AlertItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getInt(2) == 1, cursor.getDouble(3), cursor.getDouble(4), cursor.getInt(5)) );
 	        } while(cursor.moveToNext());
         }
+        cursor.close();
     	
     	return adapter.getList();
     }

@@ -253,6 +253,7 @@ class AlertThread extends Thread {
 				addAlertFromCursor(alerts, alertsCursor);
 	        } while(alertsCursor.moveToNext());
         }
+		alertsCursor.close();
 		
 		return alerts;
 	}
