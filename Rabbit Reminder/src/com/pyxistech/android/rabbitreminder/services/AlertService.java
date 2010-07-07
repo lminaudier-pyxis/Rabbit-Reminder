@@ -9,6 +9,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -109,8 +110,10 @@ class AlertThread extends Thread {
 		
 		Looper.prepare();
 		
-		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, NOTIFICATION_REFRESH_RATE, 10, locationListener);
+		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE); 
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+		lm.requestLocationUpdates(lm.getBestProvider(criteria, true), 10000, 0, locationListener);
 		
 		while (!interrupted) {
 			Location myLocation = getLocation();
@@ -279,7 +282,7 @@ class AlertThread extends Thread {
 	}
 	
 	private Location getLocation() {
-		return lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		return lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 	}
 	
 	public LocationListener locationListener = new LocationListener() {
@@ -296,7 +299,7 @@ class AlertThread extends Thread {
 		}
 	};
 	
-	private static final int NOTIFICATION_REFRESH_RATE = 60000;
+	private static final int NOTIFICATION_REFRESH_RATE = 10000;
     private static final int DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT = 100;
     
 	private boolean interrupted = false;
