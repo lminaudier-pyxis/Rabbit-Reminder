@@ -9,12 +9,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 
@@ -110,20 +107,29 @@ class AlertThread extends Thread {
 		
 		Looper.prepare();
 		
-		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE); 
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		lm.requestLocationUpdates(lm.getBestProvider(criteria, true), 10000, 0, locationListener);
+		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		
 		while (!interrupted) {
-			Location myLocation = getLocation();
+			Location myLocation = getLocationFromNetwork();
 			Vector<AlertItem> undoneAlerts = getUndoneAlerts();
 			
-			removeDoneAlertFromAlreadySeenArray(localAndAlreadySeenAlerts);		
+			removeDoneAlertFromAlreadySeenArray(localAndAlreadySeenAlerts);
 			
 			if (myLocation != null) {
 				Vector<AlertItem> localUndoneAlerts = getLocalUndoneAlerts(myLocation, undoneAlerts);
 				Vector<AlertItem> nonLocalUndoneAlerts = getNonLocalUndoneAlerts(myLocation, undoneAlerts);
+				
+				// Larache
+				Intent intent = new Intent(context, SettingsActivity.class);
+				PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+				
+				NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+				Notification notification = new Notification(R.drawable.alert_service_icon, context.getString(R.string.alert_service_ongoing_notification_info_message), System.currentTimeMillis());
+				notification.setLatestEventInfo(context, context.getString(R.string.alert_service_ongoing_notification_title), "accuracy: " + myLocation.getAccuracy(), pendingIntent);
+				notification.flags |= Notification.FLAG_ONGOING_EVENT;
+				// End Larache
+				
+				nm.notify(0, notification);
 				
 				notifyUserComingNearLocalAlert(localAndAlreadySeenAlerts, localUndoneAlerts);
 				notifyUserGoingAwayFromLocalAlert(localAndAlreadySeenAlerts, nonLocalUndoneAlerts);
@@ -131,8 +137,6 @@ class AlertThread extends Thread {
 
 			threadWait(NOTIFICATION_REFRESH_RATE);
 		}
-		
-		lm.removeUpdates(locationListener);
 	}
 
 	public void setInterrupted(boolean interrupted) {
@@ -281,23 +285,13 @@ class AlertThread extends Thread {
 		return AlertList.Items.DONE + "=0";
 	}
 	
-	private Location getLocation() {
-		return lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+	private Location getLocationFromGPS() {
+		return lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 	}
 	
-	public LocationListener locationListener = new LocationListener() {
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-		}
-		
-		public void onProviderEnabled(String provider) {
-		}
-		
-		public void onProviderDisabled(String provider) {
-		}
-		
-		public void onLocationChanged(Location location) {
-		}
-	};
+	private Location getLocationFromNetwork() {
+		return lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+	}
 	
 	private static final int NOTIFICATION_REFRESH_RATE = 10000;
     private static final int DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT = 100;
