@@ -22,7 +22,7 @@
       package="com.pyxistech.android.rabbitreminder"
       android:versionCode="1"
       android:versionName="1.0">
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/Theme.LightRabbitReminder" android:debuggable="true">
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/Theme.LightRabbitReminder">
         <activity android:name=".activities.AlertListActivity"
                   android:label="@string/app_name">
             <intent-filter>
@@ -55,7 +55,5 @@
 	
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-	<uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
 	<uses-permission android:name="android.permission.INTERNET" />
 </manifest> 
