@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="about_menu_text">About</string>
-	<string name="about_text"></string>
+    
 
     <string name="notification_long_description_text">You have to accomplish a task here!</string>
     <string name="alert_type_title_text">Notify me when</string>
@@ -42,6 +41,8 @@
     
     <string name="default_alert_name">Get the rabbit out of the freezer</string>
     
+    <string name="about_menu_text">About</string>
+    <string name="about_activity_title">About...</string>
     <string name="developers_name"><b>Application developed by:</b>\nAnne-Laure DALBAN, Loïc GIRON DIT METAZ, Loïc MINAUDIER</string>
     <string name="original_idea_by"><b>From an original idea of:</b>\nXavier PAPET</string>
     <string name="open_source_software"><b>License :</b>\nThis application is an open-source software. \nYou can download the source code at: http://github.com/lminaudier/Rabbit-Reminder</string>

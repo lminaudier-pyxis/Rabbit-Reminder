@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
- 	<string name="about_menu_text">A propos</string>
-	<string name="about_text">
-	<h1>Rabbit Reminder</h1>
-	<p>RR est une application _grown by Pyxis</p>
-	</string>
-
 	<string name="notification_long_description_text">Tâche à accomplir ici!</string>
     <string name="alert_service_ongoing_notification_description">Cliquer pour désactiver le service...</string>
     <string name="app_name">Rabbit Reminder</string>
@@ -45,6 +39,8 @@
     
     <string name="default_alert_name">Sortir le lapin du congel</string>
     
+    <string name="about_menu_text">A propos</string>
+    <string name="about_activity_title">A propos...</string>
     <string name="developers_name"><b>Application développée par :</b>\nAnne-Laure DALBAN, Loïc GIRON DIT METAZ, Loïc MINAUDIER</string>
     <string name="original_idea_by"><b>Une idée originale de :</b>\nXavier PAPET</string>
     <string name="open_source_software"><b>Licence :</b>\nCette application est un logiciel libre. \nVous pouvez télécharger le code source à l\'adresse suivante : http://github.com/lminaudier/Rabbit-Reminder</string>

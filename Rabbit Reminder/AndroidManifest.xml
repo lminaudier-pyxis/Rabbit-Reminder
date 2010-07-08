@@ -17,7 +17,7 @@
         </activity>
         
         <activity android:name=".activities.AboutActivity"
-                  android:label="About">
+                  android:label="@string/about_activity_title">
         </activity>
         
         <activity android:name=".activities.SettingsActivity"
