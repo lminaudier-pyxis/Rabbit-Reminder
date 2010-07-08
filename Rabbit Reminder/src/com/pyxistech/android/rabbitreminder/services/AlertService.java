@@ -115,21 +115,11 @@ class AlertThread extends Thread {
 			
 			removeDoneAlertFromAlreadySeenArray(localAndAlreadySeenAlerts);
 			
-			if (myLocation != null) {
+			if (myLocation != null && undoneAlerts.size() > 0) {
+				myLocation = getAMorePreciseLocationIfNecessary(myLocation, undoneAlerts);
+				
 				Vector<AlertItem> localUndoneAlerts = getLocalUndoneAlerts(myLocation, undoneAlerts);
 				Vector<AlertItem> nonLocalUndoneAlerts = getNonLocalUndoneAlerts(myLocation, undoneAlerts);
-				
-				// Larache
-				Intent intent = new Intent(context, SettingsActivity.class);
-				PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-				
-				NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-				Notification notification = new Notification(R.drawable.alert_service_icon, context.getString(R.string.alert_service_ongoing_notification_info_message), System.currentTimeMillis());
-				notification.setLatestEventInfo(context, context.getString(R.string.alert_service_ongoing_notification_title), "accuracy: " + myLocation.getAccuracy(), pendingIntent);
-				notification.flags |= Notification.FLAG_ONGOING_EVENT;
-				// End Larache
-				
-				nm.notify(0, notification);
 				
 				notifyUserComingNearLocalAlert(localAndAlreadySeenAlerts, localUndoneAlerts);
 				notifyUserGoingAwayFromLocalAlert(localAndAlreadySeenAlerts, nonLocalUndoneAlerts);
@@ -137,6 +127,27 @@ class AlertThread extends Thread {
 
 			threadWait(NOTIFICATION_REFRESH_RATE);
 		}
+	}
+
+	private Location getAMorePreciseLocationIfNecessary(Location myLocation, Vector<AlertItem> undoneAlerts) {
+		if (!isUserFarFromAlerts(myLocation, undoneAlerts)) {
+			Location myGpsLocation = getLocationFromGPS();
+			if (myGpsLocation != null) {						
+				myLocation = myGpsLocation;
+			}
+		}
+		return myLocation;
+	}
+	
+	public boolean isUserFarFromAlerts(Location userLocation, Vector<AlertItem> alerts) {
+		float shortestDistance = buildLocationFromAlertItem(alerts.get(0)).distanceTo(userLocation);
+		for (AlertItem item : alerts) {
+			float distanceFromUserLocationToAlertLocation = buildLocationFromAlertItem(item).distanceTo(userLocation);
+			if (distanceFromUserLocationToAlertLocation < shortestDistance)
+				shortestDistance = distanceFromUserLocationToAlertLocation;
+		}
+		
+		return (shortestDistance > userLocation.getAccuracy() + DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT);
 	}
 
 	public void setInterrupted(boolean interrupted) {
@@ -196,7 +207,7 @@ class AlertThread extends Thread {
 	private Vector<AlertItem> getLocalUndoneAlerts(Location myLocation, Vector<AlertItem> tasks) {
 		Vector<AlertItem> localTasks = new Vector<AlertItem>();
 		for (AlertItem taskItem : tasks) {
-			Location taskItemLocation = buildLocationFromTaskItem(taskItem);
+			Location taskItemLocation = buildLocationFromAlertItem(taskItem);
 			
 			if (isTaskLocationNearMyLocation(myLocation, taskItemLocation)) {
 				localTasks.add(taskItem);
@@ -208,7 +219,7 @@ class AlertThread extends Thread {
 	private Vector<AlertItem> getNonLocalUndoneAlerts(Location myLocation, Vector<AlertItem> tasks) {
 		Vector<AlertItem> localTasks = new Vector<AlertItem>();
 		for (AlertItem taskItem : tasks) {
-			Location taskItemLocation = buildLocationFromTaskItem(taskItem);
+			Location taskItemLocation = buildLocationFromAlertItem(taskItem);
 			
 			if (isTaskFarFromMyLocation(myLocation, taskItemLocation)) {
 				localTasks.add(taskItem);
@@ -225,7 +236,7 @@ class AlertThread extends Thread {
 		return taskItemLocation.distanceTo(myLocation) < DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT;
 	}
 
-	private Location buildLocationFromTaskItem(AlertItem taskItem) {
+	private Location buildLocationFromAlertItem(AlertItem taskItem) {
 		Location taskItemLocation = new Location("com.pyxistech.android.rabbitreminder.providers.AlertListProvider");
 		taskItemLocation.setLatitude(taskItem.getLatitude());
 		taskItemLocation.setLongitude(taskItem.getLongitude());
