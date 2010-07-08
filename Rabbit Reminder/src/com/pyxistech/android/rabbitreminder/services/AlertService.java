@@ -29,10 +29,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 
@@ -129,15 +127,16 @@ class AlertThread extends Thread {
 		Looper.prepare();
 		
 		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, NOTIFICATION_REFRESH_RATE, 10, locationListener);
 		
 		while (!interrupted) {
-			Location myLocation = getLocation();
+			Location myLocation = getLocationFromNetwork();
 			Vector<AlertItem> undoneAlerts = getUndoneAlerts();
 			
-			removeDoneAlertFromAlreadySeenArray(localAndAlreadySeenAlerts);		
+			removeDoneAlertFromAlreadySeenArray(localAndAlreadySeenAlerts);
 			
-			if (myLocation != null) {
+			if (myLocation != null && undoneAlerts.size() > 0) {
+				myLocation = getAMorePreciseLocationIfNecessary(myLocation, undoneAlerts);
+				
 				Vector<AlertItem> localUndoneAlerts = getLocalUndoneAlerts(myLocation, undoneAlerts);
 				Vector<AlertItem> nonLocalUndoneAlerts = getNonLocalUndoneAlerts(myLocation, undoneAlerts);
 				
@@ -147,8 +146,27 @@ class AlertThread extends Thread {
 
 			threadWait(NOTIFICATION_REFRESH_RATE);
 		}
+	}
+
+	private Location getAMorePreciseLocationIfNecessary(Location myLocation, Vector<AlertItem> undoneAlerts) {
+		if (!isUserFarFromAlerts(myLocation, undoneAlerts)) {
+			Location myGpsLocation = getLocationFromGPS();
+			if (myGpsLocation != null) {						
+				myLocation = myGpsLocation;
+			}
+		}
+		return myLocation;
+	}
+	
+	public boolean isUserFarFromAlerts(Location userLocation, Vector<AlertItem> alerts) {
+		float shortestDistance = buildLocationFromAlertItem(alerts.get(0)).distanceTo(userLocation);
+		for (AlertItem item : alerts) {
+			float distanceFromUserLocationToAlertLocation = buildLocationFromAlertItem(item).distanceTo(userLocation);
+			if (distanceFromUserLocationToAlertLocation < shortestDistance)
+				shortestDistance = distanceFromUserLocationToAlertLocation;
+		}
 		
-		lm.removeUpdates(locationListener);
+		return (shortestDistance > userLocation.getAccuracy() + DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT);
 	}
 
 	public void setInterrupted(boolean interrupted) {
@@ -208,7 +226,7 @@ class AlertThread extends Thread {
 	private Vector<AlertItem> getLocalUndoneAlerts(Location myLocation, Vector<AlertItem> tasks) {
 		Vector<AlertItem> localTasks = new Vector<AlertItem>();
 		for (AlertItem taskItem : tasks) {
-			Location taskItemLocation = buildLocationFromTaskItem(taskItem);
+			Location taskItemLocation = buildLocationFromAlertItem(taskItem);
 			
 			if (isTaskLocationNearMyLocation(myLocation, taskItemLocation)) {
 				localTasks.add(taskItem);
@@ -220,7 +238,7 @@ class AlertThread extends Thread {
 	private Vector<AlertItem> getNonLocalUndoneAlerts(Location myLocation, Vector<AlertItem> tasks) {
 		Vector<AlertItem> localTasks = new Vector<AlertItem>();
 		for (AlertItem taskItem : tasks) {
-			Location taskItemLocation = buildLocationFromTaskItem(taskItem);
+			Location taskItemLocation = buildLocationFromAlertItem(taskItem);
 			
 			if (isTaskFarFromMyLocation(myLocation, taskItemLocation)) {
 				localTasks.add(taskItem);
@@ -237,7 +255,7 @@ class AlertThread extends Thread {
 		return taskItemLocation.distanceTo(myLocation) < DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT;
 	}
 
-	private Location buildLocationFromTaskItem(AlertItem taskItem) {
+	private Location buildLocationFromAlertItem(AlertItem taskItem) {
 		Location taskItemLocation = new Location("com.pyxistech.android.rabbitreminder.providers.AlertListProvider");
 		taskItemLocation.setLatitude(taskItem.getLatitude());
 		taskItemLocation.setLongitude(taskItem.getLongitude());
@@ -297,25 +315,15 @@ class AlertThread extends Thread {
 		return AlertList.Items.DONE + "=0";
 	}
 	
-	private Location getLocation() {
+	private Location getLocationFromGPS() {
 		return lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 	}
 	
-	public LocationListener locationListener = new LocationListener() {
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-		}
-		
-		public void onProviderEnabled(String provider) {
-		}
-		
-		public void onProviderDisabled(String provider) {
-		}
-		
-		public void onLocationChanged(Location location) {
-		}
-	};
+	private Location getLocationFromNetwork() {
+		return lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+	}
 	
-	private static final int NOTIFICATION_REFRESH_RATE = 60000;
+	private static final int NOTIFICATION_REFRESH_RATE = 10000;
     private static final int DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT = 100;
     
 	private boolean interrupted = false;
