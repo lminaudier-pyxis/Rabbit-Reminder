@@ -29,8 +29,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 
@@ -126,7 +128,8 @@ class AlertThread extends Thread {
 		
 		Looper.prepare();
 		
-		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		initializeNetworkManager();
+		activateNetworkProvider();
 		
 		while (!interrupted) {
 			Location myLocation = getLocationFromNetwork();
@@ -143,19 +146,76 @@ class AlertThread extends Thread {
 				notifyUserComingNearLocalAlert(localAndAlreadySeenAlerts, localUndoneAlerts);
 				notifyUserGoingAwayFromLocalAlert(localAndAlreadySeenAlerts, nonLocalUndoneAlerts);
 			}
+			else {
+				deactivateGpsProvider();
+			}
 
 			threadWait(NOTIFICATION_REFRESH_RATE);
 		}
+		
+		deactivateNetworkProvider();
 	}
+
+	private void initializeNetworkManager() {
+		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+	}
+
+	private void deactivateNetworkProvider() {
+		lm.removeUpdates(networkListener);
+	}
+
+	private void activateNetworkProvider() {
+		lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, NOTIFICATION_REFRESH_RATE, 10, networkListener);
+	}
+	
+	private LocationListener gpsListener = new LocationListener() {
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
+		
+		public void onProviderEnabled(String provider) {
+		}
+		
+		public void onProviderDisabled(String provider) {
+		}
+		
+		public void onLocationChanged(Location location) {
+		}
+	};
+	
+	private LocationListener networkListener = new LocationListener() {
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
+		
+		public void onProviderEnabled(String provider) {
+		}
+		
+		public void onProviderDisabled(String provider) {
+		}
+		
+		public void onLocationChanged(Location location) {
+		}
+	};
 
 	private Location getAMorePreciseLocationIfNecessary(Location myLocation, Vector<AlertItem> undoneAlerts) {
 		if (!isUserFarFromAlerts(myLocation, undoneAlerts)) {
+			activateGpsProvider();
 			Location myGpsLocation = getLocationFromGPS();
 			if (myGpsLocation != null) {						
 				myLocation = myGpsLocation;
 			}
 		}
+		else {
+			deactivateGpsProvider();
+		}
 		return myLocation;
+	}
+
+	private void deactivateGpsProvider() {
+		lm.removeUpdates(gpsListener);
+	}
+
+	private void activateGpsProvider() {
+		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_REFRESH_RATE, 10, gpsListener);
 	}
 	
 	public boolean isUserFarFromAlerts(Location userLocation, Vector<AlertItem> alerts) {
@@ -324,8 +384,9 @@ class AlertThread extends Thread {
 	}
 	
 	private static final int NOTIFICATION_REFRESH_RATE = 10000;
+	private static final int GPS_REFRESH_RATE = 30000;
     private static final int DEFAULT_DISTANCE_THRESHOLD_FOR_LOCAL_ALERT = 100;
-    
+	
 	private boolean interrupted = false;
 	private AlertService context;
 	private int notificationId = 1;
