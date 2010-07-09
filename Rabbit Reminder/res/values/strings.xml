@@ -43,7 +43,7 @@
     
     <string name="delete_item_confirmation_dialog_title">Delete</string>
     <string name="delete_item_confirmation_dialog_text">This alert will be deleted.</string>
-    <string name="gps_availability_warning">GPS not available!</string>
+    <string name="gps_availability_warning">Location not available!</string>
     
     <string name="alert_name_label">Alert Name</string>
     <string name="alert_name_not_set_warning">You must specify a name!</string>
