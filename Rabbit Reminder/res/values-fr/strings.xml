@@ -23,7 +23,7 @@
     <string name="alert_service_ongoing_notification_description">Cliquer pour désactiver le service...</string>
     <string name="app_name">Rabbit Reminder</string>
     
-    <string name="alert_show_activity_title">Créer une alerte</string>
+    <string name="alert_show_activity_title">Alerte</string>
     
     <string name="add_item_menu_text">Créer Alerte</string>
     <string name="alert_type_title_text">Me notifier quand</string>
