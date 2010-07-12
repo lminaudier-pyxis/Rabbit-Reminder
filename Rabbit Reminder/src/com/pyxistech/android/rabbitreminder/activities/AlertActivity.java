@@ -218,11 +218,15 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		if (getBundle() != null) {
 			getParametersFromBundle(getBundle());
 		}
+		setDefaultZoom();
 		
 		if (isSetTaskCoordinates()) {
-			mapView.getController().setZoom(11);
 			setOverlayAndMoveToCoordinates(taskLatitude, taskLongitude);
 		}
+	}
+
+	private void setDefaultZoom() {
+		mapView.getController().setZoom(11);
 	}
 
 	private void initializeOverlays() {
