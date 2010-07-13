@@ -26,7 +26,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -44,11 +43,10 @@ import android.widget.Toast;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 import com.pyxistech.android.rabbitreminder.R;
 import com.pyxistech.android.rabbitreminder.models.AlertItem;
 import com.pyxistech.android.rabbitreminder.views.AlertMapView;
-import com.pyxistech.android.rabbitreminder.views.RabbitItemizedOverlay;
+import com.pyxistech.android.rabbitreminder.views.CustomOverlay;
 
 public class AlertActivity extends MapActivity implements LocationListener, AlertMapView.CoordinatesTouchedListener {
 
@@ -235,9 +233,6 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 		mapView.setCoordinatesTouchedListener(this);
 		
 		mapOverlays = mapView.getOverlays();
-		drawable = this.getResources().getDrawable(overlayDrawable);
-		
-		itemizedOverlay = new RabbitItemizedOverlay(drawable);
 	}
 
 	private void refreshUi() {
@@ -257,10 +252,10 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 
 	private void setOverlayOnCoordinates(Double latitude, Double longitude) {
 		GeoPoint point = createGeoPointFromCoordinates(latitude, longitude);
-		OverlayItem overlayitem = new OverlayItem(point, "", "");
-		itemizedOverlay.setOverlay(overlayitem);
+		CustomOverlay overlay = new CustomOverlay(point);
 		mapOverlays.clear();
-		mapOverlays.add(itemizedOverlay);
+		mapOverlays.add(overlay);
+		mapView.postInvalidate();
 	}
 
 	private void setOverlayAndMoveToCoordinates(Double latitude, Double longitude) {
@@ -359,9 +354,6 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	private AlertMapView mapView;
 
 	private List<Overlay> mapOverlays;
-	private Drawable drawable;
-	private RabbitItemizedOverlay itemizedOverlay;
-	private int overlayDrawable = R.drawable.carrot;
 
 	private static final int MY_LOCATION = Menu.FIRST + 1;
 	private static final int GPS_UPDATE_RATE = 10000;
