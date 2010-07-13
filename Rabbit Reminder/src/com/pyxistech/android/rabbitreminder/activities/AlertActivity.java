@@ -224,7 +224,7 @@ public class AlertActivity extends MapActivity implements LocationListener, Aler
 	}
 
 	private void setDefaultZoom() {
-		mapView.getController().setZoom(11);
+		mapView.getController().setZoom(13);
 	}
 
 	private void initializeOverlays() {
