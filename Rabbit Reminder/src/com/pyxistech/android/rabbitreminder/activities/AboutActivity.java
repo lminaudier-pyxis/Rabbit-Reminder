@@ -20,7 +20,12 @@
 package com.pyxistech.android.rabbitreminder.activities;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
 
 import com.pyxistech.android.rabbitreminder.R;
 
@@ -30,5 +35,17 @@ public class AboutActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.about);
+		
+		ImageView grownByPyxisLogo = (ImageView) findViewById(R.id.about_grown_by_pyxis_logo);
+		grownByPyxisLogo.setOnClickListener(grownByPyxisLogoClicked);
 	}
+	
+	private OnClickListener grownByPyxisLogoClicked = new OnClickListener() {
+		public void onClick(View v) {
+			String url = getString(R.string.pyxis_website_uri);
+			Intent i = new Intent(Intent.ACTION_VIEW);
+			i.setData(Uri.parse(url));
+			startActivity(i);
+		}
+	};
 }
