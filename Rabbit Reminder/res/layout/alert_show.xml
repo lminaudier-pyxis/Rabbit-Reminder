@@ -22,8 +22,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" 
 	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	>
+	android:orientation="vertical" >
 
 		<RelativeLayout 
 			android:id="@+id/taskname_form_layout"
@@ -31,15 +30,15 @@
 			android:layout_height="wrap_content"
 			android:layout_alignParentBottom="true"
 			android:paddingTop="5dip"
-			>
+			android:paddingLeft="6dip"
+			android:paddingRight="3dip" >
 
 			<Button 
 				android:text="@string/validation_button_text"
 				android:id="@+id/add_task_button" 
 				android:layout_alignParentRight="true"
 				android:layout_width="50dip" 
-				android:layout_height="48dip">
-			</Button>
+				android:layout_height="48dip" />
 			
 			<ImageButton
 				android:id="@+id/edit_alert_button"
@@ -48,16 +47,22 @@
 				android:layout_height="48dip"
 				android:src="@drawable/notification_type"
 				android:scaleType="centerInside"
-				android:adjustViewBounds="true"
-				/>
+				android:adjustViewBounds="true" />
+				
+			<Button
+				android:id="@+id/alert_show_padding_button"
+				android:layout_toLeftOf="@id/edit_alert_button"
+				android:layout_width="3dip" 
+				android:layout_height="48dip"
+				android:visibility="invisible" />
 
 			<EditText 
 				android:id="@+id/new_task_text"
 				android:layout_width="fill_parent" 
-				android:layout_toLeftOf="@id/edit_alert_button"
+				android:layout_toLeftOf="@id/alert_show_padding_button"
 				android:layout_height="wrap_content" 
-				android:singleLine="true">
-			</EditText>
+				android:singleLine="true" />
+				
 		</RelativeLayout>
 
 	<com.pyxistech.android.rabbitreminder.views.AlertMapView
