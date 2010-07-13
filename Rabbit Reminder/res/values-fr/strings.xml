@@ -20,7 +20,7 @@
 
 <resources>
 	<string name="notification_long_description_text">Tâche à accomplir ici!</string>
-    <string name="alert_service_ongoing_notification_description">Cliquer pour désactiver le service...</string>
+    <string name="alert_service_ongoing_notification_description">Cliquer pour désactiver les notifications...</string>
     <string name="app_name">Rabbit Reminder</string>
     
     <string name="alert_show_activity_title">Alerte</string>
@@ -50,7 +50,7 @@
     <string name="location_not_set_warning">Vous devez spécifier un lieu à l\'alerte!</string>
     
     <string name="alert_service_ongoing_notification_info_message">Rabbit-Reminder est lancé ...</string>
-    <string name="alert_service_ongoing_notification_title">Service Rabbit-Reminder</string>
+    <string name="alert_service_ongoing_notification_title">Rabbit-Reminder</string>
     
     <string name="settings_activity_title">Paramètres Rabbit Reminder</string>
 
